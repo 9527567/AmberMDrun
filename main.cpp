@@ -1,6 +1,6 @@
-#include <cstdio>
-
+#include <iostream>
+#include "SystemInfo.hpp"
 int main()
 {
-    printf("hello");
+   auto s = SystemInfo("com.parm7");
 }

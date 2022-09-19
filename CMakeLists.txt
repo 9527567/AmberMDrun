@@ -26,6 +26,8 @@ target_link_options(AmberMD PRIVATE
     -m64
 )
 target_sources(AmberMD PRIVATE
+    src/SystemInfo.cpp
+    src/common.cpp
     src/base.cpp
     main.cpp
 )
