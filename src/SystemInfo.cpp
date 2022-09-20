@@ -3,10 +3,9 @@
 //
 #include "SystemInfo.hpp"
 #include "common.hpp"
-#include <iostream>
 #include <string>
 
-SystemInfo::SystemInfo(std::string filename)
+SystemInfo::SystemInfo(const std::string &filename)
 {
     auto result = executeCMD("cpptraj -p " + filename + " --resmask \\*");
     for (int i = 1; i < result.size(); ++i)
@@ -39,5 +38,19 @@ SystemInfo::SystemInfo(std::string filename)
             nunKnown_++;
         }
     }
-    std::cout << nLipid_ << std::endl;
+    if (nCharmmWater_ > 0)
+    {
+        hasCharmmWater_ = true;
+    }
+    try
+    {
+        if (nWater_ > 0 && hasCharmmWater_)
+        {
+            throw "Error: Charmm water and regular water present.";
+        }
+    }
+    catch (const std::string &message)
+    {
+        printf("%s\n", message.c_str());
+    }
 }

@@ -187,10 +187,9 @@ public:
 class SystemInfo
 {
 public:
-    explicit SystemInfo(std::string filename);
+    explicit SystemInfo(const std::string& filename);
 
 private:
-
     int nProtein_ = 0;
     int nDna_ = 0;
     int nRna_ = 0;
@@ -199,6 +198,8 @@ private:
     int nCharmmWater_ = 0;
     int nWater_ = 0;
     int nCarbo_ = 0;
+    bool hasCharmmWater_ = false;
+
 };
 
 #endif //AMBERMD_SYSTEMINFO_HPP
