@@ -48,8 +48,7 @@ SystemInfo::SystemInfo(const std::string &filename)
         {
             throw "Error: Charmm water and regular water present.";
         }
-    }
-    catch (const std::string &message)
+    } catch (const std::string &message)
     {
         printf("%s\n", message.c_str());
     }

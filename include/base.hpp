@@ -7,10 +7,12 @@
 class Base
 {
 public:
-    Base()= default;
+    Base(int iMin = 1);
     ~Base() = default;
     virtual void createInput();
+
 private:
+    int iMin_;
 
 };
-#endif //AMBERMD_BASE_HPP
+#endif//AMBERMD_BASE_HPP

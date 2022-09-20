@@ -7,187 +7,211 @@
 
 #include <string>
 #include <vector>
-
+#include "noncopyable.hpp"
 class ResName
 {
 public:
-    static inline const std::vector<std::string> Protein
-            {
-                    "ACE",
-                    "ALA",
-                    "ARG",
-                    "ASH",
-                    "AS4",
-                    "ASN",
-                    "ASP",
-                    "CALA",
-                    "CARG",
-                    "CASN",
-                    "CASP",
-                    "CCYS",
-                    "CCYX",
-                    "CGLN",
-                    "CGLU",
-                    "CGLY",
-                    "CHID",
-                    "CHIE",
-                    "CHIP",
-                    "CHIS",
-                    "CHYP",
-                    "CILE",
-                    "CLEU",
-                    "CLYS",
-                    "CMET",
-                    "CPHE",
-                    "CPRO",
-                    "CSER",
-                    "CTHR",
-                    "CTRP",
-                    "CTYR",
-                    "CVAL",
-                    "CYM",
-                    "CYS",
-                    "CYX",
-                    "GLH",
-                    "GL4",
-                    "GLN",
-                    "GLU",
-                    "GLY",
-                    "HID",
-                    "HIE",
-                    "HIP",
-                    "HIS",
-                    "HYP",
-                    "ILE",
-                    "LEU",
-                    "LYN",
-                    "LYS",
-                    "MET",
-                    "NALA",
-                    "NARG",
-                    "NASN",
-                    "NASP",
-                    "NCYS",
-                    "NCYX",
-                    "NGLN",
-                    "NGLU",
-                    "NGLY",
-                    "NHE",
-                    "NHID",
-                    "NHIE",
-                    "NHIP",
-                    "NHIS",
-                    "NILE",
-                    "NLEU",
-                    "NLYS",
-                    "NME",
-                    "NMET",
-                    "NPHE",
-                    "NPRO",
-                    "NSER",
-                    "NTHR",
-                    "NTRP",
-                    "NTYR",
-                    "NVAL",
-                    "PHE",
-                    "PRO",
-                    "SER",
-                    "THR",
-                    "TRP",
-                    "TYR",
-                    "VAL"
-            };
-    static inline const std::vector<std::string> DNA
-            {
-                    "DA",
-                    "DA3",
-                    "DA5",
-                    "DAN",
-                    "DC",
-                    "DC3",
-                    "DC5",
-                    "DCN",
-                    "DG",
-                    "DG3",
-                    "DG5",
-                    "DGN",
-                    "DT",
-                    "DT3",
-                    "DT5",
-                    "DTN"};
-    static inline const std::vector<std::string> RNA
-            {
-                    "A",
-                    "A3",
-                    "A5",
-                    "AMP",
-                    "AN",
-                    "C",
-                    "C3",
-                    "C5",
-                    "CMP",
-                    "CN",
-                    "G",
-                    "G3",
-                    "G5",
-                    "GMP",
-                    "GN",
-                    "OHE",
-                    "U",
-                    "U3",
-                    "U5",
-                    "UMP",
-                    "UN"};
-    static inline const std::vector<std::string> Lipid
-            {
-                    "POPE",
-                    "DOPC",
-                    "AR",
-                    "CHL",
-                    "DHA",
-                    "LAL",
-                    "MY",
-                    "OL",
-                    "PA",
-                    "PC",
-                    "PE",
-                    "PGR",
-                    "PH-",
-                    "PS",
-                    "ST"
-            };
-    static inline const std::vector<std::string> Carbo
-            {
-                    "0GB",
-                    "4GB",
-                    "0YA",
-                    "4YA",
-                    "0fA",
-                    "0YB",
-                    "2MA",
-                    "4YB",
-                    "NLN",
-                    "UYB",
-                    "VMB",
-                    "0SA",
-                    "6LB",
-                    "ROH"
-            };
-    static inline const std::vector<std::string> CharmmWater
-            {
-                    "TIP3"
-            };
-    static inline const std::vector<std::string> Water
-            {
-                    "WAT"
-            };
+    static inline const std::vector<std::string> Protein{
+            "ACE",
+            "ALA",
+            "ARG",
+            "ASH",
+            "AS4",
+            "ASN",
+            "ASP",
+            "CALA",
+            "CARG",
+            "CASN",
+            "CASP",
+            "CCYS",
+            "CCYX",
+            "CGLN",
+            "CGLU",
+            "CGLY",
+            "CHID",
+            "CHIE",
+            "CHIP",
+            "CHIS",
+            "CHYP",
+            "CILE",
+            "CLEU",
+            "CLYS",
+            "CMET",
+            "CPHE",
+            "CPRO",
+            "CSER",
+            "CTHR",
+            "CTRP",
+            "CTYR",
+            "CVAL",
+            "CYM",
+            "CYS",
+            "CYX",
+            "GLH",
+            "GL4",
+            "GLN",
+            "GLU",
+            "GLY",
+            "HID",
+            "HIE",
+            "HIP",
+            "HIS",
+            "HYP",
+            "ILE",
+            "LEU",
+            "LYN",
+            "LYS",
+            "MET",
+            "NALA",
+            "NARG",
+            "NASN",
+            "NASP",
+            "NCYS",
+            "NCYX",
+            "NGLN",
+            "NGLU",
+            "NGLY",
+            "NHE",
+            "NHID",
+            "NHIE",
+            "NHIP",
+            "NHIS",
+            "NILE",
+            "NLEU",
+            "NLYS",
+            "NME",
+            "NMET",
+            "NPHE",
+            "NPRO",
+            "NSER",
+            "NTHR",
+            "NTRP",
+            "NTYR",
+            "NVAL",
+            "PHE",
+            "PRO",
+            "SER",
+            "THR",
+            "TRP",
+            "TYR",
+            "VAL"};
+    static inline const std::vector<std::string> DNA{
+            "DA",
+            "DA3",
+            "DA5",
+            "DAN",
+            "DC",
+            "DC3",
+            "DC5",
+            "DCN",
+            "DG",
+            "DG3",
+            "DG5",
+            "DGN",
+            "DT",
+            "DT3",
+            "DT5",
+            "DTN"};
+    static inline const std::vector<std::string> RNA{
+            "A",
+            "A3",
+            "A5",
+            "AMP",
+            "AN",
+            "C",
+            "C3",
+            "C5",
+            "CMP",
+            "CN",
+            "G",
+            "G3",
+            "G5",
+            "GMP",
+            "GN",
+            "OHE",
+            "U",
+            "U3",
+            "U5",
+            "UMP",
+            "UN"};
+    static inline const std::vector<std::string> Lipid{
+            "POPE",
+            "DOPC",
+            "AR",
+            "CHL",
+            "DHA",
+            "LAL",
+            "MY",
+            "OL",
+            "PA",
+            "PC",
+            "PE",
+            "PGR",
+            "PH-",
+            "PS",
+            "ST"};
+    static inline const std::vector<std::string> Carbo{
+            "0GB",
+            "4GB",
+            "0YA",
+            "4YA",
+            "0fA",
+            "0YB",
+            "2MA",
+            "4YB",
+            "NLN",
+            "UYB",
+            "VMB",
+            "0SA",
+            "6LB",
+            "ROH"};
+    static inline const std::vector<std::string> CharmmWater{
+            "TIP3"};
+    static inline const std::vector<std::string> Water{
+            "WAT"};
 };
 
 
-class SystemInfo
+class SystemInfo:noncopyable
 {
 public:
-    explicit SystemInfo(const std::string& filename);
+    explicit SystemInfo(const std::string &filename);
+    inline int getNprotein()
+    {
+        return nProtein_;
+    }
+    inline int getnDna()
+    {
+        return nDna_;
+    }
+    inline int getnRna()
+    {
+        return nRna_;
+    }
+    inline int getnLipid()
+    {
+        return nLipid_;
+    }
+    inline int getnUnKnown_()
+    {
+        return nunKnown_;
+    }
+    inline int getnCharmmWater_()
+    {
+        return nCharmmWater_;
+    }
+    inline int getnWater()
+    {
+        return nWater_;
+    }
+    inline int getnCarbo()
+    {
+        return nCarbo_;
+    }
+    inline bool getHasCharmmWater()
+    {
+        return hasCharmmWater_;
+    }
 
 private:
     int nProtein_ = 0;
@@ -199,7 +223,6 @@ private:
     int nWater_ = 0;
     int nCarbo_ = 0;
     bool hasCharmmWater_ = false;
-
 };
 
-#endif //AMBERMD_SYSTEMINFO_HPP
+#endif//AMBERMD_SYSTEMINFO_HPP

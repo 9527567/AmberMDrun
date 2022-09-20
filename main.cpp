@@ -1,12 +1,12 @@
-#include <iostream>
 #include "SystemInfo.hpp"
 #include "cmdLine.hpp"
+#include <iostream>
 #include <string>
-void flag(int &argc,char *argv[])
+auto flag(int &argc, char *argv[]) -> cmdline::parser
 {
     cmdline::parser flags;
     flags.add<std::string>("parm7", 'p', "amber top file", true, "");
-    flags.add<std::string>("rst7", 'r', "amber rst file", true, "");
+    flags.add<std::string>("rst7", 'c', "amber rst file", true, "");
     flags.add<std::string>("temp", 't', "Temperature", true, "");
     flags.add<std::string>("thermo", 0, "Thermostat", false, "langevin",
                            cmdline::oneof<std::string>("berendsen", "langevin"));
@@ -25,9 +25,12 @@ void flag(int &argc,char *argv[])
     flags.add<std::string>("skipfinaleq", 0, "If specified, skip final eq. (step 10).", false, "");
     flags.add("overwrite", 'O', "Overwrite existing files, otherwise skip.", false, false);
     flags.parse_check(argc, argv);
+    return flags;
 }
 
 int main(int argc, char *argv[])
 {
-    flag(argc,argv);
+    auto f = flag(argc, argv);
+    SystemInfo systemInfo = SystemInfo(f.get<std::string>("parm7"));
+    printf("%d\n",systemInfo.getNprotein());
 }
