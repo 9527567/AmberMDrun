@@ -33,17 +33,17 @@
 
 #pragma once
 
-#include <iostream>
-#include <sstream>
-#include <vector>
-#include <map>
-#include <string>
-#include <stdexcept>
-#include <typeinfo>
-#include <cstring>
 #include <algorithm>
-#include <cxxabi.h>
 #include <cstdlib>
+#include <cstring>
+#include <cxxabi.h>
+#include <iostream>
+#include <map>
+#include <sstream>
+#include <stdexcept>
+#include <string>
+#include <typeinfo>
+#include <vector>
 
 namespace cmdline
 {
@@ -83,7 +83,13 @@ namespace cmdline
             static std::string cast(const Source &arg)
             {
                 std::ostringstream ss;
-                ss << arg;
+                if (typeid(arg) == typeid(bool))
+                {
+                    ss << std::boolalpha << arg;
+                } else
+                {
+                    ss << arg;
+                }
                 return ss.str();
             }
         };
@@ -103,14 +109,12 @@ namespace cmdline
         };
 
         template<typename T1, typename T2>
-        struct is_same
-        {
+        struct is_same {
             static const bool value = false;
         };
 
         template<typename T>
-        struct is_same<T, T>
-        {
+        struct is_same<T, T> {
             static const bool value = true;
         };
 
@@ -147,9 +151,9 @@ namespace cmdline
             return "string";
         }
 
-    } // detail
+    }// namespace detail
 
-//-----
+    //-----
 
     class cmdline_error : public std::exception
     {
@@ -161,15 +165,16 @@ namespace cmdline
         {}
 
         const char *what() const throw()
-        { return msg.c_str(); }
+        {
+            return msg.c_str();
+        }
 
     private:
         std::string msg;
     };
 
     template<class T>
-    struct default_reader
-    {
+    struct default_reader {
         T operator()(const std::string &str)
         {
             return detail::lexical_cast<T>(str);
@@ -177,8 +182,7 @@ namespace cmdline
     };
 
     template<class T>
-    struct range_reader
-    {
+    struct range_reader {
         range_reader(const T &low, const T &high) : low(low), high(high)
         {}
 
@@ -200,8 +204,7 @@ namespace cmdline
     }
 
     template<class T>
-    struct oneof_reader
-    {
+    struct oneof_reader {
         T operator()(const std::string &s)
         {
             T ret = default_reader<T>()(s);
@@ -211,7 +214,9 @@ namespace cmdline
         }
 
         void add(const T &v)
-        { alt.push_back(v); }
+        {
+            alt.push_back(v);
+        }
 
     private:
         std::vector<T> alt;
@@ -342,7 +347,7 @@ namespace cmdline
         return ret;
     }
 
-//-----
+    //-----
 
     class parser
     {
@@ -410,7 +415,7 @@ namespace cmdline
         const T &get(const std::string &name) const
         {
             if (options.count(name) == 0) throw cmdline_error("there is no flag: --" + name);
-            const option_with_value <T> *p = dynamic_cast<const option_with_value <T> *>(options.find(name)->second);
+            const option_with_value<T> *p = dynamic_cast<const option_with_value<T> *>(options.find(name)->second);
             if (p == NULL) throw cmdline_error("type mismatch flag '" + name + "'");
             return p->get();
         }
@@ -506,7 +511,8 @@ namespace cmdline
                         lookup[initial] = "";
                         errors.push_back(std::string("short option '") + initial + "' is ambiguous");
                         return false;
-                    } else lookup[initial] = p->first;
+                    } else
+                        lookup[initial] = p->first;
                 }
             }
 
@@ -600,21 +606,21 @@ namespace cmdline
         void parse_check(const std::string &arg)
         {
             if (!options.count("help"))
-                add("help", '?', "print this message");
+                add("help", 'h', "print this message");
             check(0, parse(arg));
         }
 
         void parse_check(const std::vector<std::string> &args)
         {
             if (!options.count("help"))
-                add("help", '?', "print this message");
+                add("help", 'h', "print this message");
             check(args.size(), parse(args));
         }
 
         void parse_check(int argc, char *argv[])
         {
             if (!options.count("help"))
-                add("help", '?', "print this message");
+                add("help", 'h', "print this message");
             check(argc, parse(argc, argv));
         }
 
@@ -668,7 +674,6 @@ namespace cmdline
         }
 
     private:
-
         void check(int argc, bool ok)
         {
             if ((argc == 1 && !ok) || exist("help"))
@@ -679,7 +684,8 @@ namespace cmdline
 
             if (!ok)
             {
-                std::cerr << error() << std::endl << usage();
+                std::cerr << error() << std::endl
+                          << usage();
                 exit(1);
             }
         }
@@ -745,7 +751,7 @@ namespace cmdline
             option_without_value(const std::string &name,
                                  char short_name,
                                  const std::string &desc)
-                    : nam(name), snam(short_name), desc(desc), has(false)
+                : nam(name), snam(short_name), desc(desc), has(false)
             {
             }
 
@@ -753,7 +759,9 @@ namespace cmdline
             {}
 
             bool has_value() const
-            { return false; }
+            {
+                return false;
+            }
 
             bool set()
             {
@@ -817,7 +825,7 @@ namespace cmdline
                               bool need,
                               const T &def,
                               const std::string &desc)
-                    : nam(name), snam(short_name), need(need), has(false), def(def), actual(def)
+                : nam(name), snam(short_name), need(need), has(false), def(def), actual(def)
             {
                 this->desc = full_description(desc);
             }
@@ -831,7 +839,9 @@ namespace cmdline
             }
 
             bool has_value() const
-            { return true; }
+            {
+                return true;
+            }
 
             bool set()
             {
@@ -844,8 +854,7 @@ namespace cmdline
                 {
                     actual = read(value);
                     has = true;
-                }
-                catch (const std::exception &e)
+                } catch (const std::exception &e)
                 {
                     return false;
                 }
@@ -891,10 +900,8 @@ namespace cmdline
         protected:
             std::string full_description(const std::string &desc)
             {
-                return
-                        desc + " (" + detail::readable_typename<T>() +
-                        (need ? "" : " [=" + detail::default_value<T>(def) + "]")
-                        + ")";
+                return desc + " (" + detail::readable_typename<T>() +
+                       (need ? "" : " [=" + detail::default_value<T>(def) + "]") + ")";
             }
 
             virtual T read(const std::string &s) = 0;
@@ -919,7 +926,7 @@ namespace cmdline
                                           const T def,
                                           const std::string &desc,
                                           F reader)
-                    : option_with_value<T>(name, short_name, need, def, desc), reader(reader)
+                : option_with_value<T>(name, short_name, need, def, desc), reader(reader)
             {
             }
 
@@ -942,5 +949,5 @@ namespace cmdline
         std::vector<std::string> errors;
     };
 
-} // cmdline
-#endif //AMBERMD_CMDLINE_HPP
+}// namespace cmdline
+#endif//AMBERMD_CMDLINE_HPP

@@ -4,15 +4,21 @@
 
 #ifndef AMBERMD_BASE_HPP
 #define AMBERMD_BASE_HPP
+#include <string>
 class Base
 {
 public:
-    Base(int iMin = 1);
+    Base(float cut = 8.0);
     ~Base() = default;
     virtual void createInput();
 
-private:
+protected:
+    std::string name_;
     int iMin_;
-
+    float cut_;
+    std::string restraintMask;
+    int nTwx_;
+    int nTwr_;
+    int nTpr_;
 };
 #endif//AMBERMD_BASE_HPP

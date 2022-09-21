@@ -22,15 +22,15 @@ auto flag(int &argc, char *argv[]) -> cmdline::parser
     flags.add<std::string>("charmmwater", 0, "If specified assume CHARMM water (i.e. 'TIP3').", false, "");
     flags.add<std::string>("cutoff", 0, "If specified, override default cutoffs with <cut>.", false, "");
     flags.add<std::string>("norestart", 0, "Do standard Eq with no restarts.", false, "");
-    flags.add<std::string>("skipfinaleq", 0, "If specified, skip final eq. (step 10).", false, "");
+    flags.add("skipfinaleq", 0, "If specified, skip final eq. (step 10).", false, false);
     flags.add("overwrite", 'O', "Overwrite existing files, otherwise skip.", false, false);
     flags.parse_check(argc, argv);
     return flags;
 }
-
 int main(int argc, char *argv[])
 {
     auto f = flag(argc, argv);
     SystemInfo systemInfo = SystemInfo(f.get<std::string>("parm7"));
-    printf("%d\n",systemInfo.getNprotein());
+    printf("%d\n", systemInfo.getNprotein());
+
 }
