@@ -2,6 +2,7 @@
 #include "cmdLine.hpp"
 #include <iostream>
 #include <string>
+#include <fmt/os.h>
 auto flag(int &argc, char *argv[]) -> cmdline::parser
 {
     cmdline::parser flags;

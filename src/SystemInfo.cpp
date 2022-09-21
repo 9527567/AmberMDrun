@@ -4,7 +4,7 @@
 #include "SystemInfo.hpp"
 #include "common.hpp"
 #include <string>
-
+#include "fmt/core.h"
 SystemInfo::SystemInfo(const std::string &filename)
 {
     auto result = executeCMD("cpptraj -p " + filename + " --resmask \\*");
@@ -50,6 +50,6 @@ SystemInfo::SystemInfo(const std::string &filename)
         }
     } catch (const std::string &message)
     {
-        printf("%s\n", message.c_str());
+        fmt::print(message);
     }
 }
