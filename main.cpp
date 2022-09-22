@@ -1,8 +1,9 @@
 #include "SystemInfo.hpp"
 #include "cmdLine.hpp"
-#include <iostream>
 #include <string>
-#include <fmt/os.h>
+#include "base.hpp"
+#include "min.hpp"
+#include "fmt/core.h"
 auto flag(int &argc, char *argv[]) -> cmdline::parser
 {
     cmdline::parser flags;
@@ -33,5 +34,6 @@ int main(int argc, char *argv[])
     auto f = flag(argc, argv);
     SystemInfo systemInfo = SystemInfo(f.get<std::string>("parm7"));
     printf("%d\n", systemInfo.getNprotein());
+    Min test = Min("step1");
 
 }

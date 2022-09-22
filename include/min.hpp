@@ -8,10 +8,11 @@
 class Min : Base
 {
 public:
-    Min(std::string name,int nTmin = 2, int maxCyc = 1000, int nCyc = 10, int nTwx = 500, int nTpr = 50, int nTwr = 500);
+    explicit Min(std::string name,int nTmin = 2, int maxCyc = 1000, int nCyc = 10, int nTwx = 500, int nTpr = 50, int nTwr = 500);
     ~Min() = default;
-
+    void operator()(std::string name,int nTmin = 2, int maxCyc = 1000, int nCyc = 10, int nTwx = 500, int nTpr = 50, int nTwr = 500);
 protected:
+    void writeInput() override;
     int nTmin_;
     int maxCyc_;
     int nCyc_;

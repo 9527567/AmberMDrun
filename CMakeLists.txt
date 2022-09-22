@@ -32,7 +32,6 @@ target_sources(AmberMD PRIVATE
     src/min.cpp
     src/md.cpp
     src/os.cc
-    src/fmt.cc
     src/format.cc
     main.cpp
 )

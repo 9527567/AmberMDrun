@@ -8,17 +8,18 @@
 class Base
 {
 public:
-    Base(float cut = 8.0);
+    explicit Base(std::string name, float cut = 8.0);
+    Base() = default;
     ~Base() = default;
-    virtual void createInput();
-
+    virtual void operator()(float cut = 8.0);
 protected:
+    virtual void writeInput();
     std::string name_;
-    int iMin_;
-    float cut_;
+    int iMin_{};
+    float cut_{8.0};
     std::string restraintMask;
-    int nTwx_;
-    int nTwr_;
-    int nTpr_;
+    int nTwx_{};
+    int nTwr_{};
+    int nTpr_{};
 };
 #endif//AMBERMD_BASE_HPP
