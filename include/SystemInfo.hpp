@@ -5,9 +5,9 @@
 #ifndef AMBERMD_SYSTEMINFO_HPP
 #define AMBERMD_SYSTEMINFO_HPP
 
+#include "noncopyable.hpp"
 #include <string>
 #include <vector>
-#include "noncopyable.hpp"
 class ResName
 {
 public:
@@ -172,43 +172,43 @@ public:
 };
 
 
-class SystemInfo:noncopyable
+class SystemInfo
 {
 public:
     explicit SystemInfo(const std::string &filename);
-    inline int getNprotein()
+    int getNprotein() const
     {
         return nProtein_;
     }
-    inline int getnDna()
+    int getnDna() const
     {
         return nDna_;
     }
-    inline int getnRna()
+    int getnRna() const
     {
         return nRna_;
     }
-    inline int getnLipid()
+    int getnLipid() const
     {
         return nLipid_;
     }
-    inline int getnUnKnown_()
+    int getnUnKnown_() const
     {
         return nunKnown_;
     }
-    inline int getnCharmmWater_()
+    int getnCharmmWater_() const
     {
         return nCharmmWater_;
     }
-    inline int getnWater()
+    int getnWater() const
     {
         return nWater_;
     }
-    inline int getnCarbo()
+    int getnCarbo() const
     {
         return nCarbo_;
     }
-    inline bool getHasCharmmWater()
+    bool getHasCharmmWater() const
     {
         return hasCharmmWater_;
     }

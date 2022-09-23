@@ -4,7 +4,7 @@
 #include "min.hpp"
 #include "fmt/core.h"
 #include "fmt/os.h"
-Min::Min(std::string name,int nTmin, int maxCyc, int nCyc, int nTwx, int nTpr, int nTwr)
+Min::Min(std::string name,SystemInfo systemInfo,int nTmin, int maxCyc, int nCyc, int nTwx, int nTpr, int nTwr): Base(name,systemInfo)
 {
     name_ = name;
     nTmin_ = nTmin;
@@ -42,4 +42,21 @@ void Min::writeInput()
     out.print("ntc={},",ntc_);
     out.print("ntf={},",ntf_);
     out.print("ntb={},",ntb_);
+    out.print("\n");
+}
+void Min::charmmWater()
+{
+    Base::charmmWater();
+}
+void Min::restraint()
+{
+    Base::restraint();
+}
+void Min::writeEnd()
+{
+    Base::writeEnd();
+}
+void Min::Run()
+{
+    Base::Run();
 }
