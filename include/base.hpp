@@ -9,21 +9,23 @@
 class Base
 {
 public:
-    explicit Base(std::string name,SystemInfo systemInfo, float cut = 8.0);
+    Base(std::string name,SystemInfo systemInfo,std::string restrintmask = "",float restrant_wt = 0.0,float cut = 8.0);
     Base() = default;
     ~Base() = default;
     virtual void operator()(float cut = 8.0);
     virtual void Run();
     SystemInfo systemInfo_;
 protected:
+    virtual void setRestraintMask(std::string);
     virtual void writeInput();
     virtual void charmmWater();
     virtual void restraint();
     virtual void writeEnd();
     std::string name_;
     int iMin_{};
-    float cut_{8.0};
-    std::string restraintMask;
+    float cut_;
+    std::string restraintMask_;
+    float restraint_wt_;
     int nTwx_{};
     int nTwr_{};
     int nTpr_{};

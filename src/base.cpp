@@ -6,7 +6,7 @@
 #include "fmt/core.h"
 #include "fmt/os.h"
 #include <utility>
-Base::Base(std::string name,SystemInfo systemInfo, float cut) : name_(std::move(name)), systemInfo_(systemInfo), cut_(cut)
+Base::Base(std::string name, SystemInfo systemInfo, std::string restranintmask, float restraint_wt, float cut) : name_(std::move(name)), systemInfo_(systemInfo), cut_(cut), restraintMask_(restranintmask), restraint_wt_(restraint_wt)
 {
 }
 void Base::operator()(float cut)
@@ -44,6 +44,30 @@ void Base::writeEnd()
 }
 void Base::restraint()
 {
-
+    setRestraintMask(restraintMask_);
+    fmt::ostream out = fmt::output_file(name_ + ".in", fmt::file::WRONLY | fmt::file::APPEND);
+    if (restraintMask_.empty())
+    {
+        out.print("ntr=0");
+        out.print("\n");
+    } else
+    {
+        out.print("ntr=1,");
+        out.print("restraintmask={},", restraintMask_);
+        out.print("restraint_wt={},", restraint_wt_);
+        out.print("\n");
+    }
 }
+// 最简单的版本
+void Base::setRestraintMask(std::string appendMask)
+{
+    if (restraintMask_.empty())
+    {
+        restraintMask_ = fmt::format("\":1-{}!@H=\"", systemInfo_.getNprotein() + systemInfo_.getnDna() + systemInfo_.getnRna() + systemInfo_.getnLipid() + systemInfo_.getnCarbo());
 
+    } else
+    {
+        restraintMask_ = fmt::format("\":1-{}&!@H=|:{}\"",systemInfo_.getNprotein()+systemInfo_.getnDna()+systemInfo_.getnRna()+systemInfo_.getnLipid()+systemInfo_.getnCarbo(),appendMask);
+
+    }
+}

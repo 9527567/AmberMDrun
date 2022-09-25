@@ -4,13 +4,13 @@
 #include "min.hpp"
 #include "fmt/core.h"
 #include "fmt/os.h"
-Min::Min(std::string name,SystemInfo systemInfo,int nTmin, int maxCyc, int nCyc, int nTwx, int nTpr, int nTwr): Base(name,systemInfo)
+Min::Min(std::string name, SystemInfo systemInfo, std::string restrintmask, float restrant_wt, float cut, int nTmin, int maxCyc, int nCyc, int nTwx, int nTpr, int nTwr) : Base(name, systemInfo, restrintmask, restrant_wt, cut)
 {
     name_ = name;
     nTmin_ = nTmin;
-    maxCyc_=maxCyc;
+    maxCyc_ = maxCyc;
     nCyc_ = nCyc;
-    nTwx_=nTwx;
+    nTwx_ = nTwx;
     nTpr_ = nTwr;
     iMin_ = 1;
 }
@@ -18,30 +18,31 @@ void Min::operator()(std::string name, int nTmin, int maxCyc, int nCyc, int nTwx
 {
     name_ = name;
     nTmin_ = nTmin;
-    maxCyc_=maxCyc;
+    maxCyc_ = maxCyc;
     nCyc_ = nCyc;
-    nTwx_=nTwx;
+    nTwx_ = nTwx;
     nTpr_ = nTwr;
     iMin_ = 1;
 }
 void Min::writeInput()
 {
     Base::writeInput();
-    fmt::ostream out = fmt::output_file(name_+".in",fmt::file::WRONLY|fmt::file::APPEND);
-    out.print("imin={},",iMin_);
-    out.print("ntmin={},",nTmin_);
-    out.print("maxcyc={},",maxCyc_);
-    out.print("ncyc={},",nCyc_);
+    fmt::ostream out = fmt::output_file(name_ + ".in", fmt::file::WRONLY | fmt::file::APPEND);
+    out.print("imin={},", iMin_);
+    out.print("ntmin={},", nTmin_);
+    out.print("maxcyc={},", maxCyc_);
+    out.print("ncyc={},", nCyc_);
     out.print("\n");
-    out.print("ntwx={},",nTwx_);
-    out.print("ioutfm={},",iOutfm_);
-    out.print("ntxo={},",nTxo_);
-    out.print("ntpr={},",nTpr_);
-    out.print("ntwr={},",nTwr_);
+    out.print("ntwx={},", nTwx_);
+    out.print("ioutfm={},", iOutfm_);
+    out.print("ntxo={},", nTxo_);
+    out.print("ntpr={},", nTpr_);
+    out.print("ntwr={},", nTwr_);
     out.print("\n");
-    out.print("ntc={},",ntc_);
-    out.print("ntf={},",ntf_);
-    out.print("ntb={},",ntb_);
+    out.print("ntc={},", ntc_);
+    out.print("ntf={},", ntf_);
+    out.print("ntb={},", ntb_);
+    out.print("cut={:.1f},", cut_);
     out.print("\n");
 }
 void Min::charmmWater()
@@ -59,4 +60,8 @@ void Min::writeEnd()
 void Min::Run()
 {
     Base::Run();
+}
+void Min::setRestraintMask(std::string appendMask)
+{
+    Base::setRestraintMask(appendMask);
 }
