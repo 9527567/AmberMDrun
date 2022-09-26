@@ -29,15 +29,17 @@ protected:
     int gamma_ln_;
     float dt_;
     int nscm_;
-    int ntwx_;
-    int ntpr_;
-    int ntwr_;
-    int ntx_{};
+    int ntx_;
     int ntc_;
     int ntf_;
     int ntb_;
+    int ntpFlags_;
+    enum class baro {berendsen,montecarlo};
+    enum class thermo {berendsen,langevin};
+    baro baroType_ = baro::montecarlo;
+    thermo thermoType_ = thermo::berendsen;
     const int iOutfm_ = 1;
     const int nTxo_ = 2;
-    const int iMin_ = 1;
+    const int iMin_ = 0;
 };
 #endif//AMBERMD_MD_HPP

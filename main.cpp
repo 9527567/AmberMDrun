@@ -36,4 +36,8 @@ int main(int argc, char *argv[])
     SystemInfo systemInfo = SystemInfo(f.get<std::string>("parm7"));
     auto min = Min("step1",systemInfo);
     min.Run();
+    auto md = Md("step2",systemInfo);
+    md.Run();
+    md("step3");
+    md.Run();
 }

@@ -12,6 +12,7 @@ Min::Min(std::string name, SystemInfo systemInfo, std::string restrintmask, floa
     nCyc_ = nCyc;
     nTwx_ = nTwx;
     nTpr_ = nTwr;
+    nTwr_ = nTwr;
     iMin_ = 1;
 }
 void Min::operator()(std::string name, int nTmin, int maxCyc, int nCyc, int nTwx, int nTpr, int nTwr)

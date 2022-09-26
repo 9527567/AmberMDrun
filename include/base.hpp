@@ -26,9 +26,9 @@ protected:
     float cut_;
     std::string restraintMask_;
     float restraint_wt_;
-    int nTwx_{};
-    int nTwr_{};
-    int nTpr_{};
+    int nTwx_;
+    int nTwr_;
+    int nTpr_;
     bool hasCharmmWater_{false};
 };
 #endif//AMBERMD_BASE_HPP

@@ -3,7 +3,7 @@
 //
 #include "md.hpp"
 #include "fmt/os.h"
-Md::Md(const std::string &name, SystemInfo systemInfo, std::string restrintmask, float restrant_wt, int nstlim,float cut, bool irest, int ntb, int ntc, int ntf, float tautp, float taup, int mcbarint, int gamma_ln, float dt, int nscm, int ntwx, int ntpr, int ntwr) : Base(name, systemInfo, restrintmask, restrant_wt,cut)
+Md::Md(const std::string &name, SystemInfo systemInfo, std::string restrintmask, float restrant_wt, int nstlim, float cut, bool irest, int ntb, int ntc, int ntf, float tautp, float taup, int mcbarint, int gamma_ln, float dt, int nscm, int ntwx, int ntpr, int ntwr) : Base(name, systemInfo, restrintmask, restrant_wt, cut)
 {
     name_ = name;
     nstLim_ = nstlim;
@@ -14,13 +14,18 @@ Md::Md(const std::string &name, SystemInfo systemInfo, std::string restrintmask,
     gamma_ln_ = gamma_ln;
     dt_ = dt;
     nscm_ = nscm;
-    ntwx_ = ntwx;
-    ntpr_ = ntpr;
-    ntwr_ = ntwr;
+    nTwx_ = ntwx;
+    nTpr_ = ntpr;
+    nTwr_ = ntwr;
     ntb_ = ntb;
     ntc_ = ntc;
     ntf_ = ntf;
     cut_ = cut;
+    ntpFlags_ = 1;
+    if (systemInfo_.getnLipid()!=0)
+    {
+        ntpFlags_ = 2;
+    }
 }
 void Md::operator()(std::string name, int nstlim, bool irest, int ntb, int ntc, int ntf, float tautp, float taup, int mcbarint, int gamma_ln, float dt, int nscm, int ntwx, int ntpr, int ntwr)
 {
@@ -34,9 +39,9 @@ void Md::operator()(std::string name, int nstlim, bool irest, int ntb, int ntc, 
     gamma_ln_ = gamma_ln;
     dt_ = dt;
     nscm_ = nscm;
-    ntwx_ = ntwx;
-    ntpr_ = ntpr;
-    ntwr_ = ntwr;
+    nTwx_ = ntwx;
+    nTpr_ = ntpr;
+    nTwr_ = ntwr;
     ntb_ = ntb;
     ntc_ = ntc;
     ntf_ = ntf;
@@ -57,7 +62,7 @@ void Md::writeInput()
     out.print("irest={},", iRest_);
     out.print("ig=-1,");
     out.print("\n");
-    out.print("ntwx={},", ntwx_);
+    out.print("ntwx={},", nTpr_);
     out.print("ntwv={},", -1);
     out.print("ioutfm={},", iOutfm_);
     out.print("ntxo={},", nTxo_);
@@ -90,7 +95,40 @@ void Md::setRestraintMask(std::string appendMask)
 }
 void Md::barostat()
 {
+    if (baroType_ == baro::berendsen)
+    {
+        fmt::ostream out = fmt::output_file(name_ + ".in", fmt::file::WRONLY | fmt::file::APPEND);
+        out.print("ntp={},",ntpFlags_);
+        out.print("taup={}",taup_);
+        out.print("pres0={}",1.0);
+        out.print("\n");
+    } else
+    {
+        fmt::ostream out = fmt::output_file(name_ + ".in", fmt::file::WRONLY | fmt::file::APPEND);
+        out.print("ntp={},",ntpFlags_);
+        out.print("barostat={}",2);
+        out.print("pres0={}",1.0);
+        out.print("mcbarint={},",mcbarint_);
+        out.print("\n");
+    }
 }
 void Md::Thermostat()
 {
+    if (thermoType_ == thermo::berendsen)
+    {
+        fmt::ostream out = fmt::output_file(name_ + ".in", fmt::file::WRONLY | fmt::file::APPEND);
+        out.print("ntt={},",1);
+        out.print("tautp={}",tautp_);
+        out.print("temp0={}",300);
+        out.print("tempi={},",300);
+        out.print("\n");
+    } else
+    {
+        fmt::ostream out = fmt::output_file(name_ + ".in", fmt::file::WRONLY | fmt::file::APPEND);
+        out.print("ntt={},",3);
+        out.print("gamma_ln={}",gamma_ln_);
+        out.print("temp0={}",300);
+        out.print("tempi={},",300);
+        out.print("\n");
+    }
 }
