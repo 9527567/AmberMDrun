@@ -66,3 +66,38 @@ void Min::setRestraintMask(std::string appendMask)
 {
     Base::setRestraintMask(appendMask);
 }
+Min *Min::setCut(float cut)
+{
+    cut_ = cut;
+    return this;
+}
+Min *Min::setMaxCyc(int maxcyc)
+{
+    maxCyc_ = maxcyc;
+    return this;
+}
+Min *Min::setNCyc(int cyc)
+{
+    nCyc_ = cyc;
+    return this;
+}
+Min *Min::setNTim(int ntmin)
+{
+    nTmin_ = ntmin;
+    return this;
+}
+Min *Min::setNTpr(int ntpr)
+{
+    nTpr_ = ntpr;
+    return this;
+}
+Min *Min::setNTwr(int ntwr)
+{
+    nTwr_ = ntwr;
+    return this;
+}
+Min *Min::setNTwx(int ntwx)
+{
+    nTwx_ = ntwx;
+    return this;
+}

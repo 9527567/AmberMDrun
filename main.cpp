@@ -1,9 +1,10 @@
 #include "SystemInfo.hpp"
 #include "base.hpp"
-#include "md.hpp"
 #include "cmdLine.hpp"
 #include "fmt/core.h"
+#include "md.hpp"
 #include "min.hpp"
+#include <memory>
 #include <string>
 auto flag(int &argc, char *argv[]) -> cmdline::parser
 {
@@ -34,10 +35,7 @@ int main(int argc, char *argv[])
 {
     auto f = flag(argc, argv);
     SystemInfo systemInfo = SystemInfo(f.get<std::string>("parm7"));
-    auto min = Min("step1",systemInfo);
-    min.Run();
-    auto md = Md("step2",systemInfo);
-    md.Run();
-    md("step3");
-    md.Run();
+    auto base = std::make_shared<Md>("step4", systemInfo);
+    auto test = base->setCut(9.0);
+    test->Run();
 }

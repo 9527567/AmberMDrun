@@ -8,11 +8,28 @@
 class Md : Base
 {
 public:
-    Md(const std::string &name, SystemInfo systemInfo, std::string restrintmask = "", float restrant_wt = 0.0, int nstlim = 5000,float cut = 8.0, bool irest = false, int ntb = 1, int ntc = 2, int ntf = 2, float tautp = 1.0, float taup = 1.0, int mcbarint = 100, int gamma_ln = 5, float dt = 0.002, int nscm = 0, int ntwx = 500, int ntpr = 50, int ntwr = 500);
+    Md(const std::string &name, SystemInfo systemInfo, std::string restrintmask = "", float restrant_wt = 0.0, int nstlim = 5000, float cut = 8.0, bool irest = false, int ntb = 1, int ntc = 2, int ntf = 2, float tautp = 1.0, float taup = 1.0, int mcbarint = 100, float gamma_ln = 5.0, float dt = 0.002, int nscm = 0, int ntwx = 500, int ntpr = 50, int ntwr = 500);
     ~Md() = default;
-    void operator()(std::string name, int nstlim = 5000, bool irest = false, int ntb = 1, int ntc = 2, int ntf = 2, float tautp = 1.0, float taup = 1.0, int mcbarint = 100, int gamma_ln = 5, float dt = 0.001, int nscm = 0, int ntwx = 500, int ntpr = 50, int ntwr = 500);
+    void operator()(std::string name, int nstlim = 5000, bool irest = false, int ntb = 1, int ntc = 2, int ntf = 2, float tautp = 1.0, float taup = 1.0, int mcbarint = 100, float gamma_ln = 5.0, float dt = 0.001, int nscm = 0, int ntwx = 500, int ntpr = 50, int ntwr = 500);
     void Run() override;
-
+    Md *setCut(float cut) override;
+    Md * setNTpr(int ntpr) override;
+    Md * setNTwx(int ntwx) override;
+    Md * setNTwr(int ntwr) override;
+    Md *setNstLim(int nstlim);
+    Md *setIrest(bool irest);
+    Md *setTautp(float tautp);
+    Md *settaup(float taup);
+    Md *setMcbarint(int mcbarint);
+    Md *setGammaLn(float gamma_ln);
+    Md *setDt(float dt);
+    Md *setNscm(int nscm);
+    Md *setNtx(int ntx);
+    Md *setNtc(int ntc);
+    Md *setNtf(int ntf);
+    Md *setNtb(int ntb);
+    Md *setBarostat(std::string baroType);
+    Md* setThermostat(std::string thermoType);
 protected:
     void setRestraintMask(std::string) override;
     void writeInput() override;
@@ -26,7 +43,7 @@ protected:
     float tautp_;
     float taup_;
     int mcbarint_;
-    int gamma_ln_;
+    float gamma_ln_;
     float dt_;
     int nscm_;
     int ntx_;
@@ -34,8 +51,16 @@ protected:
     int ntf_;
     int ntb_;
     int ntpFlags_;
-    enum class baro {berendsen,montecarlo};
-    enum class thermo {berendsen,langevin};
+    enum class baro
+    {
+        berendsen,
+        montecarlo
+    };
+    enum class thermo
+    {
+        berendsen,
+        langevin
+    };
     baro baroType_ = baro::montecarlo;
     thermo thermoType_ = thermo::berendsen;
     const int iOutfm_ = 1;

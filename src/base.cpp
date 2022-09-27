@@ -67,7 +67,29 @@ void Base::setRestraintMask(std::string appendMask)
 
     } else
     {
-        restraintMask_ = fmt::format("\":1-{}&!@H=|:{}\"",systemInfo_.getNprotein()+systemInfo_.getnDna()+systemInfo_.getnRna()+systemInfo_.getnLipid()+systemInfo_.getnCarbo(),appendMask);
-
+        restraintMask_ = fmt::format("\":1-{}&!@H=|:{}\"", systemInfo_.getNprotein() + systemInfo_.getnDna() + systemInfo_.getnRna() + systemInfo_.getnLipid() + systemInfo_.getnCarbo(), appendMask);
     }
+}
+Base *Base::setCut(float cut)
+{
+    cut_ = cut;
+    return this;
+}
+void Base::appendMask(std::string mask)
+{
+}
+Base *Base::setNTwx(int ntwx)
+{
+    nTwx_ = ntwx;
+    return this;
+}
+Base *Base::setNTwr(int ntwr)
+{
+    nTwr_ = ntwr;
+    return this;
+}
+Base *Base::setNTpr(int ntpr)
+{
+    nTpr_ = ntpr;
+    return this;
 }

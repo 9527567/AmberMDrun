@@ -175,6 +175,7 @@ public:
 class SystemInfo
 {
 public:
+    SystemInfo() = default;
     explicit SystemInfo(const std::string &filename);
     int getNprotein() const
     {
