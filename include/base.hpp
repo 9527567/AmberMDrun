@@ -20,7 +20,6 @@ public:
     virtual Base* setNTwx(int ntwx);
     virtual Base* setNTwr(int ntwr);
     virtual Base* setNTpr(int ntpr);
-
     virtual void appendMask(std::string mask);
 
 protected:

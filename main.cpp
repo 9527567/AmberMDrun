@@ -35,7 +35,6 @@ int main(int argc, char *argv[])
 {
     auto f = flag(argc, argv);
     SystemInfo systemInfo = SystemInfo(f.get<std::string>("parm7"));
-    auto base = std::make_shared<Md>("step4", systemInfo);
-    auto test = base->setCut(9.0);
-    test->Run();
+    auto md = std::make_shared<Md>("step4", systemInfo);
+    
 }

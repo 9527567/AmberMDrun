@@ -51,6 +51,7 @@ protected:
     int ntf_;
     int ntb_;
     int ntpFlags_;
+    float temp_;
     enum class baro
     {
         berendsen,

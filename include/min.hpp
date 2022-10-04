@@ -13,12 +13,13 @@ public:
     void operator()(std::string name, int nTmin = 2, int maxCyc = 1000, int nCyc = 10, int nTwx = 500, int nTpr = 50, int nTwr = 500);
     void Run() override;
     Min *setCut(float cut) override;
-    Min * setNTpr(int ntpr) override;
-    Min * setNTwr(int ntwr) override;
-    Min * setNTwx(int ntwx) override;
+    Min *setNTpr(int ntpr) override;
+    Min *setNTwr(int ntwr) override;
+    Min *setNTwx(int ntwx) override;
     Min *setMaxCyc(int maxcyc);
     Min *setNCyc(int cyc);
-    Min* setNTim(int ntim);
+    Min *setNTim(int ntim);
+
 protected:
     void setRestraintMask(std::string) override;
     void writeInput() override;
