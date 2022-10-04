@@ -33,12 +33,33 @@ PYBIND11_MODULE(pyamber, m)
     //            .def("setNtwr",&Base::setNTwr).
     //            def("setNtpr",&Base::setNTpr);
     py::class_<Min>(m, "Min", py::dynamic_attr())
-            .def(py::init<std::string, SystemInfo, std::string, float, float, int, int, int, int, int, int>())
+            .def(py::init<std::string,
+                          SystemInfo,
+                          std::string,
+                          float,
+                          float,
+                          int, int,
+                          int, int,
+                          int,
+                          int>(),
+                 py::arg("name"),
+                 py::arg("symstemInfo"),
+                 py::arg("restrintmask") = "",
+                 py::arg("restrant_wt") = 0.0,
+                 py::arg("cut") = 8.0,
+                 py::arg("nTmin") = 2,
+                 py::arg("maxCyc") = 1000,
+                 py::arg("nCyc") = 10,
+                 py::arg("nTwx") = 500,
+                 py::arg("nTpr") = 50,
+                 py::arg("nTwr") = 500)
             .def("setCut", &Min::setCut)
             .def("setNTpr", &Min::setNTpr)
             .def("setNTwr", &Min::setNTwr)
             .def("setNTwx", &Min::setNTwx)
             .def("setMaxCyc", &Min::setMaxCyc)
             .def("setNCyc", &Min::setNCyc)
-            .def("setNTim", &Min::setNTim);
+            .def("setNTim", &Min::setNTim)
+            .def("Run", &Min::Run)
+            .def("()", &Min::operator());
 }
