@@ -60,6 +60,63 @@ PYBIND11_MODULE(pyamber, m)
             .def("setMaxCyc", &Min::setMaxCyc)
             .def("setNCyc", &Min::setNCyc)
             .def("setNTim", &Min::setNTim)
-            .def("Run", &Min::Run)
-            .def("()", &Min::operator());
+            .def("Run", &Min::Run);
+    py::class_<Md>(m, "Md", py::dynamic_attr())
+            .def(py::init<const std::string &,
+                          SystemInfo,
+                          std::string,
+                          float,
+                          int,
+                          float,
+                          bool,
+                          int,
+                          int,
+                          int,
+                          float,
+                          float,
+                          int,
+                          float,
+                          float,
+                          int,
+                          int,
+                          int,
+                          int>(),
+                 py::arg("name"),
+                 py::arg("systeminfo"),
+                 py::arg("restrintmask"),
+                 py::arg("restrant_wt") = 0.0,
+                 py::arg("nstlim") = 5000,
+                 py::arg("cut") = 8.0,
+                 py::arg("irest") = false,
+                 py::arg("ntb") = 1,
+                 py::arg("ntc") = 2,
+                 py::arg("ntf") = 2,
+                 py::arg("tautp") = 1.0,
+                 py::arg("taup") = 1.0,
+                 py::arg("mcbarint") = 100,
+                 py::arg("gamma_ln") = 5.0,
+                 py::arg("dt") = 0.002,
+                 py::arg("ncsm") = 0,
+                 py::arg("ntwx") = 500,
+                 py::arg("ntpr") = 50,
+                 py::arg("ntwr") = 500)
+            .def("Run", &Md::Run)
+            .def("setCut", &Md::setCut)
+            .def("setNTpr", &Md::setNTpr)
+            .def("setNTwx", &Md::setNTwx)
+            .def("setNTwr", &Md::setNTwr)
+            .def("setNstLim", &Md::setNstLim)
+            .def("setIrest", &Md::setIrest)
+            .def("setTautp", &Md::setTautp)
+            .def("settaup", &Md::settaup)
+            .def("setMcbarint", &Md::setMcbarint)
+            .def("setGammaLn", &Md::setGammaLn)
+            .def("setDt", &Md::setDt)
+            .def("setNscm", &Md::setNscm)
+            .def("setNtx", &Md::setNtx)
+            .def("setNtc", &Md::setNtc)
+            .def("setNtf", &Md::setNtf)
+            .def("setNtb", &Md::setNtb)
+            .def("setBarostat", &Md::setBarostat)
+            .def("setThermostat", &Md::setThermostat);
 }

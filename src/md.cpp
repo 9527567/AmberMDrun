@@ -110,7 +110,7 @@ void Md::barostat()
         out.print("pres0={}", 1.0);
         out.print("mcbarint={},", mcbarint_);
         out.print("\n");
-    }else
+    } else
     {
         throw fmt::format_error("The thermo must be berendsen of montecarlo");
     }
@@ -202,5 +202,33 @@ Md *Md::setDt(float dt)
 Md *Md::setNscm(int nscm)
 {
     nscm_ = nscm;
+    return this;
+}
+Md *Md::setNtx(int ntx)
+{
+    ntx_ = ntx;
+    return this;
+}
+Md *Md::setNtc(int ntc)
+{
+    ntc_ = ntc;
+    return this;
+}
+Md *Md::setNtf(int ntf)
+{
+    ntf_ = ntf;
+    return this;
+}
+Md *Md::setNtb(int ntb)
+{
+    ntb_ = ntb;
+    return this;
+}
+Md *Md::setBarostat(std::string baroType)
+{
+    return this;
+}
+Md *Md::setThermostat(std::string thermoType)
+{
     return this;
 }
