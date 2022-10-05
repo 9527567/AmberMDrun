@@ -1,6 +1,7 @@
 add_requires("pybind11")
 target("amber")
     set_kind("shared")
+    add_packages("pybind11")
     add_includedirs("include")
     add_files("src/*.cpp")
     add_files("src/*.cc")
