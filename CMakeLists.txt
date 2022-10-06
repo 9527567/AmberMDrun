@@ -1,6 +1,5 @@
 cmake_minimum_required(VERSION 3.15.0)
 project(AmberMD LANGUAGES CXX)
-
 include_directories(include)
 include_directories(extern)
 add_subdirectory(extern/pybind11)

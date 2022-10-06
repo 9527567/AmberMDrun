@@ -3,9 +3,10 @@
 //
 #include "md.hpp"
 #include "fmt/os.h"
-Md::Md(const std::string &name, SystemInfo systemInfo, std::string restrintmask, float restrant_wt, int nstlim, float cut, bool irest, int ntb, int ntc, int ntf, float tautp, float taup, int mcbarint, float gamma_ln, float dt, int nscm, int ntwx, int ntpr, int ntwr) : Base(name, systemInfo, restrintmask, restrant_wt, cut)
+Md::Md(const std::string &name, SystemInfo systemInfo,float temp, std::string restrintmask, float restrant_wt, int nstlim, float cut, bool irest, int ntb, int ntc, int ntf, float tautp, float taup, int mcbarint, float gamma_ln, float dt, int nscm, int ntwx, int ntpr, int ntwr) : Base(name, systemInfo, restrintmask, restrant_wt, cut)
 {
     name_ = name;
+    temp_ = temp;
     nstLim_ = nstlim;
     iRest_ = irest;
     tautp_ = tautp;
@@ -48,7 +49,15 @@ void Md::operator()(std::string name, int nstlim, bool irest, int ntb, int ntc, 
 }
 void Md::Run()
 {
-    Base::Run();
+    writeInput();
+    charmmWater();
+    Thermostat();
+    if (ntb_ == 2)
+    {
+        barostat();
+    }
+    restraint();
+    writeEnd();
 }
 void Md::writeInput()
 {
@@ -59,7 +68,13 @@ void Md::writeInput()
     out.print("dt={},", dt_);
     out.print("\n");
     out.print("ntx={},", ntx_);
-    out.print("irest={},", iRest_);
+    if (iRest_)
+    {
+        out.print("irest={},", 1);
+    } else
+    {
+        out.print("irest={},", 0);
+    }
     out.print("ig=-1,");
     out.print("\n");
     out.print("ntwx={},", nTpr_);
@@ -99,20 +114,20 @@ void Md::barostat()
     {
         fmt::ostream out = fmt::output_file(name_ + ".in", fmt::file::WRONLY | fmt::file::APPEND);
         out.print("ntp={},", ntpFlags_);
-        out.print("taup={}", taup_);
-        out.print("pres0={}", 1.0);
+        out.print("taup={},", taup_);
+        out.print("pres0={},", 1.0);
         out.print("\n");
     } else if (baroType_ == baro::montecarlo)
     {
         fmt::ostream out = fmt::output_file(name_ + ".in", fmt::file::WRONLY | fmt::file::APPEND);
         out.print("ntp={},", ntpFlags_);
-        out.print("barostat={}", 2);
-        out.print("pres0={}", 1.0);
+        out.print("barostat={},", 2);
+        out.print("pres0={},", 1.0);
         out.print("mcbarint={},", mcbarint_);
         out.print("\n");
     } else
     {
-        throw fmt::format_error("The thermo must be berendsen of montecarlo");
+        throw std::runtime_error("The thermo must be berendsen of montecarlo");
     }
 }
 void Md::Thermostat()
@@ -121,21 +136,21 @@ void Md::Thermostat()
     {
         fmt::ostream out = fmt::output_file(name_ + ".in", fmt::file::WRONLY | fmt::file::APPEND);
         out.print("ntt={},", 1);
-        out.print("tautp={}", tautp_);
-        out.print("temp0={}", 300);
-        out.print("tempi={},", 300);
+        out.print("tautp={},", tautp_);
+        out.print("temp0={},", temp_);
+        out.print("tempi={},", temp_);
         out.print("\n");
     } else if (thermoType_ == thermo::langevin)
     {
         fmt::ostream out = fmt::output_file(name_ + ".in", fmt::file::WRONLY | fmt::file::APPEND);
         out.print("ntt={},", 3);
-        out.print("gamma_ln={}", gamma_ln_);
-        out.print("temp0={}", 300);
+        out.print("gamma_ln={},", gamma_ln_);
+        out.print("temp0={},", 300);
         out.print("tempi={},", 300);
         out.print("\n");
     } else
     {
-        throw fmt::format_error("The thermo must be berendsen of langevin");
+        throw std::runtime_error("The thermo must be berendsen of langevin");
     }
 }
 Md *Md::setCut(float cut)
@@ -226,9 +241,34 @@ Md *Md::setNtb(int ntb)
 }
 Md *Md::setBarostat(std::string baroType)
 {
+    if (baroType == "berendsen")
+    {
+        baroType_ = baro::berendsen;
+    } else if (baroType == "montecarlo")
+    {
+        baroType_ = baro::montecarlo;
+    } else
+    {
+        throw std::runtime_error("Baro type must be berendsen or montecarlo");
+    }
     return this;
 }
 Md *Md::setThermostat(std::string thermoType)
 {
+    if (thermoType == "berendsen")
+    {
+        thermoType_ = thermo::berendsen;
+    } else if (thermoType == "langevin")
+    {
+        thermoType_ = thermo::langevin;
+    } else
+    {
+        throw std::runtime_error("Thermo type must be berendsen or langevin");
+    }
+    return this;
+}
+Md *Md::setTemp(float temp)
+{
+    temp_ = temp;
     return this;
 }

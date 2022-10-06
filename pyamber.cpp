@@ -64,6 +64,7 @@ PYBIND11_MODULE(pyamber, m)
     py::class_<Md>(m, "Md", py::dynamic_attr())
             .def(py::init<const std::string &,
                           SystemInfo,
+                          float,
                           std::string,
                           float,
                           int,
@@ -83,6 +84,7 @@ PYBIND11_MODULE(pyamber, m)
                           int>(),
                  py::arg("name"),
                  py::arg("systeminfo"),
+                 py::arg("temp"),
                  py::arg("restrintmask"),
                  py::arg("restrant_wt") = 0.0,
                  py::arg("nstlim") = 5000,

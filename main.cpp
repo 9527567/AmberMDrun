@@ -36,5 +36,6 @@ int main(int argc, char *argv[])
     auto f = flag(argc, argv);
     SystemInfo systemInfo = SystemInfo(f.get<std::string>("parm7"));
     auto md = std::make_shared<Md>("step4", systemInfo);
-    
+    md->setIrest(true);
+    md->Run();
 }
