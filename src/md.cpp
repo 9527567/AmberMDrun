@@ -23,14 +23,14 @@ Md::Md(const std::string &name, SystemInfo systemInfo,float temp, std::string re
     ntf_ = ntf;
     cut_ = cut;
     ntpFlags_ = 1;
-    if (systemInfo_.getnLipid() != 0)
+    if (systemInfo_.getnLipid() != 0 && systemInfo.getHasOrthoBox())
     {
         ntpFlags_ = 2;
     }
 }
 void Md::operator()(std::string name, int nstlim, bool irest, int ntb, int ntc, int ntf, float tautp, float taup, int mcbarint, float gamma_ln, float dt, int nscm, int ntwx, int ntpr, int ntwr)
 {
-    name_ = name;
+    name_ = std::move(name);
     nstLim_ = nstlim;
     iRest_ = irest;
     ntb_ = ntb;

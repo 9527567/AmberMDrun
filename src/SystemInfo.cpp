@@ -5,6 +5,7 @@
 #include "common.hpp"
 #include <string>
 #include "fmt/core.h"
+#include <iostream>
 SystemInfo::SystemInfo(const std::string &filename)
 {
     auto result = executeCMD("cpptraj -p " + filename + " --resmask \\*");
@@ -51,5 +52,14 @@ SystemInfo::SystemInfo(const std::string &filename)
     } catch (const std::string &message)
     {
         fmt::print(message);
+    }
+    result.clear();
+    result = executeCMD("echo \"list parm\" | cpptraj -p " + filename + "| grep box");
+    if (result[0].find("Orthorhombic") == std::string::npos )
+    {
+        hasOrthoBox_ = false;
+    }else
+    {
+        hasOrthoBox_ = true;
     }
 }

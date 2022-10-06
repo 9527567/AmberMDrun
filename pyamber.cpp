@@ -17,7 +17,8 @@ PYBIND11_MODULE(pyamber, m)
             .def("getnCharmmWater_", &SystemInfo::getnCharmmWater_)
             .def("getnWater", &SystemInfo::getnWater)
             .def("getnCarbo", &SystemInfo::getnCarbo)
-            .def("getHasCharmmWater", &SystemInfo::getHasCharmmWater);
+            .def("getHasCharmmWater", &SystemInfo::getHasCharmmWater)
+            .def("getHasOrthoBox",&SystemInfo::getHasOrthoBox);
 
     //    py::class_<Base>(m, "Base")
     //            .def(py::init<std::string,
@@ -84,8 +85,8 @@ PYBIND11_MODULE(pyamber, m)
                           int>(),
                  py::arg("name"),
                  py::arg("systeminfo"),
-                 py::arg("temp"),
-                 py::arg("restrintmask"),
+                 py::arg("temp")=303.15,
+                 py::arg("restrintmask")="",
                  py::arg("restrant_wt") = 0.0,
                  py::arg("nstlim") = 5000,
                  py::arg("cut") = 8.0,
@@ -104,6 +105,7 @@ PYBIND11_MODULE(pyamber, m)
                  py::arg("ntwr") = 500)
             .def("Run", &Md::Run)
             .def("setCut", &Md::setCut)
+            .def("setTemp",&Md::setTemp)
             .def("setNTpr", &Md::setNTpr)
             .def("setNTwx", &Md::setNTwx)
             .def("setNTwr", &Md::setNTwr)

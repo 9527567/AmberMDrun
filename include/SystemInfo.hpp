@@ -213,6 +213,10 @@ public:
     {
         return hasCharmmWater_;
     }
+    bool getHasOrthoBox() const
+    {
+        return hasOrthoBox_;
+    }
 
 private:
     int nProtein_ = 0;
@@ -224,6 +228,7 @@ private:
     int nWater_ = 0;
     int nCarbo_ = 0;
     bool hasCharmmWater_ = false;
+    bool hasOrthoBox_;
 };
 
 #endif//AMBERMD_SYSTEMINFO_HPP
