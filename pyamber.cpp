@@ -55,7 +55,7 @@ PYBIND11_MODULE(pyamber, m)
                           int,
                           int>(),
                  py::arg("name"),
-                 py::arg("symstemInfo"),
+                 py::arg("systemInfo"),
                  py::arg("ref"),
                  py::arg("irest") = false,
                  py::arg("restrintmask") = "",
