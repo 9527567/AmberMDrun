@@ -3,12 +3,18 @@
 //
 #include "md.hpp"
 #include "fmt/os.h"
-Md::Md(const std::string &name, SystemInfo systemInfo,float temp, std::string restrintmask, float restrant_wt, int nstlim, float cut, bool irest, int ntb, int ntc, int ntf, float tautp, float taup, int mcbarint, float gamma_ln, float dt, int nscm, int ntwx, int ntpr, int ntwr) : Base(name, systemInfo, restrintmask, restrant_wt, cut)
+Md::Md(const std::string &name,SystemInfo systemInfo, const std::string &ref, bool irest, float temp, const std::string &restraintmask, float restraint_wt, int nstlim, float cut, int ntb, int ntc, int ntf, float tautp, float taup, int mcbarint, float gamma_ln, float dt, int nscm, int ntwx, int ntpr, int ntwr)
 {
+
     name_ = name;
+    systemInfo_ = systemInfo;
+    ref_ = ref;
+    iRest_ = irest;
+    restraintMask_ = restraintmask;
+    restraint_wt_ = restraint_wt;
+    cut_ = cut;
     temp_ = temp;
     nstLim_ = nstlim;
-    iRest_ = irest;
     tautp_ = tautp;
     taup_ = taup;
     mcbarint_ = mcbarint;
@@ -21,7 +27,6 @@ Md::Md(const std::string &name, SystemInfo systemInfo,float temp, std::string re
     ntb_ = ntb;
     ntc_ = ntc;
     ntf_ = ntf;
-    cut_ = cut;
     ntpFlags_ = 1;
     if (systemInfo_.getnLipid() != 0 && systemInfo.getHasOrthoBox())
     {
@@ -56,7 +61,10 @@ void Md::Run()
     {
         barostat();
     }
-    restraint();
+    if (iRest_)
+    {
+        restraint();
+    }
     writeEnd();
 }
 void Md::writeInput()

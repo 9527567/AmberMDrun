@@ -8,7 +8,12 @@ namespace py = pybind11;
 PYBIND11_MODULE(pyamber, m)
 {
     py::class_<SystemInfo>(m, "SystemInfo")
-            .def(py::init<const std::string &>())
+            .def(py::init<const std::string &,
+                          const std::string &,
+                          const std::string &>(),
+                 py::arg("prmtop"),
+                 py::arg("runMin") = "pmemd.cuda_DPFP",
+                 py::arg("runMd") = "pmemd.cuda")
             .def("getNprotein", &SystemInfo::getNprotein)
             .def("getnDna", &SystemInfo::getnDna)
             .def("getnRna", &SystemInfo::getnRna)
@@ -18,7 +23,9 @@ PYBIND11_MODULE(pyamber, m)
             .def("getnWater", &SystemInfo::getnWater)
             .def("getnCarbo", &SystemInfo::getnCarbo)
             .def("getHasCharmmWater", &SystemInfo::getHasCharmmWater)
-            .def("getHasOrthoBox",&SystemInfo::getHasOrthoBox);
+            .def("getHasOrthoBox", &SystemInfo::getHasOrthoBox)
+            .def("getRunMin", &SystemInfo::getRunMd)
+            .def("getRunMd", &SystemInfo::getRunMin);
 
     //    py::class_<Base>(m, "Base")
     //            .def(py::init<std::string,
@@ -34,17 +41,23 @@ PYBIND11_MODULE(pyamber, m)
     //            .def("setNtwr",&Base::setNTwr).
     //            def("setNtpr",&Base::setNTpr);
     py::class_<Min>(m, "Min", py::dynamic_attr())
-            .def(py::init<std::string,
+            .def(py::init<const std::string &,
                           SystemInfo,
-                          std::string,
+                          const std::string &,
+                          bool,
+                          const std::string &,
                           float,
                           float,
-                          int, int,
-                          int, int,
+                          int,
+                          int,
+                          int,
+                          int,
                           int,
                           int>(),
                  py::arg("name"),
                  py::arg("symstemInfo"),
+                 py::arg("ref"),
+                 py::arg("irest") = false,
                  py::arg("restrintmask") = "",
                  py::arg("restrant_wt") = 0.0,
                  py::arg("cut") = 8.0,
@@ -65,8 +78,10 @@ PYBIND11_MODULE(pyamber, m)
     py::class_<Md>(m, "Md", py::dynamic_attr())
             .def(py::init<const std::string &,
                           SystemInfo,
+                          const std::string &,
+                          bool,
                           float,
-                          std::string,
+                          const std::string &,
                           float,
                           int,
                           float,
@@ -81,16 +96,16 @@ PYBIND11_MODULE(pyamber, m)
                           float,
                           int,
                           int,
-                          int,
                           int>(),
                  py::arg("name"),
-                 py::arg("systeminfo"),
-                 py::arg("temp")=303.15,
-                 py::arg("restrintmask")="",
+                 py::arg("systemInfo"),
+                 py::arg("ref"),
+                 py::arg("irest") = false,
+                 py::arg("temp") = 303.15,
+                 py::arg("restrintmask") = "",
                  py::arg("restrant_wt") = 0.0,
                  py::arg("nstlim") = 5000,
                  py::arg("cut") = 8.0,
-                 py::arg("irest") = false,
                  py::arg("ntb") = 1,
                  py::arg("ntc") = 2,
                  py::arg("ntf") = 2,
@@ -105,7 +120,7 @@ PYBIND11_MODULE(pyamber, m)
                  py::arg("ntwr") = 500)
             .def("Run", &Md::Run)
             .def("setCut", &Md::setCut)
-            .def("setTemp",&Md::setTemp)
+            .def("setTemp", &Md::setTemp)
             .def("setNTpr", &Md::setNTpr)
             .def("setNTwx", &Md::setNTwx)
             .def("setNTwr", &Md::setNTwr)

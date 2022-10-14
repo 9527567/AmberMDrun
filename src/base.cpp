@@ -6,8 +6,15 @@
 #include "fmt/core.h"
 #include "fmt/os.h"
 #include <utility>
-Base::Base(std::string name, SystemInfo systemInfo, std::string restranintmask, float restraint_wt, float cut) : name_(std::move(name)), systemInfo_(systemInfo), cut_(cut), restraintMask_(restranintmask), restraint_wt_(restraint_wt)
+Base::Base(const std::string &name, SystemInfo systemInfo, const std::string &ref, bool irest, const std::string &restranintmask, float restraint_wt, float cut)
 {
+    name_ = name;
+    systemInfo_ = systemInfo;
+    ref_ = ref;
+    iRest_ = irest;
+    restraintMask_ = restranintmask;
+    restraint_wt_ = restraint_wt;
+    cut_ = cut;
 }
 void Base::operator()(float cut)
 {
@@ -15,14 +22,17 @@ void Base::operator()(float cut)
 void Base::writeInput()
 {
     fmt::ostream out = fmt::output_file(name_ + ".in");
-    out.print("Minimization: " + name_ + "\n");
+    out.print("Minimization:{}\n",name_);
     out.print("&cntrl\n");
 }
 void Base::Run()
 {
     writeInput();
     charmmWater();
-    restraint();
+    if (iRest_)
+    {
+        restraint();
+    }
     writeEnd();
 }
 void Base::charmmWater()
@@ -70,7 +80,7 @@ void Base::setRestraintMask(std::string appendMask)
         restraintMask_ = fmt::format("\":1-{}&!@H=|:{}\"", systemInfo_.getNprotein() + systemInfo_.getnDna() + systemInfo_.getnRna() + systemInfo_.getnLipid() + systemInfo_.getnCarbo(), appendMask);
     }
 }
-Base *Base::setCut(float cut)
+[[maybe_unused]] Base *Base::setCut(float cut)
 {
     cut_ = cut;
     return this;
@@ -92,4 +102,8 @@ Base *Base::setNTpr(int ntpr)
 {
     nTpr_ = ntpr;
     return this;
+}
+void Base::runMd()
+{
+
 }

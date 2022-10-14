@@ -2,11 +2,18 @@
 // Created by jack on 2022/9/21.
 //
 #include "min.hpp"
+
+#include <utility>
 #include "fmt/core.h"
 #include "fmt/os.h"
-Min::Min(std::string name, SystemInfo systemInfo, std::string restrintmask, float restrant_wt, float cut, int nTmin, int maxCyc, int nCyc, int nTwx, int nTpr, int nTwr) : Base(name, systemInfo, restrintmask, restrant_wt, cut)
+Min::Min(const std::string &name, SystemInfo systemInfo,const std::string &ref,bool irest, const std::string& restrintmask, float restrant_wt, float cut, int nTmin, int maxCyc, int nCyc, int nTwx, int nTpr, int nTwr)
 {
     name_ = name;
+    systemInfo_ = systemInfo;
+    iRest_ = irest;
+    restraintMask_ = restrintmask;
+    restraint_wt_ = restrant_wt;
+    cut_ = cut;
     nTmin_ = nTmin;
     maxCyc_ = maxCyc;
     nCyc_ = nCyc;
@@ -100,4 +107,7 @@ Min *Min::setNTwx(int ntwx)
 {
     nTwx_ = ntwx;
     return this;
+}
+void Min::runMd()
+{
 }

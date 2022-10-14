@@ -176,49 +176,59 @@ class SystemInfo
 {
 public:
     SystemInfo() = default;
-    explicit SystemInfo(const std::string &filename);
-    int getNprotein() const
+    explicit SystemInfo(const std::string &filename, const std::string& runMin = "pmemd.cuda_DPFP", const std::string& runMd = "pmemd.cuda");
+    [[nodiscard]] int getNprotein() const
     {
         return nProtein_;
     }
-    int getnDna() const
+    [[nodiscard]] int getnDna() const
     {
         return nDna_;
     }
-    int getnRna() const
+    [[nodiscard]] int getnRna() const
     {
         return nRna_;
     }
-    int getnLipid() const
+    [[nodiscard]] int getnLipid() const
     {
         return nLipid_;
     }
-    int getnUnKnown_() const
+    [[nodiscard]] int getnUnKnown_() const
     {
         return nunKnown_;
     }
-    int getnCharmmWater_() const
+    [[nodiscard]] int getnCharmmWater_() const
     {
         return nCharmmWater_;
     }
-    int getnWater() const
+    [[nodiscard]] int getnWater() const
     {
         return nWater_;
     }
-    int getnCarbo() const
+    [[nodiscard]] int getnCarbo() const
     {
         return nCarbo_;
     }
-    bool getHasCharmmWater() const
+    [[nodiscard]] bool getHasCharmmWater() const
     {
         return hasCharmmWater_;
     }
-    bool getHasOrthoBox() const
+    [[nodiscard]] bool getHasOrthoBox() const
     {
         return hasOrthoBox_;
     }
-
+    [[nodiscard]] std::string getRunMin() const
+    {
+        return runMin_;
+    }
+    [[nodiscard]] std::string getRunMd() const
+    {
+        return runMd_;
+    }
 private:
+    std::string runMin_;
+    std::string runMd_;
+    std::string runCpptraj_;
     int nProtein_ = 0;
     int nDna_ = 0;
     int nRna_ = 0;

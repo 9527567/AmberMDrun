@@ -31,11 +31,15 @@ auto flag(int &argc, char *argv[]) -> cmdline::parser
     flags.parse_check(argc, argv);
     return flags;
 }
+
 int main(int argc, char *argv[])
 {
-    auto f = flag(argc, argv);
-    SystemInfo systemInfo = SystemInfo(f.get<std::string>("parm7"));
-    auto md = std::make_shared<Md>("step4", systemInfo);
-    md->setIrest(true);
-    md->Run();
+        auto f = flag(argc, argv);
+        SystemInfo systemInfo = SystemInfo(f.get<std::string>("parm7"));
+        auto min = std::make_shared<Min>("step1",systemInfo,"com.rst7");
+        min->Run();
+        auto md = std::make_shared<Md>("step4", systemInfo,"com.rst7");
+        md->setIrest(true);
+        md->Run();
+
 }
