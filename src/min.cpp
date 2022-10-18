@@ -35,8 +35,9 @@ void Min::operator()(std::string name, int nTmin, int maxCyc, int nCyc, int nTwx
 }
 void Min::writeInput()
 {
-    Base::writeInput();
-    fmt::ostream out = fmt::output_file(name_ + ".in", fmt::file::WRONLY | fmt::file::APPEND);
+    fmt::ostream out = fmt::output_file(name_ + ".in");
+    out.print("Minimization:{}\n", name_);
+    out.print("&cntrl\n");
     out.print("imin={},", iMin_);
     out.print("ntmin={},", nTmin_);
     out.print("maxcyc={},", maxCyc_);

@@ -66,7 +66,7 @@ protected:
         langevin
     };
     baro baroType_ = baro::montecarlo;
-    thermo thermoType_ = thermo::berendsen;
+    thermo thermoType_ = thermo::langevin;
     const int iOutfm_ = 1;
     const int nTxo_ = 2;
     const int iMin_ = 0;

@@ -22,17 +22,14 @@ void Base::operator()(float cut)
 void Base::writeInput()
 {
     fmt::ostream out = fmt::output_file(name_ + ".in");
-    out.print("Minimization:{}\n",name_);
+    out.print("Minimization:{}\n", name_);
     out.print("&cntrl\n");
 }
 void Base::Run()
 {
     writeInput();
     charmmWater();
-    if (iRest_)
-    {
-        restraint();
-    }
+    restraint();
     writeEnd();
     runMd();
 }
@@ -74,7 +71,7 @@ void Base::setRestraintMask(std::string appendMask)
 {
     if (restraintMask_.empty())
     {
-        restraintMask_ = fmt::format("\":1-{}!@H=\"", systemInfo_.getNprotein() + systemInfo_.getnDna() + systemInfo_.getnRna() + systemInfo_.getnLipid() + systemInfo_.getnCarbo());
+        restraintMask_ = fmt::format("\":1-{}&!@H=\"", systemInfo_.getNprotein() + systemInfo_.getnDna() + systemInfo_.getnRna() + systemInfo_.getnLipid() + systemInfo_.getnCarbo());
 
     } else
     {
@@ -110,14 +107,14 @@ void Base::runMd()
     if (iMin_ == 1)
     {
         run = systemInfo_.getRunMin();
-    }else
+    } else
     {
         run = systemInfo_.getRunMd();
     }
-   std::string execCommamd =  fmt::format("{} -i {}.in -p {} -c {} -o {}.out -r {}.rst7 -x {}.nc -inf {}.mdinfo",run,name_,systemInfo_.getParm7File(),ref_,name_,name_,name_,name_);
-   std::vector<std::string> result = executeCMD(execCommamd);
-   for (auto i :result)
-   {
-       fmt::print("{}",i);
-   }
+    std::string execCommamd = fmt::format("{} -O -i {}.in -p {} -c {} -ref {} -o {}.out -r {}.rst7 -x {}.nc -inf {}.mdinfo", run, name_, systemInfo_.getParm7File(),systemInfo_.getRst7File(), ref_, name_, name_, name_, name_);
+    std::vector<std::string> result = executeCMD(execCommamd);
+    for (auto i: result)
+    {
+        fmt::print("{}", i);
+    }
 }

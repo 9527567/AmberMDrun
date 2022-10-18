@@ -5,7 +5,6 @@
 #include "fmt/os.h"
 Md::Md(const std::string &name, SystemInfo systemInfo, const std::string &ref, bool irest, float temp, const std::string &restraintmask, float restraint_wt, int nstlim, float cut, int ntb, int ntc, int ntf, float tautp, float taup, int mcbarint, float gamma_ln, float dt, int nscm, int ntwx, int ntpr, int ntwr)
 {
-
     name_ = name;
     systemInfo_ = systemInfo;
     ref_ = ref;
@@ -31,6 +30,13 @@ Md::Md(const std::string &name, SystemInfo systemInfo, const std::string &ref, b
     if (systemInfo_.getnLipid() != 0 && systemInfo.getHasOrthoBox())
     {
         ntpFlags_ = 2;
+    }
+    if (iRest_)
+    {
+        ntx_ = 5;
+    } else
+    {
+        ntx_ = 1;
     }
 }
 void Md::operator()(std::string name, int nstlim, bool irest, int ntb, int ntc, int ntf, float tautp, float taup, int mcbarint, float gamma_ln, float dt, int nscm, int ntwx, int ntpr, int ntwr)
@@ -61,17 +67,15 @@ void Md::Run()
     {
         barostat();
     }
-    if (iRest_)
-    {
-        restraint();
-    }
+    restraint();
     writeEnd();
     runMd();
 }
 void Md::writeInput()
 {
-    Base::writeInput();
-    fmt::ostream out = fmt::output_file(name_ + ".in", fmt::file::WRONLY | fmt::file::APPEND);
+    fmt::ostream out = fmt::output_file(name_ + ".in");
+    out.print("Md:{}\n", name_);
+    out.print("&cntrl\n");
     out.print("imin={},", iMin_);
     out.print("nstlim={},", nstLim_);
     out.print("dt={},", dt_);
@@ -95,6 +99,7 @@ void Md::writeInput()
     out.print("\n");
     out.print("iwrap={},", 0);
     out.print("nscm={},", nscm_);
+    out.print("cut={},",cut_);
     out.print("\n");
     out.print("ntc={},", ntc_);
     out.print("ntf={},", ntf_);
