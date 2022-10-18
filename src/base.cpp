@@ -34,6 +34,7 @@ void Base::Run()
         restraint();
     }
     writeEnd();
+    runMd();
 }
 void Base::charmmWater()
 {
@@ -105,5 +106,18 @@ Base *Base::setNTpr(int ntpr)
 }
 void Base::runMd()
 {
-
+    std::string run = "sander";
+    if (iMin_ == 1)
+    {
+        run = systemInfo_.getRunMin();
+    }else
+    {
+        run = systemInfo_.getRunMd();
+    }
+   std::string execCommamd =  fmt::format("{} -i {}.in -p {} -c {} -o {}.out -r {}.rst7 -x {}.nc -inf {}.mdinfo",run,name_,systemInfo_.getParm7File(),ref_,name_,name_,name_,name_);
+   std::vector<std::string> result = executeCMD(execCommamd);
+   for (auto i :result)
+   {
+       fmt::print("{}",i);
+   }
 }

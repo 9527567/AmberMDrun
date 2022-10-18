@@ -10,8 +10,10 @@ PYBIND11_MODULE(pyamber, m)
     py::class_<SystemInfo>(m, "SystemInfo")
             .def(py::init<const std::string &,
                           const std::string &,
+                          const std::string &,
                           const std::string &>(),
                  py::arg("prmtop"),
+                 py::arg("inpcrd"),
                  py::arg("runMin") = "pmemd.cuda_DPFP",
                  py::arg("runMd") = "pmemd.cuda")
             .def("getNprotein", &SystemInfo::getNprotein)

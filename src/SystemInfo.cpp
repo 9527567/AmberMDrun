@@ -8,7 +8,7 @@
 #include <functional>
 #include <string>
 #include <unistd.h>
-SystemInfo::SystemInfo(const std::string &filename, const std::string &runMin, const std::string &runMd)
+SystemInfo::SystemInfo(const std::string &parm7File, const std::string &rst7File, const std::string &runMin, const std::string &runMd)
 {
     char *amberHome = getenv("AMBERHOME");
     std::function<void()> getRunExec = [&]() {
@@ -51,7 +51,9 @@ SystemInfo::SystemInfo(const std::string &filename, const std::string &runMin, c
         }
     };
     getRunExec();
-    std::vector<std::string> result = executeCMD(this->runCpptraj_ + " -p " + filename + " --resmask \\*");
+    parm7File_ = parm7File;
+    rst7File_ = rst7File;
+    std::vector<std::string> result = executeCMD(this->runCpptraj_ + " -p " + parm7File_ + " --resmask \\*");
     for (int i = 1; i < result.size(); ++i)
     {
         std::string resname = result[i].substr(6, 4);
@@ -93,7 +95,7 @@ SystemInfo::SystemInfo(const std::string &filename, const std::string &runMin, c
     }
 
     result.clear();
-    result = executeCMD("echo \"list parm\" | cpptraj -p " + filename + "| grep box");
+    result = executeCMD("echo \"list parm\" | cpptraj -p " + parm7File_ + "| grep box");
     if (result[0].find("Orthorhombic") == std::string::npos)
     {
         hasOrthoBox_ = false;

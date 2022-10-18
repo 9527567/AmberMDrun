@@ -176,7 +176,7 @@ class SystemInfo
 {
 public:
     SystemInfo() = default;
-    explicit SystemInfo(const std::string &filename, const std::string& runMin = "pmemd.cuda_DPFP", const std::string& runMd = "pmemd.cuda");
+    explicit SystemInfo(const std::string &parm7File,const std::string &rst7File, const std::string &runMin = "pmemd.cuda_DPFP", const std::string &runMd = "pmemd.cuda");
     [[nodiscard]] int getNprotein() const
     {
         return nProtein_;
@@ -225,10 +225,21 @@ public:
     {
         return runMd_;
     }
+    [[nodiscard]] std::string getParm7File() const
+    {
+        return parm7File_;
+    };
+    [[nodiscard]] std::string getRst7File() const
+    {
+        return rst7File_;
+    };
+
 private:
     std::string runMin_;
     std::string runMd_;
     std::string runCpptraj_;
+    std::string parm7File_;
+    std::string rst7File_;
     int nProtein_ = 0;
     int nDna_ = 0;
     int nRna_ = 0;

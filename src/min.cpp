@@ -10,6 +10,7 @@ Min::Min(const std::string &name, SystemInfo systemInfo,const std::string &ref,b
 {
     name_ = name;
     systemInfo_ = systemInfo;
+    ref_ = ref;
     iRest_ = irest;
     restraintMask_ = restrintmask;
     restraint_wt_ = restrant_wt;
@@ -110,4 +111,5 @@ Min *Min::setNTwx(int ntwx)
 }
 void Min::runMd()
 {
+    Base::runMd();
 }

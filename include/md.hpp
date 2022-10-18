@@ -38,6 +38,7 @@ protected:
     void charmmWater() override;
     void restraint() override;
     void writeEnd() override;
+    void runMd() override;
     void barostat();
     void Thermostat();
     int nstLim_;

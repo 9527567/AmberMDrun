@@ -3,7 +3,7 @@
 //
 #include "md.hpp"
 #include "fmt/os.h"
-Md::Md(const std::string &name,SystemInfo systemInfo, const std::string &ref, bool irest, float temp, const std::string &restraintmask, float restraint_wt, int nstlim, float cut, int ntb, int ntc, int ntf, float tautp, float taup, int mcbarint, float gamma_ln, float dt, int nscm, int ntwx, int ntpr, int ntwr)
+Md::Md(const std::string &name, SystemInfo systemInfo, const std::string &ref, bool irest, float temp, const std::string &restraintmask, float restraint_wt, int nstlim, float cut, int ntb, int ntc, int ntf, float tautp, float taup, int mcbarint, float gamma_ln, float dt, int nscm, int ntwx, int ntpr, int ntwr)
 {
 
     name_ = name;
@@ -66,6 +66,7 @@ void Md::Run()
         restraint();
     }
     writeEnd();
+    runMd();
 }
 void Md::writeInput()
 {
@@ -279,4 +280,8 @@ Md *Md::setTemp(float temp)
 {
     temp_ = temp;
     return this;
+}
+void Md::runMd()
+{
+    Base::runMd();
 }
