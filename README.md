@@ -2,6 +2,7 @@
 方便使用的，高性能的amber脚本
 ## 安装
 ~~~bash
+git clone https://github.com/9527567/AmberMD
 cd AmberMD
 mkdir build
 cd build
