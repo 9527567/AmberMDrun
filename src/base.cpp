@@ -111,7 +111,7 @@ void Base::runMd()
     {
         run = systemInfo_.getRunMd();
     }
-    std::string execCommamd = fmt::format("{} -O -i {}.in -p {} -c {} -ref {} -o {}.out -r {}.rst7 -x {}.nc -inf {}.mdinfo", run, name_, systemInfo_.getParm7File(),systemInfo_.getRst7File(), ref_, name_, name_, name_, name_);
+    std::string execCommamd = fmt::format("{} -O -i {}.in -p {} -c {} -ref {} -o {}.out -r {}.rst7 -x {}.nc -inf {}.mdinfo", run, name_, systemInfo_.getParm7File(),ref_, ref_, name_, name_, name_, name_);
     std::vector<std::string> result = executeCMD(execCommamd);
     for (auto i: result)
     {

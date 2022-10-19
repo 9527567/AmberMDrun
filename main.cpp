@@ -32,9 +32,8 @@ auto flag(int &argc, char *argv[]) -> cmdline::parser
     return flags;
 }
 
+
 int main(int argc, char *argv[])
 {
-        auto f = flag(argc, argv);
-
-
+    auto f = flag(argc, argv);
 }
