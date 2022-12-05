@@ -6,18 +6,15 @@
 #include "fmt/core.h"
 #include "fmt/os.h"
 #include <utility>
-Base::Base(const std::string &name, SystemInfo systemInfo, const std::string &ref, bool irest, const std::string &restranintmask, float restraint_wt, float cut)
+Base::Base(const std::string &name, SystemInfo systemInfo, const std::string &rst7,const std::string &refc, bool irest, const std::string &restranintmask, float restraint_wt, float cut)
 {
     name_ = name;
     systemInfo_ = systemInfo;
-    ref_ = ref;
+    rst7_ = rst7;
     iRest_ = irest;
     restraintMask_ = restranintmask;
     restraint_wt_ = restraint_wt;
     cut_ = cut;
-}
-void Base::operator()(float cut)
-{
 }
 void Base::writeInput()
 {
@@ -111,7 +108,7 @@ void Base::runMd()
     {
         run = systemInfo_.getRunMd();
     }
-    std::string execCommamd = fmt::format("{} -O -i {}.in -p {} -c {} -ref {} -o {}.out -r {}.rst7 -x {}.nc -inf {}.mdinfo", run, name_, systemInfo_.getParm7File(),ref_, ref_, name_, name_, name_, name_);
+    std::string execCommamd = fmt::format("{} -O -i {}.in -p {} -c {} -ref {} -o {}.out -r {}.rst7 -x {}.nc -inf {}.mdinfo", run, name_, systemInfo_.getParm7File(), rst7_, refc_, name_, name_, name_, name_);
     std::vector<std::string> result = executeCMD(execCommamd);
     for (auto i: result)
     {

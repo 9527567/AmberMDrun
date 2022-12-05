@@ -6,11 +6,12 @@
 #include <utility>
 #include "fmt/core.h"
 #include "fmt/os.h"
-Min::Min(const std::string &name, SystemInfo systemInfo,const std::string &ref,bool irest, const std::string& restrintmask, float restrant_wt, float cut, int nTmin, int maxCyc, int nCyc, int nTwx, int nTpr, int nTwr)
+Min::Min(const std::string &name, SystemInfo systemInfo,const std::string &rst7,const std::string &refc,bool irest, const std::string& restrintmask, float restrant_wt, float cut, int nTmin, int maxCyc, int nCyc, int nTwx, int nTpr, int nTwr)
 {
     name_ = name;
     systemInfo_ = systemInfo;
-    ref_ = ref;
+    rst7_ = rst7;
+    refc_ = refc;
     iRest_ = irest;
     restraintMask_ = restrintmask;
     restraint_wt_ = restrant_wt;

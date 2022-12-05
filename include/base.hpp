@@ -11,10 +11,9 @@
 class Base
 {
 public:
-    Base(const std::string &name, SystemInfo systemInfo, const std::string &ref, bool iRest = false, const std::string &restrintmask = "", float restrant_wt = 0.0, float cut = 8.0);
+    Base(const std::string &name, SystemInfo systemInfo, const std::string &rst7,const std::string &refc, bool iRest = false, const std::string &restrintmask = "", float restrant_wt = 0.0, float cut = 8.0);
     Base() = default;
     ~Base() = default;
-    virtual void operator()(float cut = 8.0);
     virtual void Run();
     SystemInfo systemInfo_;
     [[maybe_unused]] virtual Base *setCut(float cut);
@@ -34,7 +33,8 @@ protected:
     int iMin_;
     float cut_;
     bool iRest_;
-    std::string ref_;
+    std::string rst7_;
+    std::string refc_;
     std::string restraintMask_;
     float restraint_wt_;
     int nTwx_;

@@ -3,11 +3,12 @@
 //
 #include "md.hpp"
 #include "fmt/os.h"
-Md::Md(const std::string &name, SystemInfo systemInfo, const std::string &ref, bool irest, float temp, const std::string &restraintmask, float restraint_wt, int nstlim, float cut, int ntb, int ntc, int ntf, float tautp, float taup, int mcbarint, float gamma_ln, float dt, int nscm, int ntwx, int ntpr, int ntwr)
+Md::Md(const std::string &name, SystemInfo systemInfo, const std::string &rst7,const std::string &refc, bool irest, float temp, const std::string &restraintmask, float restraint_wt, int nstlim, float cut, int ntb, int ntc, int ntf, float tautp, float taup, int mcbarint, float gamma_ln, float dt, int nscm, int ntwx, int ntpr, int ntwr)
 {
     name_ = name;
     systemInfo_ = systemInfo;
-    ref_ = ref;
+    rst7_ = rst7;
+    refc_ = refc;
     iRest_ = irest;
     restraintMask_ = restraintmask;
     restraint_wt_ = restraint_wt;
@@ -99,7 +100,7 @@ void Md::writeInput()
     out.print("\n");
     out.print("iwrap={},", 0);
     out.print("nscm={},", nscm_);
-    out.print("cut={},",cut_);
+    out.print("cut={},", cut_);
     out.print("\n");
     out.print("ntc={},", ntc_);
     out.print("ntf={},", ntf_);

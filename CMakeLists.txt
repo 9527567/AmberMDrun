@@ -6,10 +6,10 @@ include_directories(extern)
 add_subdirectory(extern/pybind11)
 aux_source_directory(src SOURCE)
 add_library(ambermd SHARED ${SOURCE})
-add_executable(AmberMD
+add_executable(amberMd
         main.cpp
         )
-target_link_libraries(AmberMD PRIVATE ambermd)
+target_link_libraries(amberMd PRIVATE ambermd)
 pybind11_add_module(pyamber
         pyamber.cpp
         )
