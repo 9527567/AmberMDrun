@@ -34,3 +34,5 @@ cmake-build-debug
 build
 .idea
 .xmake
+dist
+AmberMD.egg-info
