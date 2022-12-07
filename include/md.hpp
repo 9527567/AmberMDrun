@@ -5,32 +5,32 @@
 #ifndef AMBERMD_MD_HPP
 #define AMBERMD_MD_HPP
 #include "base.hpp"
-class Md : Base
+class Md : public Base
 {
 public:
-    Md(const std::string &name, SystemInfo systemInfo, const std::string &rst7,const std::string &refc, bool irest = false, float temp = 303.15, const std::string &restraintmask = "", float restraint_wt = 0.0, int nstlim = 5000, float cut = 8.0, int ntb = 1, int ntc = 2, int ntf = 2, float tautp = 1.0, float taup = 1.0, int mcbarint = 100, float gamma_ln = 5.0, float dt = 0.002, int nscm = 0, int ntwx = 500, int ntpr = 50, int ntwr = 500);
+    Md() = default;
+    Md(const std::string &name, SystemInfo systemInfo, const std::string &rst7, const std::string &refc, bool irest = false, float temp = 303.15, const std::string &restraintmask = "", float restraint_wt = 0.0, int nstlim = 5000, float cut = 8.0, int ntb = 1, int ntc = 2, int ntf = 2, float tautp = 1.0, float taup = 1.0, int mcbarint = 100, float gamma_ln = 5.0, float dt = 0.002, int nscm = 0, int ntwx = 500, int ntpr = 50, int ntwr = 500);
     ~Md() = default;
-    void operator()(std::string name, int nstlim = 5000, bool irest = false, int ntb = 1, int ntc = 2, int ntf = 2, float tautp = 1.0, float taup = 1.0, int mcbarint = 100, float gamma_ln = 5.0, float dt = 0.001, int nscm = 0, int ntwx = 500, int ntpr = 50, int ntwr = 500);
     void Run() override;
     Md *setCut(float cut) override;
     Md *setNTpr(int ntpr) override;
     Md *setNTwx(int ntwx) override;
     Md *setNTwr(int ntwr) override;
-    Md *setNstLim(int nstlim);
-    Md *setIrest(bool irest);
-    Md *setTautp(float tautp);
-    Md *settaup(float taup);
-    Md *setMcbarint(int mcbarint);
-    Md *setGammaLn(float gamma_ln);
-    Md *setDt(float dt);
-    Md *setNscm(int nscm);
-    Md *setNtx(int ntx);
-    Md *setNtc(int ntc);
-    Md *setNtf(int ntf);
-    Md *setNtb(int ntb);
-    Md *setTemp(float temp);
-    Md *setBarostat(std::string baroType);
-    Md *setThermostat(std::string thermoType);
+    virtual Md *setNstLim(int nstlim);
+    virtual Md *setIrest(bool irest);
+    virtual Md *setTautp(float tautp);
+    virtual Md *settaup(float taup);
+    virtual Md *setMcbarint(int mcbarint);
+    virtual Md *setGammaLn(float gamma_ln);
+    virtual Md *setDt(float dt);
+    virtual Md *setNscm(int nscm);
+    virtual Md *setNtx(int ntx);
+    virtual Md *setNtc(int ntc);
+    virtual Md *setNtf(int ntf);
+    virtual Md *setNtb(int ntb);
+    virtual Md *setTemp(float temp);
+    virtual Md *setBarostat(const std::string&);
+    virtual Md *setThermostat(const std::string&);
 
 protected:
     void setRestraintMask(std::string) override;
@@ -39,12 +39,11 @@ protected:
     void restraint() override;
     void writeEnd() override;
     void runMd() override;
-    void barostat();
-    void Thermostat();
+    virtual void barostat();
+    virtual void Thermostat();
     int nstLim_;
     bool iRest_;
-    float tautp_;
-    float taup_;
+
     int mcbarint_;
     float gamma_ln_;
     float dt_;
@@ -55,6 +54,11 @@ protected:
     int ntb_;
     int ntpFlags_;
     float temp_;
+    const int iOutfm_ = 1;
+    const int nTxo_ = 2;
+    const int iMin_ = 0;
+    float tautp_;
+    float taup_;
     enum class baro
     {
         berendsen,
@@ -67,8 +71,5 @@ protected:
     };
     baro baroType_ = baro::montecarlo;
     thermo thermoType_ = thermo::langevin;
-    const int iOutfm_ = 1;
-    const int nTxo_ = 2;
-    const int iMin_ = 0;
 };
 #endif//AMBERMD_MD_HPP

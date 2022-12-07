@@ -40,25 +40,6 @@ Md::Md(const std::string &name, SystemInfo systemInfo, const std::string &rst7,c
         ntx_ = 1;
     }
 }
-void Md::operator()(std::string name, int nstlim, bool irest, int ntb, int ntc, int ntf, float tautp, float taup, int mcbarint, float gamma_ln, float dt, int nscm, int ntwx, int ntpr, int ntwr)
-{
-    name_ = std::move(name);
-    nstLim_ = nstlim;
-    iRest_ = irest;
-    ntb_ = ntb;
-    tautp_ = tautp;
-    taup_ = taup;
-    mcbarint_ = mcbarint;
-    gamma_ln_ = gamma_ln;
-    dt_ = dt;
-    nscm_ = nscm;
-    nTwx_ = ntwx;
-    nTpr_ = ntpr;
-    nTwr_ = ntwr;
-    ntb_ = ntb;
-    ntc_ = ntc;
-    ntf_ = ntf;
-}
 void Md::Run()
 {
     writeInput();
@@ -254,7 +235,7 @@ Md *Md::setNtb(int ntb)
     ntb_ = ntb;
     return this;
 }
-Md *Md::setBarostat(std::string baroType)
+Md *Md::setBarostat(const std::string& baroType)
 {
     if (baroType == "berendsen")
     {
@@ -268,7 +249,7 @@ Md *Md::setBarostat(std::string baroType)
     }
     return this;
 }
-Md *Md::setThermostat(std::string thermoType)
+Md *Md::setThermostat(const std::string& thermoType)
 {
     if (thermoType == "berendsen")
     {

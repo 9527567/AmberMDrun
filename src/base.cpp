@@ -66,13 +66,29 @@ void Base::restraint()
 // 最简单的版本
 void Base::setRestraintMask(std::string appendMask)
 {
+    int num = systemInfo_.getNprotein() + systemInfo_.getnDna() + systemInfo_.getnRna() + systemInfo_.getnLipid() + systemInfo_.getnCarbo();
     if (restraintMask_.empty())
     {
-        restraintMask_ = fmt::format("\":1-{}&!@H=\"", systemInfo_.getNprotein() + systemInfo_.getnDna() + systemInfo_.getnRna() + systemInfo_.getnLipid() + systemInfo_.getnCarbo());
+        if (num > 0)
+        {
+            restraintMask_ = fmt::format("\":1-{}&!@H=\"", num);
+        }
+        else
+        {
+            throw std::runtime_error("restraintMask is empty!");
+        }
 
     } else
     {
-        restraintMask_ = fmt::format("\":1-{}&!@H=|:{}\"", systemInfo_.getNprotein() + systemInfo_.getnDna() + systemInfo_.getnRna() + systemInfo_.getnLipid() + systemInfo_.getnCarbo(), appendMask);
+        if (num > 0)
+            {
+                restraintMask_ = fmt::format("\":1-{}&!@H=|:{}\"", num, appendMask);
+            }
+            else
+            {
+                restraintMask_ = fmt::format("\":{}\"", appendMask);
+
+            }
     }
 }
 [[maybe_unused]] Base *Base::setCut(float cut)

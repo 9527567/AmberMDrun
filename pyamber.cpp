@@ -3,9 +3,11 @@
 //
 #include "md.hpp"
 #include "min.hpp"
+#include "npt.hpp"
+#include "nvt.hpp"
 #include "pybind11/pybind11.h"
 namespace py = pybind11;
-PYBIND11_MODULE(pyamber, m)
+PYBIND11_MODULE(_pyamber, m)
 {
     py::class_<SystemInfo>(m, "SystemInfo")
             .def(py::init<const std::string &,
@@ -144,4 +146,122 @@ PYBIND11_MODULE(pyamber, m)
             .def("setNtb", &Md::setNtb)
             .def("setBarostat", &Md::setBarostat)
             .def("setThermostat", &Md::setThermostat);
+    py::class_<Nvt>(m, "Nvt", py::dynamic_attr())
+            .def(py::init<const std::string &,
+                          SystemInfo,
+                          const std::string &,
+                          const std::string &,
+                          bool,
+                          float,
+                          const std::string &,
+                          float,
+                          int,
+                          float,
+                          int,
+                          int,
+                          float,
+                          float,
+                          float,
+                          int,
+                          int,
+                          int,
+                          int>(),
+                 py::arg("name"),
+                 py::arg("systemInfo"),
+                 py::arg("ref"),
+                 py::arg("refc"),
+                 py::arg("irest") = false,
+                 py::arg("temp") = 303.15,
+                 py::arg("restraintmask") = "",
+                 py::arg("restraint_wt") = 0.0,
+                 py::arg("nstlim") = 5000,
+                 py::arg("cut") = 8.0,
+                 py::arg("ntc") = 2,
+                 py::arg("ntf") = 2,
+                 py::arg("tautp") = 1.0,
+                 py::arg("gamma_ln") = 5.0,
+                 py::arg("dt") = 0.002,
+                 py::arg("ncsm") = 0,
+                 py::arg("ntwx") = 500,
+                 py::arg("ntpr") = 50,
+                 py::arg("ntwr") = 500)
+            .def("Run", &Nvt::Run)
+            .def("setCut", &Nvt::setCut)
+            .def("setTemp", &Nvt::setTemp)
+            .def("setNTpr", &Nvt::setNTpr)
+            .def("setNTwx", &Nvt::setNTwx)
+            .def("setNTwr", &Nvt::setNTwr)
+            .def("setNstLim", &Nvt::setNstLim)
+            .def("setIrest", &Nvt::setIrest)
+            .def("setTautp", &Nvt::setTautp)
+            .def("setGammaLn", &Nvt::setGammaLn)
+            .def("setDt", &Nvt::setDt)
+            .def("setNscm", &Nvt::setNscm)
+            .def("setNtx", &Nvt::setNtx)
+            .def("setNtc", &Nvt::setNtc)
+            .def("setNtf", &Nvt::setNtf)
+            .def("setNtb", &Nvt::setNtb)
+            .def("setThermostat", &Nvt::setThermostat);
+    py::class_<Npt>(m, "Npt", py::dynamic_attr())
+            .def(py::init<const std::string &,
+                          SystemInfo,
+                          const std::string &,
+                          const std::string &,
+                          bool,
+                          float,
+                          const std::string &,
+                          float,
+                          int,
+                          float,
+                          int,
+                          int,
+                          float,
+                          float,
+                          int,
+                          float,
+                          float,
+                          int,
+                          int,
+                          int,
+                          int>(),
+                 py::arg("name"),
+                 py::arg("systemInfo"),
+                 py::arg("ref"),
+                 py::arg("refc"),
+                 py::arg("irest") = false,
+                 py::arg("temp") = 303.15,
+                 py::arg("restraintmask") = "",
+                 py::arg("restraint_wt") = 0.0,
+                 py::arg("nstlim") = 5000,
+                 py::arg("cut") = 8.0,
+                 py::arg("ntc") = 2,
+                 py::arg("ntf") = 2,
+                 py::arg("tautp") = 1.0,
+                 py::arg("taup") = 1.0,
+                 py::arg("mcbarint") = 100,
+                 py::arg("gamma_ln") = 5.0,
+                 py::arg("dt") = 0.002,
+                 py::arg("ncsm") = 0,
+                 py::arg("ntwx") = 500,
+                 py::arg("ntpr") = 50,
+                 py::arg("ntwr") = 500)
+            .def("Run", &Npt::Run)
+            .def("setCut", &Npt::setCut)
+            .def("setTemp", &Npt::setTemp)
+            .def("setNTpr", &Npt::setNTpr)
+            .def("setNTwx", &Npt::setNTwx)
+            .def("setNTwr", &Npt::setNTwr)
+            .def("setNstLim", &Npt::setNstLim)
+            .def("setIrest", &Npt::setIrest)
+            .def("setTautp", &Npt::setTautp)
+            .def("setTaup", &Npt::settaup)
+            .def("setMcbarint", &Npt::setMcbarint)
+            .def("setGammaLn", &Npt::setGammaLn)
+            .def("setDt", &Npt::setDt)
+            .def("setNscm", &Npt::setNscm)
+            .def("setNtx", &Npt::setNtx)
+            .def("setNtc", &Npt::setNtc)
+            .def("setNtf", &Npt::setNtf)
+            .def("setBarostat", &Npt::setBarostat)
+            .def("setThermostat", &Npt::setThermostat);
 }

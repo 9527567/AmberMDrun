@@ -4,6 +4,7 @@
 #include "fmt/core.h"
 #include "md.hpp"
 #include "min.hpp"
+#include "nvt.hpp"
 #include <memory>
 #include <string>
 auto flag(int &argc, char *argv[]) -> cmdline::parser
@@ -37,5 +38,6 @@ int main(int argc, char *argv[])
 {
     auto f = flag(argc, argv);
     // MIN 01
-
+    auto s = SystemInfo("com.parm7","com.rst7");
+    auto nvt = Nvt("step01",s,"com.rst7","com.rst7");
 }

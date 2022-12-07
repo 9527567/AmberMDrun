@@ -168,7 +168,8 @@ public:
     static inline const std::vector<std::string> CharmmWater{
             "TIP3"};
     static inline const std::vector<std::string> Water{
-            "WAT"};
+            "WAT",
+            "SOL"};
 };
 
 
@@ -176,7 +177,7 @@ class SystemInfo
 {
 public:
     SystemInfo() = default;
-    explicit SystemInfo(const std::string &parm7File,const std::string &rst7File, const std::string &runMin = "pmemd.cuda_DPFP", const std::string &runMd = "pmemd.cuda");
+    explicit SystemInfo(const std::string &parm7File, const std::string &rst7File, const std::string &runMin = "pmemd.cuda_DPFP", const std::string &runMd = "pmemd.cuda");
     [[nodiscard]] int getNprotein() const
     {
         return nProtein_;
