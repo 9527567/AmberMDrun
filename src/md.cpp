@@ -141,8 +141,8 @@ void Md::Thermostat()
         fmt::ostream out = fmt::output_file(name_ + ".in", fmt::file::WRONLY | fmt::file::APPEND);
         out.print("ntt={},", 3);
         out.print("gamma_ln={},", gamma_ln_);
-        out.print("temp0={},", 300);
-        out.print("tempi={},", 300);
+        out.print("temp0={},", temp_);
+        out.print("tempi={},", temp_);
         out.print("\n");
     } else
     {
