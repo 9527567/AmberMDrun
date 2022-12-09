@@ -11,28 +11,7 @@ def arg_parse():
                         required=True, help='amber rst file')
     parser.add_argument('--temp', '-t', type=float,
                         required=True, help='Temperature')
-    parser.add_argument('--overwrite', '-O', type=bool,
-                        help='Overwrite existing files, otherwise skip.', default=True)
-    parser.add_argument('--thermo', type=str, help='Thermostat',
-                        choices=["berendsen", "langevin"], default="langevin")
-    parser.add_argument('--baro', type=str, help='Barostat',
-                        choices=["berendsen", "montecarlo"], default="montecarlo")
-    parser.add_argument('--finalthermo', type=str, help='Final stage thermostat',
-                        choices=["berendsen", "langevin"], default="langevin")
-    parser.add_argument('--finalbaro', type=str, help='Final stage barostat',
-                        choices=["berendsen", "langevin"], default="montecarlo")
-    parser.add_argument(
-        '--mask', type=str, help='Additional mask to use for restraints during steps 1-8.')
-    parser.add_argument(
-        '--pmask', help='Restraint mask to use during production (steps 9 and above).', type=str)
-    parser.add_argument(
-        '--pref', type=str, help='Optional reference structure to use for \'--pmask\'.')
-    parser.add_argument('--charmmwater', type=str,
-                        help='If specified assume CHARMM water (i.e. \'TIP3\').')
-    parser.add_argument(
-        '--cutoff', type=str, help='If specified, override default cutoffs with <cut>.')
-    parser.add_argument('--norestart', type=str,
-                        help='Do standard Eq with no restarts.')
+    parser.add_argument('--addmask', default=None, help="add restarint mask")
     args = parser.parse_args()
     return args
 
@@ -41,24 +20,64 @@ def main():
     args = arg_parse()
     parm7 = args.parm7
     rst7 = args.rst7
+    temp = args.temp
     s = pyamber.SystemInfo(parm7, rst7)
-    min1 = pyamber.Min("step1",systemInfo=s,ref="com.rst7",refc="com.rst7",restraintmask=s.getHeavyMask(),restraint_wt=5.0)
-    min1.Run()
-    nvt1 = pyamber.NVT("step2",systemInfo=s,ref="step1.rst7",refc="step1.rst7",restraintmask=s.getHeavyMask(),restraint_wt=5.0,nstlim=15000,tautp=0.5)
-    nvt1.Run()
-    min2 = pyamber.Min('step3',systemInfo=s,ref='step2.rst7',refc='step2.rst7',restraintmask=s.getHeavyMask(),restraint_wt=2.0)
-    min2.Run()
-    min3 = pyamber.Min('step4',systemInfo=s,ref='step3.rst7',refc='step3.rst7',restraintmask=s.getHeavyMask(),restraint_wt=0.1)
-    min3.Run()
-    min4 = pyamber.Min('step5',systemInfo=s,ref='step4.rst7',refc='step4.rst7')
-    min4.Run()
-    npt1 = pyamber.NPT("step6",systemInfo=s,ref="step5.rst7",refc="step5.rst7",restraintmask=s.getHeavyMask(),restraint_wt=1.0)
-    npt1.Run()
-    npt2 = pyamber.NPT("step7",systemInfo=s,ref="step6.rst7",refc="step5.rst7",irest=True,restraintmask=s.getHeavyMask(),restraint_wt=0.5)
-    npt2.Run()
-    npt3 = pyamber.NPT("step8",systemInfo=s,ref="step7.rst7",refc="step5.rst7",irest=True,restraintmask=s.getBackBoneMask(),restraint_wt=0.5,nstlim=10000)
-    npt3.Run()
-    npt4 = pyamber.NPT("step9",systemInfo=s,ref="step8.rst7",refc="step5.rst7",irest=True,dt=0.002,nscm=1000)
-    npt4.Run()
+    if args.addmask != None:
+        min1 = pyamber.Min("step1", systemInfo=s, ref="com.rst7", refc="com.rst7",
+                           restraintmask=s.getHeavyMask()+"|"+args.addmask, restraint_wt=5.0)
+        min1.Run()
+        nvt1 = pyamber.NVT("step2", systemInfo=s, ref="step1.rst7", refc="step1.rst7", temp=args.temp, restraintmask=s.getHeavyMask(
+        )+"|"+args.addmask, restraint_wt=5.0, nstlim=15000, tautp=0.5)
+        nvt1.Run()
+        min2 = pyamber.Min('step3', systemInfo=s, ref='step2.rst7', refc='step2.rst7',
+                           restraintmask=s.getHeavyMask()+"|"+args.addmask, restraint_wt=2.0)
+        min2.Run()
+        min3 = pyamber.Min('step4', systemInfo=s, ref='step3.rst7', refc='step3.rst7',
+                           restraintmask=s.getHeavyMask()+"|"+args.addmask, restraint_wt=0.1)
+        min3.Run()
+        min4 = pyamber.Min('step5', systemInfo=s,
+                           ref='step4.rst7', refc='step4.rst7')
+        min4.Run()
+        npt1 = pyamber.NPT("step6", systemInfo=s, ref="step5.rst7", refc="step5.rst7",temp=args.temp,
+                           restraintmask=s.getHeavyMask()+"|"+args.addmask, restraint_wt=1.0)
+        npt1.Run()
+        npt2 = pyamber.NPT("step7", systemInfo=s, ref="step6.rst7", refc="step5.rst7",temp=args.temp,
+                           irest=True, restraintmask=s.getHeavyMask()+"|"+args.addmask, restraint_wt=0.5)
+        npt2.Run()
+        npt3 = pyamber.NPT("step8", systemInfo=s, ref="step7.rst7", refc="step5.rst7", irest=True,temp=args.temp,
+                           restraintmask=s.getBackBoneMask()+"|"+args.addmask, restraint_wt=0.5, nstlim=10000)
+        npt3.Run()
+        npt4 = pyamber.NPT("step9", systemInfo=s, ref="step8.rst7",temp=args.temp,
+                           refc="step5.rst7", irest=True, dt=0.002, nscm=1000)
+        npt4.Run()
+    else:
+        min1 = pyamber.Min("step1", systemInfo=s, ref="com.rst7",
+                           refc="com.rst7", restraintmask=s.getHeavyMask(), restraint_wt=5.0)
+        min1.Run()
+        nvt1 = pyamber.NVT("step2", systemInfo=s, ref="step1.rst7", refc="step1.rst7",temp=args.temp,
+                           restraintmask=s.getHeavyMask(), restraint_wt=5.0, nstlim=15000, tautp=0.5)
+        nvt1.Run()
+        min2 = pyamber.Min('step3', systemInfo=s, ref='step2.rst7',
+                           refc='step2.rst7', restraintmask=s.getHeavyMask(), restraint_wt=2.0)
+        min2.Run()
+        min3 = pyamber.Min('step4', systemInfo=s, ref='step3.rst7',
+                           refc='step3.rst7', restraintmask=s.getHeavyMask(), restraint_wt=0.1)
+        min3.Run()
+        min4 = pyamber.Min('step5', systemInfo=s,
+                           ref='step4.rst7', refc='step4.rst7')
+        min4.Run()
+        npt1 = pyamber.NPT("step6", systemInfo=s, ref="step5.rst7",temp=args.temp,
+                           refc="step5.rst7", restraintmask=s.getHeavyMask(), restraint_wt=1.0)
+        npt1.Run()
+        npt2 = pyamber.NPT("step7", systemInfo=s, ref="step6.rst7", refc="step5.rst7",temp=args.temp,
+                           irest=True, restraintmask=s.getHeavyMask(), restraint_wt=0.5)
+        npt2.Run()
+        npt3 = pyamber.NPT("step8", systemInfo=s, ref="step7.rst7", refc="step5.rst7",temp=args.temp,
+                           irest=True, restraintmask=s.getBackBoneMask(), restraint_wt=0.5, nstlim=10000)
+        npt3.Run()
+        npt4 = pyamber.NPT("step9", systemInfo=s, ref="step8.rst7",temp=args.temp,
+                           refc="step5.rst7", irest=True, dt=0.002, nscm=1000)
+        npt4.Run()
+
 if __name__ == '__main__':
     main()
