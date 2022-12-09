@@ -163,9 +163,9 @@ void Npt::runMd()
 {
     Md::runMd();
 }
-void Npt::setRestraintMask(std::string appendMask)
+void Npt::setRestraintMask(std::string restraintMask)
 {
-    Md::setRestraintMask(appendMask);
+    Md::setRestraintMask(restraintMask);
 }
 void Npt::writeInput()
 {

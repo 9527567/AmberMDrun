@@ -54,33 +54,97 @@ SystemInfo::SystemInfo(const std::string &parm7File, const std::string &rst7File
     parm7File_ = parm7File;
     rst7File_ = rst7File;
     std::vector<std::string> result = executeCMD(this->runCpptraj_ + " -p " + parm7File_ + " --resmask \\*");
+    bool ProteinFlag = false;
+    bool DNAFlag = false;
+    bool RNAFlag = false;
+    bool LipidFlag = false;
+    bool CarboFlag = false;
+    bool CharmmWaterFlag = false;
+    bool WaterFlag = false;
     for (int i = 1; i < result.size(); ++i)
     {
         std::string resname = result[i].substr(6, 4);
         trim(resname);
         if (isIn(resname, ResName::Protein))
         {
+            if (!ProteinFlag)
+            {
+                Protein_.first = i;
+                ProteinFlag = true;
+            } else
+            {
+                Protein_.second = i;
+            }
             nProtein_++;
         } else if (isIn(resname, ResName::DNA))
         {
+            if (!DNAFlag)
+            {
+                DNA_.first = i;
+                DNAFlag = true;
+            } else
+            {
+                DNA_.second = i;
+            }
             nDna_++;
         } else if (isIn(resname, ResName::RNA))
         {
+            if (!RNAFlag)
+            {
+                RNA_.first = i;
+                RNAFlag = true;
+            } else
+            {
+                RNA_.second = i;
+            }
             nRna_++;
         } else if (isIn(resname, ResName::Lipid))
         {
+            if (!LipidFlag)
+            {
+                Lipid_.first = i;
+                LipidFlag = true;
+            } else
+            {
+                Lipid_.second = i;
+            }
             nLipid_++;
         } else if (isIn(resname, ResName::Carbo))
         {
+            if (!CarboFlag)
+            {
+                Carbo_.first = i;
+                CarboFlag = true;
+            } else
+            {
+                Carbo_.second = i;
+            }
             nCarbo_++;
         } else if (isIn(resname, ResName::CharmmWater))
         {
+            if (!CharmmWaterFlag)
+            {
+                CharmmWater_.first = i;
+                CharmmWaterFlag = true;
+            } else
+            {
+                CharmmWater_.second = i;
+            }
             nCharmmWater_++;
         } else if (isIn(resname, ResName::Water))
         {
+            if (!WaterFlag)
+            {
+                Water_.first = i;
+                WaterFlag = true;
+            } else
+            {
+                Water_.second = i;
+            }
             nWater_++;
         } else
         {
+            unKnownRes_.emplace(resname);
             nunKnown_++;
         }
     }
@@ -102,5 +166,41 @@ SystemInfo::SystemInfo(const std::string &parm7File, const std::string &rst7File
     } else
     {
         hasOrthoBox_ = true;
+    }
+}
+std::optional<std::string> SystemInfo::getBackBoneMask() const
+{
+    {
+        int &&num = nProtein_ + nDna_ + nRna_ + nLipid_ + nCarbo_;
+        if (num > 0)
+        {
+            if (nProtein_ > 0 && nDna_ > 0 && nRna_ > 0 && nLipid_ > 0 && nCarbo_ > 0)
+            {
+                return fmt::format("\":{}-{}@H,N,CA,HA,C,O|:{}-{}@P,O5',C5',C4',C3',O3|:{}-{}@P,O5',C5',C4',C3',O3:{}-{}&!@H=|:{}-{}&!@H=\"",
+                                   Protein_.first, Protein_.second, DNA_.first, DNA_.second, RNA_.first,
+                                   RNA_.second, Lipid_.first, Lipid_.second, Carbo_.first, Carbo_.second);
+            } else if (nProtein_ > 0 && nDna_ > 0 && nRna_ > 0 && nLipid_ > 0)
+            {
+                return fmt::format("\":{}-{}@H,N,CA,HA,C,O|:{}-{}@P,O5',C5',C4',C3',O3|:{}-{}@P,O5',C5',C4',C3',O3:{}-{}&!@H=\"",
+                                   Protein_.first, Protein_.second, DNA_.first, DNA_.second, RNA_.first,
+                                   RNA_.second, Lipid_.first, Lipid_.second);
+            } else if (nProtein_ > 0 && nDna_ > 0 && nRna_ > 0)
+            {
+                return fmt::format("\":{}-{}@H,N,CA,HA,C,O|:{}-{}@P,O5',C5',C4',C3',O3|:{}-{}@P,O5',C5',C4',C3',O3\"",
+                                   Protein_.first, Protein_.second, DNA_.first, DNA_.second, RNA_.first,
+                                   RNA_.second);
+            } else if (nProtein_ > 0 && nDna_ > 0)
+            {
+                return fmt::format("\":{}-{}@H,N,CA,HA,C,O|:{}-{}@P,O5',C5',C4',C3',O3\"",
+                                   Protein_.first, Protein_.second, DNA_.first, DNA_.second);
+            } else if (nProtein_ > 0)
+            {
+                return fmt::format("\":{}-{}@H,N,CA,HA,C,O\"",
+                                   Protein_.first, Protein_.second);
+            }
+        } else
+        {
+            return std::nullopt;
+        }
     }
 }

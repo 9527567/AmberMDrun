@@ -9,7 +9,7 @@
 Base::Base(const std::string &name, SystemInfo systemInfo, const std::string &rst7,const std::string &refc, bool irest, const std::string &restranintmask, float restraint_wt, float cut)
 {
     name_ = name;
-    systemInfo_ = systemInfo;
+    systemInfo_ = std::move(systemInfo);
     rst7_ = rst7;
     iRest_ = irest;
     restraintMask_ = restranintmask;
@@ -49,7 +49,6 @@ void Base::writeEnd()
 }
 void Base::restraint()
 {
-    setRestraintMask(restraintMask_);
     fmt::ostream out = fmt::output_file(name_ + ".in", fmt::file::WRONLY | fmt::file::APPEND);
     if (restraintMask_.empty())
     {
@@ -64,41 +63,16 @@ void Base::restraint()
     }
 }
 // 最简单的版本
-void Base::setRestraintMask(std::string appendMask)
+void Base::setRestraintMask(std::string restraintMask)
 {
-    int num = systemInfo_.getNprotein() + systemInfo_.getnDna() + systemInfo_.getnRna() + systemInfo_.getnLipid() + systemInfo_.getnCarbo();
-    if (restraintMask_.empty())
-    {
-        if (num > 0)
-        {
-            restraintMask_ = fmt::format("\":1-{}&!@H=\"", num);
-        }
-        else
-        {
-            throw std::runtime_error("restraintMask is empty!");
-        }
-
-    } else
-    {
-        if (num > 0)
-            {
-                restraintMask_ = fmt::format("\":1-{}&!@H=|:{}\"", num, appendMask);
-            }
-            else
-            {
-                restraintMask_ = fmt::format("\":{}\"", appendMask);
-
-            }
-    }
+    restraintMask_ = std::move(restraintMask);
 }
 [[maybe_unused]] Base *Base::setCut(float cut)
 {
     cut_ = cut;
     return this;
 }
-void Base::appendMask(std::string mask)
-{
-}
+
 Base *Base::setNTwx(int ntwx)
 {
     nTwx_ = ntwx;

@@ -5,9 +5,12 @@
 #ifndef AMBERMD_SYSTEMINFO_HPP
 #define AMBERMD_SYSTEMINFO_HPP
 
+#include "fmt/format.h"
 #include "noncopyable.hpp"
+#include <optional>
 #include <string>
 #include <vector>
+#include <unordered_set>
 class ResName
 {
 public:
@@ -234,6 +237,18 @@ public:
     {
         return rst7File_;
     };
+    [[nodiscard]] std::optional<std::string> getHeavyMask() const
+    {
+        int &&num = nProtein_ + nDna_ + nRna_ + nLipid_ + nCarbo_;
+        if (num > 0)
+        {
+            return fmt::format("\":1-{}&!@H=\"", num);
+        } else
+        {
+            return std::nullopt;
+        }
+    }
+    [[nodiscard]] std::optional<std::string> getBackBoneMask() const;
 
 private:
     std::string runMin_;
@@ -251,6 +266,14 @@ private:
     int nCarbo_ = 0;
     bool hasCharmmWater_ = false;
     bool hasOrthoBox_;
+    std::pair<int, int> Protein_{-1,-1};
+    std::pair<int, int> DNA_{-1,-1};
+    std::pair<int, int> RNA_{-1,-1};
+    std::pair<int, int> Lipid_{-1,-1};
+    std::pair<int, int> Carbo_{-1,-1};
+    std::pair<int, int> CharmmWater_{-1,-1};
+    std::pair<int, int> Water_{-1,-1};
+    std::unordered_set<std::string> unKnownRes_;
 };
 
 #endif//AMBERMD_SYSTEMINFO_HPP

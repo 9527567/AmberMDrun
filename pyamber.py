@@ -16,7 +16,9 @@ class SystemInfo(_pyamber.SystemInfo):
     getHasOrthoBox = _pyamber.SystemInfo.getHasOrthoBox
     getRunMin = _pyamber.SystemInfo.getRunMin
     getRunMd = _pyamber.SystemInfo.getRunMd
-
+    getHeavyMask = _pyamber.SystemInfo.getHeavyMask
+    getBackBoneMask = _pyamber.SystemInfo.getBackBoneMask
+    
 
 class Min(_pyamber.Min):
     def __init__(self, name, systemInfo, ref, refc, irest=False, restraintmask="", restraint_wt=0.0, cut=8.0, nTmin=2, maxCyc=1000, nCyc=10, nTwx=500, nTpr=50, nTwr=500) -> None:
@@ -33,9 +35,9 @@ class Min(_pyamber.Min):
 
 
 class NVT(_pyamber.Nvt):
-    def __init__(self, name, systemInfo, ref, refc, irest=False, temp=303.15, restraintmask="", restraint_wt=0.0, nstlim=5000, cut=8.0, ntb=1, ntc=2, ntf=2, tautp=1.0, gamma_ln=5.0, dt=0.002, ncsm=0, ntwx=500, ntpr=50, ntwr=500) -> None:
+    def __init__(self, name, systemInfo, ref, refc, irest=False, temp=303.15, restraintmask="", restraint_wt=0.0, nstlim=5000, cut=8.0, ntb=1, ntc=2, ntf=2, tautp=1.0, gamma_ln=5.0, dt=0.002, nscm=0, ntwx=500, ntpr=50, ntwr=500) -> None:
         super().__init__(name, systemInfo, ref, refc, irest=irest, temp=temp, restraintmask=restraintmask, restraint_wt=restraint_wt,
-                         nstlim=nstlim, cut=cut, ntc=ntc, ntf=ntf, tautp=tautp, gamma_ln=gamma_ln, dt=dt, ncsm=ncsm, ntwx=ntwx, ntpr=ntpr, ntwr=ntwr)
+                         nstlim=nstlim, cut=cut, ntc=ntc, ntf=ntf, tautp=tautp, gamma_ln=gamma_ln, dt=dt, nscm=nscm, ntwx=ntwx, ntpr=ntpr, ntwr=ntwr)
     Run = _pyamber.Nvt.Run
     setCut = _pyamber.Nvt.setCut
     setTemp = _pyamber.Nvt.setTemp
@@ -55,9 +57,9 @@ class NVT(_pyamber.Nvt):
 
 
 class NPT(_pyamber.Npt):
-    def __init__(self, name, systemInfo, ref, refc, irest=False, temp=303.15, restraintmask="", restraint_wt=0.0, nstlim=5000, cut=8.0, ntc=2, ntf=2, tautp=1.0, taup=1.0, mcbarint=100, gamma_ln=5.0, dt=0.002, ncsm=0, ntwx=500, ntpr=50, ntwr=500) -> None:
+    def __init__(self, name, systemInfo, ref, refc, irest=False, temp=303.15, restraintmask="", restraint_wt=0.0, nstlim=5000, cut=8.0, ntc=2, ntf=2, tautp=1.0, taup=1.0, mcbarint=100, gamma_ln=5.0, dt=0.002, nscm=0, ntwx=500, ntpr=50, ntwr=500) -> None:
         super().__init__(name, systemInfo, ref, refc, irest=irest, temp=temp, restraintmask=restraintmask, restraint_wt=restraint_wt,
-                         nstlim=nstlim, cut=cut, ntc=ntc, ntf=ntf, tautp=tautp, taup=taup, mcbarint=mcbarint, gamma_ln=gamma_ln, dt=dt, ncsm=ncsm, ntwx=ntwx, ntpr=ntpr, ntwr=ntwr)
+                         nstlim=nstlim, cut=cut, ntc=ntc, ntf=ntf, tautp=tautp, taup=taup, mcbarint=mcbarint, gamma_ln=gamma_ln, dt=dt, nscm=nscm, ntwx=ntwx, ntpr=ntpr, ntwr=ntwr)
     Run = _pyamber.Npt.Run
     setCut = _pyamber.Npt.setCut
     setTemp = _pyamber.Npt.setTemp

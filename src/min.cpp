@@ -9,7 +9,7 @@
 Min::Min(const std::string &name, SystemInfo systemInfo,const std::string &rst7,const std::string &refc,bool irest, const std::string& restrintmask, float restrant_wt, float cut, int nTmin, int maxCyc, int nCyc, int nTwx, int nTpr, int nTwr)
 {
     name_ = name;
-    systemInfo_ = systemInfo;
+    systemInfo_ = std::move(systemInfo);
     rst7_ = rst7;
     refc_ = refc;
     iRest_ = irest;
@@ -72,9 +72,9 @@ void Min::Run()
 {
     Base::Run();
 }
-void Min::setRestraintMask(std::string appendMask)
+void Min::setRestraintMask(std::string restraintMask)
 {
-    Base::setRestraintMask(appendMask);
+    Base::setRestraintMask(restraintMask);
 }
 Min *Min::setCut(float cut)
 {

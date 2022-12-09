@@ -100,9 +100,9 @@ void Md::writeEnd()
 {
     Base::writeEnd();
 }
-void Md::setRestraintMask(std::string appendMask)
+void Md::setRestraintMask(std::string restraintMask)
 {
-    Base::setRestraintMask(appendMask);
+    Base::setRestraintMask(restraintMask);
 }
 void Md::barostat()
 {

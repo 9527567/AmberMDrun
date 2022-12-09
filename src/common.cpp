@@ -4,6 +4,7 @@
 #include <cstring>
 #include <filesystem>
 #include <vector>
+#include "fmt/format.h"
 std::vector<std::string> executeCMD(const std::string &strCmd)
 {
     char buf[1024] = {0};
@@ -11,7 +12,7 @@ std::vector<std::string> executeCMD(const std::string &strCmd)
 
     if ((pf = popen(strCmd.c_str(), "r")) == nullptr)
     {
-        return {};
+        throw std::runtime_error(fmt::format("{} run failed!\n",strCmd));
     }
 
     std::string strResult;

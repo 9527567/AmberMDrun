@@ -6,6 +6,7 @@
 #include "npt.hpp"
 #include "nvt.hpp"
 #include "pybind11/pybind11.h"
+#include "pybind11/stl.h"
 namespace py = pybind11;
 PYBIND11_MODULE(_pyamber, m)
 {
@@ -29,7 +30,9 @@ PYBIND11_MODULE(_pyamber, m)
             .def("getHasCharmmWater", &SystemInfo::getHasCharmmWater)
             .def("getHasOrthoBox", &SystemInfo::getHasOrthoBox)
             .def("getRunMin", &SystemInfo::getRunMd)
-            .def("getRunMd", &SystemInfo::getRunMin);
+            .def("getRunMd", &SystemInfo::getRunMin)
+            .def("getHeavyMask", &SystemInfo::getHeavyMask)
+            .def("getBackBoneMask", &SystemInfo::getBackBoneMask);
 
     //    py::class_<Base>(m, "Base")
     //            .def(py::init<std::string,
@@ -122,7 +125,7 @@ PYBIND11_MODULE(_pyamber, m)
                  py::arg("mcbarint") = 100,
                  py::arg("gamma_ln") = 5.0,
                  py::arg("dt") = 0.002,
-                 py::arg("ncsm") = 0,
+                 py::arg("nscm") = 0,
                  py::arg("ntwx") = 500,
                  py::arg("ntpr") = 50,
                  py::arg("ntwr") = 500)
@@ -181,7 +184,7 @@ PYBIND11_MODULE(_pyamber, m)
                  py::arg("tautp") = 1.0,
                  py::arg("gamma_ln") = 5.0,
                  py::arg("dt") = 0.002,
-                 py::arg("ncsm") = 0,
+                 py::arg("nscm") = 0,
                  py::arg("ntwx") = 500,
                  py::arg("ntpr") = 50,
                  py::arg("ntwr") = 500)
@@ -241,7 +244,7 @@ PYBIND11_MODULE(_pyamber, m)
                  py::arg("mcbarint") = 100,
                  py::arg("gamma_ln") = 5.0,
                  py::arg("dt") = 0.002,
-                 py::arg("ncsm") = 0,
+                 py::arg("nscm") = 0,
                  py::arg("ntwx") = 500,
                  py::arg("ntpr") = 50,
                  py::arg("ntwr") = 500)

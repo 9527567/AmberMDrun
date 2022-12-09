@@ -118,9 +118,9 @@ Nvt *Nvt::setThermostat(const std::string &thermoType)
     }
     return this;
 }
-void Nvt::setRestraintMask(std::string appendMask)
+void Nvt::setRestraintMask(std::string restraintMask)
 {
-    Md::setRestraintMask(appendMask);
+    Md::setRestraintMask(restraintMask);
 }
 void Nvt::writeInput()
 {

@@ -20,7 +20,6 @@ public:
     [[maybe_unused]] virtual Base *setNTwx(int ntwx);
     [[maybe_unused]] virtual Base *setNTwr(int ntwr);
     [[maybe_unused]] virtual Base *setNTpr(int ntpr);
-    [[maybe_unused]] virtual void appendMask(std::string mask);
 
 protected:
     virtual void setRestraintMask(std::string);

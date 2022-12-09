@@ -36,3 +36,4 @@ build
 .xmake
 dist
 AmberMD.egg-info
+test
