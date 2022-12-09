@@ -11,7 +11,8 @@ def arg_parse():
                         required=True, help='amber rst file')
     parser.add_argument('--temp', '-t', type=float,
                         required=True, help='Temperature')
-    parser.add_argument('--addmask', default=None, help="add restarint mask")
+    parser.add_argument("--ns",'-n',type=int,help="time for MD(ns)",default=100)
+    parser.add_argument('--addmask', default=None, type=str,help="add restarint mask")
     args = parser.parse_args()
     return args
 
@@ -50,6 +51,9 @@ def main():
         npt4 = pyamber.NPT("step9", systemInfo=s, ref="step8.rst7",temp=args.temp,
                            refc="step5.rst7", irest=True, dt=0.002, nscm=1000)
         npt4.Run()
+        md = pyamber.NPT("Md",systemInfo=s,ref="step9.rst7",temp=args.temp,
+                           refc="step5.rst7", irest=True, dt=0.002, nscm=1000,nstlim=args.ns*500000)
+        md.Run()
     else:
         min1 = pyamber.Min("step1", systemInfo=s, ref="com.rst7",
                            refc="com.rst7", restraintmask=s.getHeavyMask(), restraint_wt=5.0)
@@ -78,6 +82,9 @@ def main():
         npt4 = pyamber.NPT("step9", systemInfo=s, ref="step8.rst7",temp=args.temp,
                            refc="step5.rst7", irest=True, dt=0.002, nscm=1000)
         npt4.Run()
+        md = pyamber.NPT("Md",systemInfo=s,ref="step9.rst7",temp=args.temp,
+                           refc="step5.rst7", irest=True, dt=0.002, nscm=1000,nstlim=args.ns*500000)
+        md.Run()
 
 if __name__ == '__main__':
     main()
