@@ -23,9 +23,9 @@ void prep(const std::string &rst7, SystemInfo s, float temp, const std::string &
 {
     auto min1 = std::make_unique<Min>("step1", s, rst7, rst7);
     min1->setRestraint_wt(5.0)->setRestraintMask(heavymask)->Run();
-    auto nvt1 = std::make_unique<Nvt>("setp2", s, "step2.rst7", "step2.rst7");
+    auto nvt1 = std::make_unique<Nvt>("step2", s, "step1.rst7", "step1.rst7");
     nvt1->setRestraintMask(heavymask)->setRestraint_wt(5.0)->setNstLim(15000)->setTautp(0.5)->Run();
-    auto min2 = std::make_unique<Min>("step3",s,"step3.rst7","step3.rst7");
+    auto min2 = std::make_unique<Min>("step3",s,"step2.rst7","step2.rst7");
     min2->setRestraint_wt(2.0)->setRestraintMask(heavymask)->Run();
     auto min3 = std::make_unique<Min>("step4",s,"step3.rst7","step3.rst7");
     min3->setRestraintMask(backbonemask)->setRestraint_wt(0.1)->Run();
