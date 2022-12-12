@@ -35,7 +35,7 @@ void prep(const std::string &rst7, SystemInfo s, float temp, const std::string &
     npt1->setTemp(temp)->setRestraintMask(heavymask)->setRestraint_wt(1.0);
     npt1->Run();
     auto npt2 = std::make_unique<Npt>("step7",s,"step6.rst7","step5.rst7");
-    npt2->setTemp(temp)->setRestraintMask(heavymask)->setRestraint_wt(0.5);
+    npt2->setTemp(temp)->setRestraintMask(heavymask)->setRestraint_wt(0.5)->Run();
     auto npt3 = std::make_unique<Npt>("step8",s,"step7.rst7","step5.rst7");
     npt3->setTemp(temp)->setRestraintMask(backbonemask)->setRestraint_wt(0.5)->setIrest(true)->setNstLim(10000)->Run();
     auto npt4 = std::make_unique<Npt>("step9",s,"step8.rst7","step5.rst7");

@@ -72,13 +72,12 @@ Npt *Npt::setNstLim(int nstlim)
 }
 Npt *Npt::setIrest(bool irest)
 {
-    if (irest)
+    iRest_ = irest;
+    if (iRest_)
     {
-        iRest_ = irest;
-    } else
-    {
-        iRest_ = irest;
+        ntx_ = 5;
     }
+    ntx_ = 1;
     return this;
 }
 Npt *Npt::setTautp(float tautp)
