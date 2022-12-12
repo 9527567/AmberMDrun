@@ -30,9 +30,10 @@ public:
     Npt *setTemp(float temp) override;
     Npt *setBarostat(const std::string &) override;
     Npt *setThermostat(const std::string &) override;
+    Npt *setRestraintMask(std::string) override;
+    Npt *setRestraint_wt(float) override;
 
 protected:
-    void setRestraintMask(std::string) override;
     void writeInput() override;
     void charmmWater() override;
     void restraint() override;

@@ -7,10 +7,9 @@
 
 #include "fmt/format.h"
 #include "noncopyable.hpp"
-#include <optional>
 #include <string>
-#include <vector>
 #include <unordered_set>
+#include <vector>
 class ResName
 {
 public:
@@ -237,18 +236,70 @@ public:
     {
         return rst7File_;
     };
-    [[nodiscard]] std::optional<std::string> getHeavyMask() const
+    [[nodiscard]] std::string getHeavyMask() const
     {
-        int &&num = nProtein_ + nDna_ + nRna_ + nLipid_ + nCarbo_;
-        if (num > 0)
+        std::string result = {};
+        int sum = 0;
+        if (nProtein_ > 0)
         {
-            return fmt::format("\":1-{}&!@H=\"", num);
-        } else
-        {
-            return std::nullopt;
+            result += fmt::format(":{}-{}&!@H=",
+                                  Protein_.first, Protein_.second);
+            sum += nProtein_;
         }
+        if (nDna_ > 0)
+        {
+            if (sum == 0)
+            {
+                result += fmt::format(":{}-{}&!@H=",
+                                      DNA_.first, DNA_.second);
+            } else
+            {
+                result += fmt::format("|:{}-{}&!@H=",
+                                      DNA_.first, DNA_.second);
+            }
+            sum += nDna_;
+        }
+        if (nRna_ > 0)
+        {
+            if (sum > 0)
+            {
+                result += fmt::format("|:{}-{}&!@H=",
+                                      RNA_.first, RNA_.second);
+            } else
+            {
+                result += fmt::format("::{}-{}&!@H=",
+                                      RNA_.first, RNA_.second);
+            }
+            sum += nRna_;
+        }
+        if (nLipid_ > 0)
+        {
+            if (sum > 0)
+            {
+                result += fmt::format("|:{}-{}&!@H=",
+                                      Lipid_.first, Lipid_.second);
+            } else
+            {
+                result += fmt::format(":{}-{}&!@H=",
+                                      Lipid_.first, Lipid_.second);
+            }
+            sum += nLipid_;
+        }
+        if (nCarbo_ > 0)
+        {
+            if (sum > 0)
+            {
+                result += fmt::format("|:{}-{}&!@H=",
+                                      Carbo_.first, Carbo_.second);
+            } else
+            {
+                result += fmt::format(":{}-{}&!@H=",
+                                      Carbo_.first, Carbo_.second);
+            }
+        }
+        return result;
     }
-    [[nodiscard]] std::optional<std::string> getBackBoneMask() const;
+    [[nodiscard]] std::string getBackBoneMask() const;
 
 private:
     std::string runMin_;
@@ -266,13 +317,13 @@ private:
     int nCarbo_ = 0;
     bool hasCharmmWater_ = false;
     bool hasOrthoBox_;
-    std::pair<int, int> Protein_{-1,-1};
-    std::pair<int, int> DNA_{-1,-1};
-    std::pair<int, int> RNA_{-1,-1};
-    std::pair<int, int> Lipid_{-1,-1};
-    std::pair<int, int> Carbo_{-1,-1};
-    std::pair<int, int> CharmmWater_{-1,-1};
-    std::pair<int, int> Water_{-1,-1};
+    std::pair<int, int> Protein_{-1, -1};
+    std::pair<int, int> DNA_{-1, -1};
+    std::pair<int, int> RNA_{-1, -1};
+    std::pair<int, int> Lipid_{-1, -1};
+    std::pair<int, int> Carbo_{-1, -1};
+    std::pair<int, int> CharmmWater_{-1, -1};
+    std::pair<int, int> Water_{-1, -1};
     std::unordered_set<std::string> unKnownRes_;
 };
 

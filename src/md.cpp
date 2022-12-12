@@ -3,7 +3,7 @@
 //
 #include "md.hpp"
 #include "fmt/os.h"
-Md::Md(const std::string &name, SystemInfo systemInfo, const std::string &rst7,const std::string &refc, bool irest, float temp, const std::string &restraintmask, float restraint_wt, int nstlim, float cut, int ntb, int ntc, int ntf, float tautp, float taup, int mcbarint, float gamma_ln, float dt, int nscm, int ntwx, int ntpr, int ntwr)
+Md::Md(const std::string &name, SystemInfo systemInfo, const std::string &rst7, const std::string &refc, bool irest, float temp, const std::string &restraintmask, float restraint_wt, int nstlim, float cut, int ntb, int ntc, int ntf, float tautp, float taup, int mcbarint, float gamma_ln, float dt, int nscm, int ntwx, int ntpr, int ntwr)
 {
     name_ = name;
     systemInfo_ = systemInfo;
@@ -100,9 +100,10 @@ void Md::writeEnd()
 {
     Base::writeEnd();
 }
-void Md::setRestraintMask(std::string restraintMask)
+Md *Md::setRestraintMask(std::string restraintMask)
 {
-    Base::setRestraintMask(restraintMask);
+    restraintMask_ = std::move(restraintMask);
+    return this;
 }
 void Md::barostat()
 {
@@ -235,7 +236,7 @@ Md *Md::setNtb(int ntb)
     ntb_ = ntb;
     return this;
 }
-Md *Md::setBarostat(const std::string& baroType)
+Md *Md::setBarostat(const std::string &baroType)
 {
     if (baroType == "berendsen")
     {
@@ -249,7 +250,7 @@ Md *Md::setBarostat(const std::string& baroType)
     }
     return this;
 }
-Md *Md::setThermostat(const std::string& thermoType)
+Md *Md::setThermostat(const std::string &thermoType)
 {
     if (thermoType == "berendsen")
     {
@@ -271,4 +272,9 @@ Md *Md::setTemp(float temp)
 void Md::runMd()
 {
     Base::runMd();
+}
+Md *Md::setRestraint_wt(float restraint_wt)
+{
+    restraint_wt_ = restraint_wt;
+    return this;
 }

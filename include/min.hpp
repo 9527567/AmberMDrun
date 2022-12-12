@@ -19,9 +19,10 @@ public:
     Min *setMaxCyc(int maxcyc);
     Min *setNCyc(int cyc);
     Min *setNTim(int ntim);
+    Min *setRestraintMask(std::string) override;
+    Min *setRestraint_wt(float) override;
 
 protected:
-    void setRestraintMask(std::string) override;
     void writeInput() override;
     void charmmWater() override;
     void restraint() override;

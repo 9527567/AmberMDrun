@@ -5,6 +5,7 @@
 #include <filesystem>
 #include <vector>
 #include "fmt/format.h"
+#include <optional>
 std::vector<std::string> executeCMD(const std::string &strCmd)
 {
     char buf[1024] = {0};

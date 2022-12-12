@@ -6,7 +6,7 @@
 #include "fmt/core.h"
 #include "fmt/os.h"
 #include <utility>
-Base::Base(const std::string &name, SystemInfo systemInfo, const std::string &rst7,const std::string &refc, bool irest, const std::string &restranintmask, float restraint_wt, float cut)
+Base::Base(const std::string &name, SystemInfo systemInfo, const std::string &rst7, const std::string &refc, bool irest, const std::string &restranintmask, float restraint_wt, float cut)
 {
     name_ = name;
     systemInfo_ = std::move(systemInfo);
@@ -63,9 +63,10 @@ void Base::restraint()
     }
 }
 // 最简单的版本
-void Base::setRestraintMask(std::string restraintMask)
+Base *Base::setRestraintMask(std::string restraintMask)
 {
     restraintMask_ = std::move(restraintMask);
+    return this;
 }
 [[maybe_unused]] Base *Base::setCut(float cut)
 {
@@ -104,4 +105,9 @@ void Base::runMd()
     {
         fmt::print("{}", i);
     }
+}
+Base *Base::setRestraint_wt(float restraint_wt)
+{
+    restraint_wt_ = restraint_wt;
+    return this;
 }

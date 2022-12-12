@@ -118,9 +118,10 @@ Nvt *Nvt::setThermostat(const std::string &thermoType)
     }
     return this;
 }
-void Nvt::setRestraintMask(std::string restraintMask)
+Nvt *Nvt::setRestraintMask(std::string restraintMask)
 {
-    Md::setRestraintMask(restraintMask);
+    restraintMask_ = std::move(restraintMask);
+    return this;
 }
 void Nvt::writeInput()
 {
@@ -158,5 +159,10 @@ void Nvt::Run()
 Nvt *Nvt::setTautp(float tautp)
 {
     tautp_ = tautp;
+    return this;
+}
+Nvt *Nvt::setRestraint_wt(float restraint_wt)
+{
+    restraint_wt_ = restraint_wt;
     return this;
 }

@@ -6,7 +6,6 @@
 #include "npt.hpp"
 #include "nvt.hpp"
 #include "pybind11/pybind11.h"
-#include "pybind11/stl.h"
 namespace py = pybind11;
 PYBIND11_MODULE(_pyamber, m)
 {
@@ -83,7 +82,8 @@ PYBIND11_MODULE(_pyamber, m)
             .def("setMaxCyc", &Min::setMaxCyc)
             .def("setNCyc", &Min::setNCyc)
             .def("setNTim", &Min::setNTim)
-            .def("Run", &Min::Run);
+            .def("Run", &Min::Run)
+            .def("setRestraintMask",&Min::setRestraintMask);
     py::class_<Md>(m, "Md", py::dynamic_attr())
             .def(py::init<const std::string &,
                           SystemInfo,
@@ -148,7 +148,8 @@ PYBIND11_MODULE(_pyamber, m)
             .def("setNtf", &Md::setNtf)
             .def("setNtb", &Md::setNtb)
             .def("setBarostat", &Md::setBarostat)
-            .def("setThermostat", &Md::setThermostat);
+            .def("setThermostat", &Md::setThermostat)
+            .def("setRestraintMask",&Md::setRestraintMask);
     py::class_<Nvt>(m, "Nvt", py::dynamic_attr())
             .def(py::init<const std::string &,
                           SystemInfo,
@@ -204,7 +205,8 @@ PYBIND11_MODULE(_pyamber, m)
             .def("setNtc", &Nvt::setNtc)
             .def("setNtf", &Nvt::setNtf)
             .def("setNtb", &Nvt::setNtb)
-            .def("setThermostat", &Nvt::setThermostat);
+            .def("setThermostat", &Nvt::setThermostat)
+            .def("setRestraintMask",&Nvt::setRestraintMask);
     py::class_<Npt>(m, "Npt", py::dynamic_attr())
             .def(py::init<const std::string &,
                           SystemInfo,
@@ -266,5 +268,6 @@ PYBIND11_MODULE(_pyamber, m)
             .def("setNtc", &Npt::setNtc)
             .def("setNtf", &Npt::setNtf)
             .def("setBarostat", &Npt::setBarostat)
-            .def("setThermostat", &Npt::setThermostat);
+            .def("setThermostat", &Npt::setThermostat)
+            .def("setRestraintMask",&Npt::setRestraintMask);
 }

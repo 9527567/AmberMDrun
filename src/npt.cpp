@@ -126,7 +126,7 @@ Npt *Npt::setNtf(int ntf)
     ntf_ = ntf;
     return this;
 }
-Npt *Npt::setBarostat(const std::string& baroType)
+Npt *Npt::setBarostat(const std::string &baroType)
 {
     if (baroType == "berendsen")
     {
@@ -140,7 +140,7 @@ Npt *Npt::setBarostat(const std::string& baroType)
     }
     return this;
 }
-Npt *Npt::setThermostat(const std::string& thermoType)
+Npt *Npt::setThermostat(const std::string &thermoType)
 {
     if (thermoType == "berendsen")
     {
@@ -163,9 +163,10 @@ void Npt::runMd()
 {
     Md::runMd();
 }
-void Npt::setRestraintMask(std::string restraintMask)
+Npt *Npt::setRestraintMask(std::string restraintMask)
 {
-    Md::setRestraintMask(restraintMask);
+    restraintMask_ = std::move(restraintMask);
+    return this;
 }
 void Npt::writeInput()
 {
@@ -190,4 +191,9 @@ void Npt::barostat()
 void Npt::Thermostat()
 {
     Md::Thermostat();
+}
+Npt *Npt::setRestraint_wt(float restraint_wt)
+{
+    restraint_wt_ = restraint_wt;
+    return this;
 }

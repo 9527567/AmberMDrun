@@ -11,7 +11,7 @@
 class Base
 {
 public:
-    Base(const std::string &name, SystemInfo systemInfo, const std::string &rst7,const std::string &refc, bool iRest = false, const std::string &restrintmask = "", float restrant_wt = 0.0, float cut = 8.0);
+    Base(const std::string &name, SystemInfo systemInfo, const std::string &rst7, const std::string &refc, bool iRest = false, const std::string &restrintmask = "", float restrant_wt = 0.0, float cut = 8.0);
     Base() = default;
     ~Base() = default;
     virtual void Run();
@@ -20,9 +20,10 @@ public:
     [[maybe_unused]] virtual Base *setNTwx(int ntwx);
     [[maybe_unused]] virtual Base *setNTwr(int ntwr);
     [[maybe_unused]] virtual Base *setNTpr(int ntpr);
+    virtual Base *setRestraintMask(std::string);
+    virtual Base *setRestraint_wt(float);
 
 protected:
-    virtual void setRestraintMask(std::string);
     virtual void writeInput();
     virtual void charmmWater();
     virtual void restraint();

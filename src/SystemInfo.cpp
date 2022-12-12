@@ -168,39 +168,66 @@ SystemInfo::SystemInfo(const std::string &parm7File, const std::string &rst7File
         hasOrthoBox_ = true;
     }
 }
-std::optional<std::string> SystemInfo::getBackBoneMask() const
+std::string SystemInfo::getBackBoneMask() const
 {
+    std::string result = {};
+    int sum = 0;
+    if (nProtein_ > 0)
     {
-        int &&num = nProtein_ + nDna_ + nRna_ + nLipid_ + nCarbo_;
-        if (num > 0)
+        result += fmt::format(":{}-{}@H,N,CA,HA,C,O",
+                              Protein_.first, Protein_.second);
+        sum += nProtein_;
+    }
+    if (nDna_ > 0)
+    {
+        if (sum == 0)
         {
-            if (nProtein_ > 0 && nDna_ > 0 && nRna_ > 0 && nLipid_ > 0 && nCarbo_ > 0)
-            {
-                return fmt::format("\":{}-{}@H,N,CA,HA,C,O|:{}-{}@P,O5',C5',C4',C3',O3|:{}-{}@P,O5',C5',C4',C3',O3:{}-{}&!@H=|:{}-{}&!@H=\"",
-                                   Protein_.first, Protein_.second, DNA_.first, DNA_.second, RNA_.first,
-                                   RNA_.second, Lipid_.first, Lipid_.second, Carbo_.first, Carbo_.second);
-            } else if (nProtein_ > 0 && nDna_ > 0 && nRna_ > 0 && nLipid_ > 0)
-            {
-                return fmt::format("\":{}-{}@H,N,CA,HA,C,O|:{}-{}@P,O5',C5',C4',C3',O3|:{}-{}@P,O5',C5',C4',C3',O3:{}-{}&!@H=\"",
-                                   Protein_.first, Protein_.second, DNA_.first, DNA_.second, RNA_.first,
-                                   RNA_.second, Lipid_.first, Lipid_.second);
-            } else if (nProtein_ > 0 && nDna_ > 0 && nRna_ > 0)
-            {
-                return fmt::format("\":{}-{}@H,N,CA,HA,C,O|:{}-{}@P,O5',C5',C4',C3',O3|:{}-{}@P,O5',C5',C4',C3',O3\"",
-                                   Protein_.first, Protein_.second, DNA_.first, DNA_.second, RNA_.first,
-                                   RNA_.second);
-            } else if (nProtein_ > 0 && nDna_ > 0)
-            {
-                return fmt::format("\":{}-{}@H,N,CA,HA,C,O|:{}-{}@P,O5',C5',C4',C3',O3\"",
-                                   Protein_.first, Protein_.second, DNA_.first, DNA_.second);
-            } else if (nProtein_ > 0)
-            {
-                return fmt::format("\":{}-{}@H,N,CA,HA,C,O\"",
-                                   Protein_.first, Protein_.second);
-            }
+            result += fmt::format(":{}-{}@P,O5',C5',C4',C3',O3",
+                                  DNA_.first, DNA_.second);
         } else
         {
-            return std::nullopt;
+            result += fmt::format("|:{}-{}@P,O5',C5',C4',C3',O3",
+                                  DNA_.first, DNA_.second);
+        }
+        sum += nDna_;
+    }
+    if (nRna_ > 0)
+    {
+        if (sum > 0)
+        {
+            result += fmt::format("|:{}-{}@P,O5',C5',C4',C3',O3",
+                                  RNA_.first, RNA_.second);
+        } else
+        {
+            result += fmt::format(":{}-{}@P,O5',C5',C4',C3',O3",
+                                  RNA_.first, RNA_.second);
+        }
+        sum += nRna_;
+    }
+    if (nLipid_ > 0)
+    {
+        if (sum > 0)
+        {
+            result += fmt::format("|:{}-{}&!@H=",
+                                  Lipid_.first, Lipid_.second);
+        }else
+        {
+            result += fmt::format(":{}-{}&!@H=",
+                                  Lipid_.first, Lipid_.second);
+        }
+        sum += nLipid_;
+    }
+    if (nCarbo_ > 0)
+    {
+        if (sum > 0)
+        {
+            result += fmt::format("|:{}-{}&!@H=",
+                                  Carbo_.first, Carbo_.second);
+        }else
+        {
+            result += fmt::format(":{}-{}&!@H=",
+                                  Carbo_.first, Carbo_.second);
         }
     }
+    return result;
 }

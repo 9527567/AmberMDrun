@@ -29,11 +29,12 @@ public:
     virtual Md *setNtf(int ntf);
     virtual Md *setNtb(int ntb);
     virtual Md *setTemp(float temp);
-    virtual Md *setBarostat(const std::string&);
-    virtual Md *setThermostat(const std::string&);
+    virtual Md *setBarostat(const std::string &);
+    virtual Md *setThermostat(const std::string &);
+    Md *setRestraintMask(std::string) override;
+    Md * setRestraint_wt(float) override;
 
 protected:
-    void setRestraintMask(std::string) override;
     void writeInput() override;
     void charmmWater() override;
     void restraint() override;

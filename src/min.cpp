@@ -3,10 +3,10 @@
 //
 #include "min.hpp"
 
-#include <utility>
 #include "fmt/core.h"
 #include "fmt/os.h"
-Min::Min(const std::string &name, SystemInfo systemInfo,const std::string &rst7,const std::string &refc,bool irest, const std::string& restrintmask, float restrant_wt, float cut, int nTmin, int maxCyc, int nCyc, int nTwx, int nTpr, int nTwr)
+#include <utility>
+Min::Min(const std::string &name, SystemInfo systemInfo, const std::string &rst7, const std::string &refc, bool irest, const std::string &restrintmask, float restrant_wt, float cut, int nTmin, int maxCyc, int nCyc, int nTwx, int nTpr, int nTwr)
 {
     name_ = name;
     systemInfo_ = std::move(systemInfo);
@@ -72,9 +72,10 @@ void Min::Run()
 {
     Base::Run();
 }
-void Min::setRestraintMask(std::string restraintMask)
+Min *Min::setRestraintMask(std::string restraintMask)
 {
-    Base::setRestraintMask(restraintMask);
+    restraintMask_ = std::move(restraintMask);
+    return this;
 }
 Min *Min::setCut(float cut)
 {
@@ -114,4 +115,9 @@ Min *Min::setNTwx(int ntwx)
 void Min::runMd()
 {
     Base::runMd();
+}
+Min *Min::setRestraint_wt(float restraint_wt)
+{
+    restraint_wt_ = restraint_wt;
+    return this;
 }
