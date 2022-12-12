@@ -76,8 +76,10 @@ Npt *Npt::setIrest(bool irest)
     if (iRest_)
     {
         ntx_ = 5;
+    } else
+    {
+        ntx_ = 1;
     }
-    ntx_ = 1;
     return this;
 }
 Npt *Npt::setTautp(float tautp)
