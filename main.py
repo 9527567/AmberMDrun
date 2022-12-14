@@ -45,7 +45,7 @@ def prep(rst7,s,temp,heavymask,backbonemask,ns):
                            refc="step5.rst7", irest=True, dt=0.002, nscm=1000)
         npt4.Run()
         md = pyamber.NPT("Md",systemInfo=s,ref="step9.rst7",temp=temp,
-                           refc="step5.rst7", irest=True, dt=0.002, nscm=1000,nstlim=ns*500000)
+                           refc="step5.rst7", irest=True, dt=0.002, nscm=1000,nstlim=ns*500000,ntwx=50000)
         md.Run()
 
 def main():
@@ -55,7 +55,7 @@ def main():
     temp = args.temp
     s = pyamber.SystemInfo(parm7, rst7)
     ns = args.ns
-    if len(args.addmask) > 0:
+    if args.addmask is not None:
         heavymask = "\"" + s.getHeavyMask() + "|" + args.addmask + "\""
         backbonemask = "\"" + s.getBackBoneMask() + "|" + args.addmask + "\""
     else:
