@@ -41,7 +41,7 @@ void prep(const std::string &rst7, SystemInfo s, float temp, const std::string &
     auto npt4 = std::make_unique<Npt>("step9",s,"step8.rst7","step5.rst7");
     npt4->setTemp(temp)->setIrest(true)->setDt(0.002)->setNscm(1000)->Run();
     auto md = std::make_unique<Npt>("Md",s,"step9.rst7","step5.rst7");
-    md->setTemp(temp)->setIrest(true)->setDt(0.002)->setNscm(1000)->setNstLim(ns * 500000);
+    md->setTemp(temp)->setIrest(true)->setDt(0.002)->setNscm(1000)->setNTwx(50000)->setNstLim(ns * 500000);
     md->Run();
 }
 
