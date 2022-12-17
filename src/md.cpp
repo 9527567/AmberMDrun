@@ -72,7 +72,7 @@ void Md::writeInput()
     }
     out.print("ig=-1,");
     out.print("\n");
-    out.print("ntwx={},", nTpr_);
+    out.print("ntwx={},", nTwx_);
     out.print("ntwv={},", -1);
     out.print("ioutfm={},", iOutfm_);
     out.print("ntxo={},", nTxo_);
