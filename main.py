@@ -1,7 +1,5 @@
 import argparse
 import pyamber
-import os
-
 
 def arg_parse():
     parser = argparse.ArgumentParser(description='Demo of AmberMD')
