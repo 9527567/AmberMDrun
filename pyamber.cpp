@@ -5,6 +5,7 @@
 #include "min.hpp"
 #include "npt.hpp"
 #include "nvt.hpp"
+#include "gamd.hpp"
 #include "pybind11/pybind11.h"
 namespace py = pybind11;
 PYBIND11_MODULE(_pyamber, m)
@@ -270,4 +271,107 @@ PYBIND11_MODULE(_pyamber, m)
             .def("setBarostat", &Npt::setBarostat)
             .def("setThermostat", &Npt::setThermostat)
             .def("setRestraintMask",&Npt::setRestraintMask);
+    py::class_<GaMd>(m, "GaMd", py::dynamic_attr())
+            .def(py::init<const std::string &,
+                          SystemInfo,
+                          const std::string &,
+                          const std::string &,
+                          bool,
+                          float,
+                          const std::string &,
+                          float,
+                          int,
+                          float,
+                          int,
+                          int,
+                          float,
+                          float,
+                          int,
+                          float,
+                          float,
+                          int,
+                          int,
+                          int,
+                          int,
+                          int,
+                          int,
+                          int,
+                          int,
+                          int,
+                          int,
+                          int,
+                          int,
+                          int,
+                          int,
+                          float,
+                          float,
+                          std::string,
+                          std::string>(),
+                 py::arg("name"),
+                 py::arg("systemInfo"),
+                 py::arg("ref"),
+                 py::arg("refc"),
+                 py::arg("irest") = false,
+                 py::arg("temp") = 303.15,
+                 py::arg("restraintmask") = "",
+                 py::arg("restraint_wt") = 0.0,
+                 py::arg("nstlim") = 5000,
+                 py::arg("cut") = 8.0,
+                 py::arg("ntc") = 2,
+                 py::arg("ntf") = 2,
+                 py::arg("tautp") = 1.0,
+                 py::arg("taup") = 1.0,
+                 py::arg("mcbarint") = 100,
+                 py::arg("gamma_ln") = 5.0,
+                 py::arg("dt") = 0.002,
+                 py::arg("nscm") = 0,
+                 py::arg("ntwx") = 500,
+                 py::arg("ntpr") = 50,
+                 py::arg("ntwr") = 500,
+                 py::arg("igamd") = 0,
+                 py::arg("ie") = 1,
+                 py::arg("iep") = 1,
+                 py::arg("ied") = 1,
+                 py::arg("ntcmdprep") = 200000,
+                 py::arg("ntcmd") = 1000000,
+                 py::arg("ntebprep") = 200000,
+                 py::arg("nteb") = 1000000,
+                 py::arg("ntave") = 50000,
+                 py::arg("irest_gamd") = 0,
+                 py::arg("sigma0P") = 6.0,
+                 py::arg("sigma0D") = 6.0,
+                 py::arg("timask1") = "",
+                 py::arg("scmask1") = "")
+            .def("Run", &GaMd::Run)
+            .def("setCut", &GaMd::setCut)
+            .def("setTemp", &GaMd::setTemp)
+            .def("setNTpr", &GaMd::setNTpr)
+            .def("setNTwx", &GaMd::setNTwx)
+            .def("setNTwr", &GaMd::setNTwr)
+            .def("setNstLim", &GaMd::setNstLim)
+            .def("setIrest", &GaMd::setIrest)
+            .def("setTautp", &GaMd::setTautp)
+            .def("setTaup", &GaMd::settaup)
+            .def("setMcbarint", &GaMd::setMcbarint)
+            .def("setGammaLn", &GaMd::setGammaLn)
+            .def("setDt", &GaMd::setDt)
+            .def("setNscm", &GaMd::setNscm)
+            .def("setNtx", &GaMd::setNtx)
+            .def("setNtc", &GaMd::setNtc)
+            .def("setNtf", &GaMd::setNtf)
+            .def("setBarostat", &GaMd::setBarostat)
+            .def("setThermostat", &GaMd::setThermostat)
+            .def("setRestraintMask",&GaMd::setRestraintMask)
+            .def("setIGaMd",&GaMd::setIGaMd)
+            .def("setIe",&GaMd::setIe)
+            .def("setIep",&GaMd::setIep)
+            .def("setIed",&GaMd::setIed)
+            .def("setNtcmdprep",&GaMd::setNtcmdprep)
+            .def("setNteb",&GaMd::setNteb)
+            .def("setNtave",&GaMd::setNtave)
+            .def("setIrest_gamd",&GaMd::setIrest_gamd)
+            .def("setSigma0P",&GaMd::setSigma0P)
+            .def("setSigmaOD",&GaMd::setSigmaOD)
+            .def("setTimask1",&GaMd::setTimask1)
+            .def("setScmask1",&GaMd::setScmask1);
 }
