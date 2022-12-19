@@ -1,32 +1,26 @@
 # AmberMD
-方便使用的，高性能的amber脚本
+方便使用易于扩展，高性能的amber模拟程序包
 ## 安装
 ~~~bash
-git clone https://github.com/9527567/AmberMD
-cd AmberMD
-mkdir build
-cd build
-cmake ..
-make
-cp pyamber.so {your python package path}
+git clone https://github.com/9527567/AmberMD --recursive
+python3 setup.py install --user
 ~~~
 ## 使用
-~~~python
-import pyamber as pya
-if __name__ == '__main__':
-    # 读取拓扑坐标中的信息
-    s = pya.SystemInfo("com.parm7","com.rst7")
-    # 创建能量最小化的类
-    min1 = pya.Min("step1",systemInfo=s,ref="com.rst7",restraint_wt=5.0)
-    # 运行能量最小化
-    min1.Run()
-    # 创建MD类，nvt平衡
-    nvt = pya.Md(name="step2",systemInfo=s,ref="step1.rst7",restraint_wt=2.0,dt=0.001,ntb=1)
-    nvt.Run()
-    # npt平衡
-    npt = pya.Md(name="step2",systemInfo=s,ref="step1.rst7",restraint_wt=1.0,dt=0.001,ntb=2)
-    npt.Run()
-    # 运行MD
-    md = pya.Md(name="step2",systemInfo=s,ref="step1.rst7",restraint_wt=1.0,dt=0.001,ntb=2)
-    md.Run()
+~~~bash
+ambermd -h
+usage: ambermd [-h] --parm7 PARM7 --rst7 RST7 [--temp TEMP] [--ns NS] [--addmask ADDMASK] [--gamd GAMD]
+
+Demo of AmberMD
+
+optional arguments:
+  -h, --help            show this help message and exit
+  --parm7 PARM7, -p PARM7
+                        amber top file
+  --rst7 RST7, -c RST7  amber rst file
+  --temp TEMP, -t TEMP  Temperature
+  --ns NS, -n NS        time for MD(ns)
+  --addmask ADDMASK     add restarint mask
+  --gamd GAMD           if run gamd
 ~~~
+## 定制自己的类
+待续
