@@ -55,7 +55,7 @@ def prep(rst7, s, temp, heavymask, backbonemask, ns, gamd):
                              sigma0P=6.0, sigma0D=6.0)
         gamd1.Run()
         gamd2 = pyamber.GaMd("GaMd2", systemInfo=s, ref="GaMd1.rst7", temp=temp,
-                             refc="GaMd1.rst7", irest=False, dt=0.002, nscm=1000, nstlim=50000000, ntwx=50000, igamd=3, iE=1, irest_gamd=1,
+                             refc="GaMd1.rst7", irest=False, dt=0.002, nscm=1000, nstlim=50000000, ntwx=50000, igamd=3, ie=1, irest_gamd=1,
                              ntcmd=0, nteb=0, ntave=200000,
                              ntcmdprep=0, ntebprep=0,
                              sigma0P=6.0, sigma0D=6.0)
