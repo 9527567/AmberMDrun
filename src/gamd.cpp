@@ -142,14 +142,18 @@ void GaMd::writeInput()
     out.print("ie={},",ie_);
     out.print("iep={},",iep_);
     out.print("ied={},",ied_);
+    out.print("\n");
     out.print("ntcmdprep={},",ntcmdprep_);
     out.print("ntcmd={},",ntcmd_);
     out.print("ntebprep={},",ntebprep_);
+    out.print("\n");
     out.print("nteb={},",nteb_);
     out.print("ntave={},",ntave_);
+    out.print("\n");
     out.print("irest_gamd={},",irest_gamd_);
     out.print("sigma0P={},",sigma0P_);
     out.print("sigma0D={},",sigma0D_);
+    out.print("\n");
     out.print("timask1={},",timask1_);
     out.print("scmask1={},",scmask1_);
     out.print("\n");
