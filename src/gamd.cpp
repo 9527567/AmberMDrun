@@ -137,7 +137,7 @@ GaMd *GaMd::setRestraint_wt(float restraintMask)
 void GaMd::writeInput()
 {
     Npt::writeInput();
-    fmt::ostream out = fmt::output_file(name_ + ".in");
+    fmt::ostream out = fmt::output_file(name_ + ".in",fmt::file::WRONLY | fmt::file::APPEND);
     out.print("igamd={},",igamd_);
     out.print("ie={},",ie_);
     out.print("iep={},",iep_);
