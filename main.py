@@ -49,17 +49,11 @@ def prep(rst7, s, temp, heavymask, backbonemask, ns, gamd):
     npt4.Run()
     if gamd:
         gamd1 = pyamber.GaMd("GaMd1", systemInfo=s, ref="step9.rst7", temp=temp,
-                             refc="step5.rst7", irest=True, dt=0.002, nscm=1000, nstlim=26000000, ntwx=50000, igamd=3, ie=1, irest_gamd=0,
+                             refc="step5.rst7", irest=True, dt=0.002, nscm=1000, nstlim=50000000, ntwx=50000, igamd=3, ie=1, irest_gamd=0,
                              ntcmd=1000000, nteb=25000000, ntave=200000,
                              ntcmdprep=200000, ntebprep=800000,
                              sigma0P=6.0, sigma0D=6.0)
         gamd1.Run()
-        gamd2 = pyamber.GaMd("GaMd2", systemInfo=s, ref="GaMd1.rst7", temp=temp,
-                             refc="GaMd1.rst7", irest=False, dt=0.002, nscm=1000, nstlim=50000000, ntwx=50000, igamd=3, ie=1, irest_gamd=1,
-                             ntcmd=0, nteb=0, ntave=200000,
-                             ntcmdprep=0, ntebprep=0,
-                             sigma0P=6.0, sigma0D=6.0)
-        gamd2.Run()
     else:
         md = pyamber.NPT("Md", systemInfo=s, ref="step9.rst7", temp=temp,
                          refc="step5.rst7", irest=True, dt=0.002, nscm=1000, nstlim=ns*500000, ntwx=50000)
