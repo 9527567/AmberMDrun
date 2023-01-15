@@ -6,26 +6,31 @@ import pyamber
 
 
 def run_tleap(protein: str, mol: str):
-    protein = Path(protein).absolute()
-    mol = Path(mol).absolute()
-    cmdline = f'pdb4amber -i {str(protein)} -o _{str(protein)} -y -d -p --add-missing-atoms'
+    cmdline = f'pdb4amber -i {protein} -o _{str(protein)} -y -d -p --add-missing-atoms'
     os.system(cmdline)
-    cmdline = f'acpype -i {str(mol)}'
+    protein_path = Path(protein).absolute()
+    mol_path = Path(mol).absolute()
+    cmdline = f'acpype -i {str(mol_path)}'
     os.system(cmdline)
-    leapin = f"source leaprc.protein.ff14SB \
-            source leaprc.DNA.OL15 \
-            source leaprc.RNA.OL3 \
-            source leaprc.water.tip3p \
-            source leaprc.gaff2 \
-            pro = loadpdb _{str(protein)} \
-            loadamberparm {mol.stem}.acpype/{mol.stem}_AC.frcmod \
-            mol = loadmol2 {str(mol)} \
-            com = combine{{pro mol}} \
-            solvatebox com TIP3PBOX 10.0 \
-            addions2 com Na+ 0 \
-            addions2 com Cl- 0 \
-            saveamberparm com {protein.stem}_{mol.stem}.parm7 {protein.stem}_{mol.stem}.rst7        "
-    return f'{protein.stem}_{mol.stem}.parm7' f'{protein.stem}_{mol.stem}.rst7'
+    leapin = f"source leaprc.protein.ff14SB\n\
+            source leaprc.DNA.OL15\n\
+            source leaprc.RNA.OL3\n\
+            source leaprc.water.tip3p\n\
+            source leaprc.gaff2\n\
+            pro = loadpdb _{protein}\n\
+            loadamberparams {mol_path.stem}.acpype/{mol_path.stem}_AC.frcmod\n\
+            mol = loadmol2 {mol_path.stem}.acpype/{mol_path.stem}_bcc_gaff2.mol2\n\
+            com = combine{{pro mol}}\n\
+            solvatebox com TIP3PBOX 10.0\n\
+            addions2 com Na+ 0\n\
+            addions2 com Cl- 0\n\
+            saveamberparm com {protein_path.stem}_{mol_path.stem}.parm7 {protein_path.stem}_{mol_path.stem}.rst7\n\
+            quit"
+    with open("leap.in", "w") as f:
+        for i in leapin:
+            f.write(i)
+    os.system('tleap -f leap.in')
+    return f'{protein_path.stem}_{mol_path.stem}.parm7', f'{protein_path.stem}_{mol_path.stem}.rst7'
 
 
 def mmpbsa(parm7: str, rst7: str, netcdf: str, system: pyamber.SystemInfo):
@@ -97,7 +102,7 @@ def arg_parse():
 
 def main():
     args = arg_parse()
-    protein = args.pdb
+    protein = args.protein
     mol = args.mol2
     temp = args.temp
     mmpbsa = args.mmpbsa
