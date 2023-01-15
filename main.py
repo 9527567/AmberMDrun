@@ -1,7 +1,6 @@
 import argparse
 import pyamber
 
-
 def arg_parse():
     parser = argparse.ArgumentParser(description='Demo of AmberMD')
     parser.add_argument('--parm7', '-p', type=str,

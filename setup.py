@@ -58,5 +58,5 @@ setup(name="AmberMD",
       packages=["."],
       ext_modules=[pyamber],  # mymath 现在是 CMakeExtension 类的实例了
       cmdclass={"build_ext": BuildExt},  # 使用自定义的 build_ext 类
-      entry_points={'console_scripts': ['ambermd = main:main']}
+      entry_points={'console_scripts': ['amberMDrun = main:main', "mmpbsa = mmpbsa:main"]}
       )
