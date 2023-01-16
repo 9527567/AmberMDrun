@@ -41,46 +41,48 @@ def mmpbsa(parm7: str, rst7: str, netcdf: str, system: pyamber.SystemInfo):
         import parmed
     except:
         raise RuntimeError("you need to install parmed")
-    amber_top = parmed.load_file(parm7, rst7)
-    amber_top.save(str(parm7.with_suffix(".top")))
-    cpptraj_in = f'parm {str(parm7)} \
-                trajin {str(rst7)} \
-                trajout {str(parm7.with_suffix(".top"))} \
-                go \
-                trajin {netcdf} \
-                unwrap :1-{system.getNprotein()} \
-                center :1-{system.getNprotein()} mass origin \
-                image center origin familier \
-                trajout {str(parm7.with_suffix(".xtc"))} \
-                go \
-                exit '
+    amber_top = parmed.load_file(str(parm7), str(rst7))
+    if not parm7.with_suffix(".top").is_file():
+        amber_top.save(str(parm7.with_suffix(".top")))
+    cpptraj_in = f'parm {str(parm7)}\n \
+trajin {str(rst7)}\n \
+trajout {str(parm7.with_suffix(".pdb"))}\n \
+go\n \
+trajin {netcdf}\n \
+unwrap :1-{system.getNprotein()}\n \
+center :1-{system.getNprotein()} mass origin\n \
+image center origin familier\n \
+trajout {str(parm7.with_suffix(".xtc"))}\n \
+go\n \
+exit '
     with open("cpptraj.in", "w") as f:
         for i in cpptraj_in:
-            f.write()
+            f.write(i)
     os.system(f'cpptraj -i cpptraj.in')
-    os.mkdir("MMPBSA")
+    if not Path("MMPBSA").is_dir():
+        Path("MMPBSA").mkdir()
     os.chdir("MMPBSA")
     from multiprocessing import cpu_count
-    make_ndx = f'echo q | gmx make_ndx -f ../com.pdb -o index.ndx'
+    make_ndx = f"echo q | gmx make_ndx -f {str(parm7.with_suffix('.pdb'))} -o index.ndx"
     os.system(make_ndx)
-    mmpbsa_in = f'&general \
-                startframe=12401,endframe=17601, verbose=2,interval=100, \
-                / \
-                &gb \
-                igb=5, \
-                / \
-                &pb \
-                istrng=0.1500,inp=1,stdiopt = 0 \
-                /    \
-                &decomp \
-                idecomp=2, dec_verbose=3, \
-                print_res="within 4" \
-                /'
+    mmpbsa_in = f'&general\n \
+startframe=1, endframe=99999, verbose=2,interval=1,\n \
+/\n \
+&gb\n \
+igb=5,\n \
+/\n \
+&pb\n \
+istrng=0.1500,inp=1,radiopt = 0\n \
+/\n    \
+&decomp\n \
+idecomp=2, dec_verbose=3,\n \
+print_res="within 4"\n \
+/'
     with open("mmpbsa.in",'w') as f:
         for i in mmpbsa_in:
-            f.write()
-    mmpbsa = f"mpirun -np {cpu_count()} gmx_MMPBSA MPI -O -i mmpbsa.in -cs ../com.pdb -ci index.ndx -cg 1 13 -ct ../md.xtc  -cp \
-    {str(parm7.with_suffix('top'))} -nogui"
+            f.write(i)
+    mmpbsa = f"mpirun -np {cpu_count()//2} gmx_MMPBSA MPI -O -i mmpbsa.in -cs {str(parm7.with_suffix('.pdb'))} -ci index.ndx -cg 1 13 -ct {str(parm7.with_suffix('.xtc'))}  -cp \
+    {str(parm7.with_suffix('.top'))} -nogui"
     os.system(mmpbsa)
 
 
@@ -105,14 +107,13 @@ def main():
     protein = args.protein
     mol = args.mol2
     temp = args.temp
-    mmpbsa = args.mmpbsa
     parm7, rst7 = run_tleap(protein, mol)
     s = pyamber.SystemInfo(parm7, rst7)
     heavymask = "\"" + s.getHeavyMask() + "\""
     backbonemask = "\"" + s.getBackBoneMask() + "\""
     prep(rst7=rst7, s=s, temp=temp, heavymask=heavymask,
          backbonemask=backbonemask, ns=100, gamd=False)
-    if mmpbsa:
+    if args.mmpbsa:
         mmpbsa(parm7,rst7,"md.nc",s)
 
 
