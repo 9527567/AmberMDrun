@@ -113,6 +113,8 @@ def main():
     backbonemask = "\"" + s.getBackBoneMask() + "\""
     rst7= prep(rst7=rst7, s=s, temp=temp, heavymask=heavymask,
          backbonemask=backbonemask,loop=20)
+    md = pyamber.NPT("md", s, rst7, rst7, ntwx=50000, irest=True, nscm=1000, nstlim=args.ns*500000)
+    md.Run()
     if args.mmpbsa:
         mmpbsa(parm7,rst7,"md.nc",s)
 
