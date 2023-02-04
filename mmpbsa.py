@@ -6,7 +6,7 @@ import pyamber
 
 
 def run_tleap(protein: str, mol: str):
-    cmdline = f'pdb4amber -i {protein} -o _{str(protein)} -y -d -p --add-missing-atoms'
+    cmdline = f'pdb4amber -i {protein} -o _{str(protein)} -y -d -p'
     os.system(cmdline)
     protein_path = Path(protein).absolute()
     mol_path = Path(mol).absolute()
