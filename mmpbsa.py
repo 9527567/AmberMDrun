@@ -1,6 +1,6 @@
 from pathlib import Path
 import os
-from main import prep
+from equil import prep
 import argparse
 import pyamber
 
@@ -111,8 +111,8 @@ def main():
     s = pyamber.SystemInfo(parm7, rst7)
     heavymask = "\"" + s.getHeavyMask() + "\""
     backbonemask = "\"" + s.getBackBoneMask() + "\""
-    prep(rst7=rst7, s=s, temp=temp, heavymask=heavymask,
-         backbonemask=backbonemask, ns=100, gamd=False)
+    rst7= prep(rst7=rst7, s=s, temp=temp, heavymask=heavymask,
+         backbonemask=backbonemask,loop=20)
     if args.mmpbsa:
         mmpbsa(parm7,rst7,"md.nc",s)
 
