@@ -2,11 +2,11 @@ import pyamber
 import os
 import pandas as pd
 def density():
-    input = f"for FILE in final.?.out,final.??.out \
-readdata \$FILE name MD \
+    input = f"for FILE in final_?.out,final_??.out \n\
+readdata \$FILE name MD \n\
 done \
-evalplateau *[Density] name EQ out Eval.agr resultsout Eval.results\
-go\
+evalplateau *[Density] name EQ out Eval.agr resultsout Eval.results\n\
+go\n\
 quit"
     with open("cpptraj.in", "w") as f:
         f.write(input)
@@ -52,6 +52,7 @@ def prep(rst7, s, temp, heavymask, backbonemask, loop=10):
     for i in range(loop):
         final = pyamber.NPT(f"final_{i}", systemInfo=s, ref=ref, temp=temp,
                          refc="step5.rst7", irest=True, dt=0.002, nscm=1000, nstlim=500000, ntwx=5000)
+        final.Run()
         result = density()
         if result == 0:
             return f'final_{i}.rst7'    
