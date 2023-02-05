@@ -51,7 +51,7 @@ go\n \
 trajin {netcdf}\n \
 unwrap :1-{system.getNprotein()}\n \
 center :1-{system.getNprotein()} mass origin\n \
-image center origin familier\n \
+image center origin familiar\n \
 trajout {str(parm7.with_suffix(".xtc"))}\n \
 go\n \
 exit '
