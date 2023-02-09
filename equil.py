@@ -4,7 +4,7 @@ import pandas as pd
 def density():
     input = f"for FILE in final_?.out,final_??.out \n\
 readdata \$FILE name MD \n\
-done \
+done \n\
 evalplateau *[Density] name EQ out Eval.agr resultsout Eval.results\n\
 go\n\
 quit"

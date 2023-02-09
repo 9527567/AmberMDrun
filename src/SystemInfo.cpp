@@ -14,7 +14,7 @@ SystemInfo::SystemInfo(const std::string &parm7File, const std::string &rst7File
     std::function<void()> getRunExec = [&]() {
         if (amberHome == nullptr)
         {
-            throw std::runtime_error("at least AamberTools need!");
+            throw std::runtime_error("at least AmberTools need!");
         } else
         {
             long cpu_nums;
