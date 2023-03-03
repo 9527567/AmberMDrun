@@ -1,7 +1,6 @@
-|                      |                    |
-|----------------------|--------------------|
-| [English](README.md) | [中文](README.zh.md) |
-|                      |                    |
+
+ [English](README.md) | [中文](README.zh.md) 
+
 # AmberMDrun 
 Easy to use, easy to expand, high-performance Amber simulation package
 ## Install
