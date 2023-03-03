@@ -6,9 +6,11 @@ Easy to use, easy to expand, high-performance Amber simulation package
 ## Install
 This software only supports **Linux** because some Linux system functions are called.**Mac OS X** and **Windows** are not supported.
 ### Necessary
-Ambertools, python3, and python3-dev are required. Amber acceleration package is optional, but we strongly recommend installing high-performance pmemd module.
+Ambertools, python3, and python3-dev are required. Amber acceleration package is optional, but we strongly recommend installing high-performance pmemd module. [Amber](https://ambermd.org/)
 
-It may be difficult to install this software on centos7. In the foreseeable future, we will add pypi and conda installation methods.But it is still installable. It should be noted that the user needs to configure a higher version of gcc. If necessary, please contact the mailbox z9527567@gmail.com. The author will help users of centos 7.
+You can refer to the [Amber installation tutorial](https://ambermd.org/Installation.php) to install Amber.
+
+It may be difficult to install this software on centos7. In the foreseeable future, we will add pypi and conda installation methods. But it is still installable. It should be noted that the user needs to configure a higher version of gcc. If necessary, please contact the mailbox z9527567@gmail.com. The author will help users of centos 7.
 
 ~~~bash
 # ubuntu 
@@ -41,6 +43,7 @@ options:
   --gamd GAMD           if run gamd
 ~~~
 ## How to calculate MM-PB (GB) SA between small molecules and proteins of a single drug
+
 ~~~bash
 mmpbsa -h
 usage: mmpbsa [-h] --protein PROTEIN --mol2 MOL2 [--temp TEMP] [--ns NS] [--mmpbsa MMPBSA]
