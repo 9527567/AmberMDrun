@@ -1,11 +1,22 @@
-[English](README.md) [中文](README.zh.md)
+|                      |                    |
+|----------------------|--------------------|
+| [English](README.md) | [中文](README.zh.md) |
+|                      |                    |
 # AmberMDrun 
 Easy to use, easy to expand, high-performance Amber simulation package
-## install
+## Install
+This software only supports **Linux** because some Linux system functions are called.**Mac OS X** and **Windows** are not supported.
+### Necessary
+Ambertools, python3, and python3-dev are required. Amber acceleration package is optional, but we strongly recommend installing high-performance pmemd module.
+
 ~~~bash
+# ubuntu
+apt install g++ libpython3-dev cmake
 git clone https://github.com/9527567/AmberMD --recursive
 python3 setup.py install --user
 ~~~
+It may be difficult to install this software on centos7. In the foreseeable future, we will add pypi and conda installation methods.But it is still installable. It should be noted that the user needs to configure a higher version of gcc. If necessary, please contact the mailbox z9527567@gmail.com. The author will help users of centos 7.
+
 ## How to use parm7 and rst7 for dynamic simulation
 ~~~bash
 amberMDrun -h

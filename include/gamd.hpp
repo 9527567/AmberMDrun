@@ -65,7 +65,7 @@ protected:
     int irest_gamd_ = 0;
     float sigma0P_ = 6.0;
     float sigma0D_ = 6.0;
-    std::string timask1_ {};
+    std::string timask1_{};
     std::string scmask1_ = {};
 };
 #endif//AMBERMD_GAMD_HPP
