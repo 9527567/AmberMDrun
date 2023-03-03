@@ -9,14 +9,21 @@ This software only supports **Linux** because some Linux system functions are ca
 ### Necessary
 Ambertools, python3, and python3-dev are required. Amber acceleration package is optional, but we strongly recommend installing high-performance pmemd module.
 
+It may be difficult to install this software on centos7. In the foreseeable future, we will add pypi and conda installation methods.But it is still installable. It should be noted that the user needs to configure a higher version of gcc. If necessary, please contact the mailbox z9527567@gmail.com. The author will help users of centos 7.
+
 ~~~bash
-# ubuntu
+# ubuntu 
 apt install g++ libpython3-dev cmake
 git clone https://github.com/9527567/AmberMD --recursive
 python3 setup.py install --user
 ~~~
-It may be difficult to install this software on centos7. In the foreseeable future, we will add pypi and conda installation methods.But it is still installable. It should be noted that the user needs to configure a higher version of gcc. If necessary, please contact the mailbox z9527567@gmail.com. The author will help users of centos 7.
 
+
+### Optional
+If you want to use AmberMDrun to calculate MMPB (GB) SA, then additional programs are necessary.
+
+- [ACPYPE](https://github.com/alanwilter/acpype)
+- [gmx_MMPBSA](https://github.com/Valdes-Tresanco-MS/gmx_MMPBSA)
 ## How to use parm7 and rst7 for dynamic simulation
 ~~~bash
 amberMDrun -h
