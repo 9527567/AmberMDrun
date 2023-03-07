@@ -3,21 +3,17 @@ import pathlib
 from setuptools import setup
 from setuptools import Extension
 from setuptools.command.build_ext import build_ext
-
+from distutils.sysconfig import get_python_lib
+from distutils import spawn
+import sys
 
 class CMakeExtension(Extension):
-    """
-    自定义了 Extension 类，忽略原来的 sources、libraries 等参数，交给 CMake 来处理这些事情
-    """
 
     def __init__(self, name):
         super().__init__(name, sources=[])
 
 
 class BuildExt(build_ext):
-    """
-    自定义了 build_ext 类，对 CMakeExtension 的实例，调用 CMake 和 Make 命令来编译它们
-    """
     def run(self):
         for ext in self.extensions:
             if isinstance(ext, CMakeExtension):
@@ -33,22 +29,33 @@ class BuildExt(build_ext):
         extdir.mkdir(parents=True, exist_ok=True)
 
         config = "Debug" if self.debug else "Release"
-        cmake_args = [
-            "-DCMAKE_LIBRARY_OUTPUT_DIRECTORY=" + str(extdir.parent.absolute()),
-            "-DCMAKE_BUILD_TYPE=" + config
-        ]
-
-        build_args = [
-            "--config", config,
-            "--", "-j8"
-        ]
-
-        os.chdir(build_temp)
-        self.spawn(["cmake", f"{str(cwd)}/{ext.name}"] + cmake_args)
-        if not self.dry_run:
-            self.spawn(["cmake", "--build", "."] + build_args)
-        os.chdir(str(cwd))
-
+        _source_dir = os.path.split(__file__)[0]
+        _build_dir = os.path.join(_source_dir, 'build_setup_py')
+        _prefix = get_python_lib()
+        try:
+            cmake_configure_command = [
+                'cmake',
+                '-H{0}'.format(_source_dir),
+                '-B{0}'.format(_build_dir),
+                '-DCMAKE_INSTALL_PREFIX={0}'.format(_prefix)
+            ]
+            _generator = os.getenv('CMAKE_GENERATOR')
+            if _generator is not None:
+              cmake_configure_command.append('-G{0}'.format(_generator))
+            spawn.spawn(cmake_configure_command)
+            build_args = [
+                "--config", config,
+                "-j8",
+                "--target","install"
+            ]
+            os.chdir(build_temp)
+            if not self.dry_run:
+                self.spawn(["cmake", "--build", _build_dir] + build_args)
+            os.chdir(str(cwd))
+        except spawn.DistutilsExecError:
+            sys.stderr.write("Error while building with CMake\n")
+            sys.exit(-1)
+            _build.build.run(self)
 
 pyamber = CMakeExtension(".")
 
@@ -56,9 +63,7 @@ setup(name="AmberMDrun",
       version="0.1",
       description="This is a demo package",
       packages=["."],
-      install_requires=["pandas >= 1.0"],
-      ext_modules=[pyamber],  # mymath 现在是 CMakeExtension 类的实例了
-      cmdclass={"build_ext": BuildExt},  # 使用自定义的 build_ext 类
-      python_requires=">= 3.6",
+      ext_modules=[pyamber],  
+      cmdclass={"build_ext": BuildExt},  
       entry_points={'console_scripts': ['amberMDrun = main:main', "mmpbsa = mmpbsa:main"]}
       )

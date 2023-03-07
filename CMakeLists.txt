@@ -23,3 +23,9 @@ pybind11_add_module(_pyamber
         pyamber.cpp
         )
 target_link_libraries(_pyamber PRIVATE ambermd)
+install(
+  TARGETS
+      _pyamber
+  LIBRARY
+      DESTINATION AmberMDrun
+  )
