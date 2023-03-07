@@ -35,6 +35,6 @@ build
 .idea
 .xmake
 dist
-AmberMD.egg-info
+AmberMDrun.egg-info
 test
 .vscode

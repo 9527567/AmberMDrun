@@ -52,11 +52,13 @@ class BuildExt(build_ext):
 
 pyamber = CMakeExtension(".")
 
-setup(name="AmberMD",
+setup(name="AmberMDrun",
       version="0.1",
       description="This is a demo package",
       packages=["."],
+      install_requires=["pandas >= 1.0"],
       ext_modules=[pyamber],  # mymath 现在是 CMakeExtension 类的实例了
       cmdclass={"build_ext": BuildExt},  # 使用自定义的 build_ext 类
+      python_requires=">= 3.6",
       entry_points={'console_scripts': ['amberMDrun = main:main', "mmpbsa = mmpbsa:main"]}
       )
