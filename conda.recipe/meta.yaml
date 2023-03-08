@@ -1,0 +1,30 @@
+package:
+  name: ambermdrun
+  version: 0.0.1
+
+source:
+  path: ..
+
+build:
+  number: 0
+  script: {{ PYTHON }} -m pip install --no-deps --ignore-installed .
+
+requirements:
+  build:
+    - "{{ compiler('cxx') }}"
+    - cmake
+    - ninja
+    - python >=3.6
+    - setuptools
+  host:
+    - python >=3.6
+    - pip !=22.1.0
+  run:
+    - python
+    - pandas
+
+about:
+  summary: A scripting tool for running Amber MD in an easy way
+  license_file: LICENSE
+  home: https://github.com/9527567/AmberMDrun
+  dev_url: https://github.com/9527567/AmberMDrun
