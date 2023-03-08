@@ -27,6 +27,7 @@
 *.lib
 
 # Executables
+__pycache__
 *.exe
 *.out
 *.app

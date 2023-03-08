@@ -1,4 +1,2 @@
- include main.cpp pyamber.cpp CMakeLists.txt
- graft extern 
- graft src 
- graft include
+ include CMakeLists.txt
+ graft AmberMDrun
