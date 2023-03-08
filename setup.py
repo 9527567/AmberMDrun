@@ -130,6 +130,7 @@ setup(
     author_email="z9527567@gmail.com",
     description="A scripting tool for running Amber MD in an easy way",
     packages=["AmberMDrun"],
+    install_requires=['pandas'],
     long_description="",
     ext_modules=[CMakeExtension("AmberMDrun")],
     cmdclass={"build_ext": CMakeBuild},
