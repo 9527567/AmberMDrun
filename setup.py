@@ -136,5 +136,5 @@ setup(
     cmdclass={"build_ext": CMakeBuild},
     entry_points={'console_scripts': ['amberMDrun = AmberMDrun:main', "mmpbsa = AmberMDrun:mmpbsa"]},
     zip_safe=False,
-    python_requires=">=3.7",
+    python_requires=">=3.6",
 )
