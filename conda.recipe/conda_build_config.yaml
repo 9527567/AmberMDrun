@@ -1,0 +1,15 @@
+float_prec:
+- low
+- high
+c_compiler_version:
+- 9  # [osx]
+cxx_compiler_version:
+- 9  # [osx]
+numpy:
+- 1.16
+python:
+- 3.6
+- 3.7
+- 3.8
+- 3.9
+- 3.10

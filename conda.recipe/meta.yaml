@@ -14,17 +14,17 @@ requirements:
     - "{{ compiler('cxx') }}"
     - cmake
     - ninja
-    - python >=3.6
+    - python 
     - setuptools
   host:
-    - python >=3.6
+    - python
     - pip !=22.1.0
   run:
     - python
-    - pandas
+    - pandas >=1.0.0
 
 about:
   summary: A scripting tool for running Amber MD in an easy way
-  license_file: LICENSE
+  license_file: ../LICENSE
   home: https://github.com/9527567/AmberMDrun
   dev_url: https://github.com/9527567/AmberMDrun
