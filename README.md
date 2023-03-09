@@ -10,16 +10,43 @@ Ambertools, python3, and python3-dev are required. Amber acceleration package is
 
 You can refer to the [Amber installation tutorial](https://ambermd.org/Installation.php) to install Amber.
 
-It may be difficult to install this software on centos7. In the foreseeable future, we will add pypi and conda installation methods. But it is still installable. It should be noted that the user needs to configure a higher version of gcc. If necessary, please contact the mailbox z9527567@gmail.com. The author will help users of centos 7.
+Then, you can choose several installation methods.
 
+1. Anaconda(**recommend**)
+
+![anaconda](https://anaconda.org/zjack/ambermdrun/badges/version.svg)
+![update](https://anaconda.org/zjack/ambermdrun/badges/latest_release_date.svg)
+![download](https://anaconda.org/zjack/ambermdrun/badges/downloads.svg)
+![MIT](https://anaconda.org/zjack/ambermdrun/badges/license.svg)
+![platform](https://anaconda.org/zjack/ambermdrun/badges/platforms.svg)
 ~~~bash
-# ubuntu 
-apt install g++ libpython3-dev cmake
-git clone https://github.com/9527567/AmberMD --recursive
-python3 setup.py install --user
+conda install ambermdrun -c zjack
 ~~~
+<br>
 
+2. PYPI
+PYPI installation requires a c++compiler that supports the c++17 standard.
+GCC-8 does not fully support the file system in the c++17 standard, so GCC-9 or higher is required. Therefore, different systems have different processing methods, and we recommend using conda for installation.
 
+Ubuntu >= 20
+~~~bash
+apt install g++ libpython3-dev
+pip install AmberMDrun
+~~~
+ centos7
+~~~bash
+yum update
+yum install epel-release
+yum install centos-release-scl-rh
+yum install devtoolset-9
+yum install python3-devel
+pip install AmberMDrun
+~~~
+3. You can also choose to build from source code.
+~~~bash
+git clone https://github.com/9527567/AmberMD --recursive
+python setup.py install --user
+~~~
 ### Optional
 If you want to use AmberMDrun to calculate MMPB (GB) SA, then additional programs are necessary.
 

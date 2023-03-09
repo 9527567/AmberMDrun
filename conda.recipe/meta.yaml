@@ -25,6 +25,6 @@ requirements:
 
 about:
   summary: A scripting tool for running Amber MD in an easy way
-  license_file: ../LICENSE
+  license: MIT
   home: https://github.com/9527567/AmberMDrun
   dev_url: https://github.com/9527567/AmberMDrun
