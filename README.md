@@ -34,11 +34,13 @@ apt install g++ libpython3-dev
 pip install AmberMDrun
 ~~~
  centos7
+ We recommend [Red Hat Developer Toolset](https://access.redhat.com/documentation/en-us/red_hat_developer_toolset/9) for higher version of gcc.
 ~~~bash
 yum update
 yum install epel-release
 yum install centos-release-scl-rh
 yum install devtoolset-9
+source /opt/rh/devtoolset-9/enable # enable gcc-9
 yum install python3-devel
 pip install AmberMDrun
 ~~~
