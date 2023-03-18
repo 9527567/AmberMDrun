@@ -78,10 +78,10 @@ istrng=0.1500,inp=1,radiopt = 0\n \
 idecomp=2, dec_verbose=3,\n \
 print_res="within 4"\n \
 /'
-    with open("mmpbsa.in",'w') as f:
+    with open("mmpbsa.in", 'w') as f:
         for i in mmpbsa_in:
             f.write(i)
-    mmpbsa = f"mpirun -np {cpu_count()//2} gmx_MMPBSA MPI -O -i mmpbsa.in -cs {str(parm7.with_suffix('.pdb'))} -ci index.ndx -cg 1 13 -ct {str(parm7.with_suffix('.xtc'))}  -cp \
+    mmpbsa = f"mpirun -np {cpu_count() // 2} gmx_MMPBSA MPI -O -i mmpbsa.in -cs {str(parm7.with_suffix('.pdb'))} -ci index.ndx -cg 1 13 -ct {str(parm7.with_suffix('.xtc'))}  -cp \
     {str(parm7.with_suffix('.top'))} -nogui"
     os.system(mmpbsa)
 
@@ -111,12 +111,12 @@ def mmpbsa():
     s = pyamber.SystemInfo(parm7, rst7)
     heavymask = "\"" + s.getHeavyMask() + "\""
     backbonemask = "\"" + s.getBackBoneMask() + "\""
-    rst7= prep(rst7=rst7, s=s, temp=temp, heavymask=heavymask,
-         backbonemask=backbonemask,loop=20)
-    md = pyamber.NPT("md", s, rst7, rst7, ntwx=50000, irest=True, nscm=1000, nstlim=args.ns*500000)
+    rst7 = prep(rst7=rst7, s=s, temp=temp, heavymask=heavymask,
+                backbonemask=backbonemask, loop=20)
+    md = pyamber.NPT("md", s, rst7, rst7, ntwx=50000, irest=True, nscm=1000, nstlim=args.ns * 500000)
     md.Run()
     if args.mmpbsa:
-        mmpbsa(parm7,rst7,"md.nc",s)
+        mmpbsa(parm7, rst7, "md.nc", s)
 
 
 if __name__ == '__main__':

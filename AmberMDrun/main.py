@@ -1,6 +1,7 @@
 import argparse
 from . import pyamber
 from . import equil
+from . import mmpbsa
 
 
 def arg_parse():
@@ -38,10 +39,10 @@ def main():
                       backbonemask=backbonemask, loop=20)
     if gamd:
         md = pyamber.GaMd("GaMd", s, rst7, rst7, irest=True,
-                          nscm=1000, nstlim=ns*500000, ntwx=50000)
+                          nscm=1000, nstlim=ns * 500000, ntwx=50000)
         md.Run()
     else:
-        md = pyamber.NPT("Md", s, rst7, rst7, ntwx=50000, irest=True, nscm=1000, nstlim=ns*500000)
+        md = pyamber.NPT("Md", s, rst7, rst7, ntwx=50000, irest=True, nscm=1000, nstlim=ns * 500000)
         md.Run()
 
 

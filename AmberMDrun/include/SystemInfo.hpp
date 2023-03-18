@@ -267,7 +267,7 @@ public:
                                       RNA_.first, RNA_.second);
             } else
             {
-                result += fmt::format("::{}-{}&!@H=",
+                result += fmt::format(":{}-{}&!@H=",
                                       RNA_.first, RNA_.second);
             }
             sum += nRna_;
