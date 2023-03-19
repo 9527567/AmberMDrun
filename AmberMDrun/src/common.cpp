@@ -21,7 +21,10 @@ std::vector<std::string> executeCMD(const std::string &strCmd)
     {
         strResult += buf;
     }
-    pclose(pf);
+    if(pclose(pf)!=0)
+    {
+        throw std::runtime_error(fmt::format("{} run failed!\n",strCmd));
+    }
     std::vector<std::string> result;
     std::string temp;
     for (auto i: strResult)
