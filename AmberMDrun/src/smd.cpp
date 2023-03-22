@@ -2,12 +2,23 @@
 // Created by jack on 3/3/23.
 //
 #include "smd.hpp"
+#include "fmt/os.h"
 SMD::SMD(const std::string &name, const SystemInfo &systemInfo, const std::string &rst7, const std::string &refc, bool irest, float temp, const std::string &restraintmask, float restraint_wt, int nstlim, float cut, int ntc, int ntf, float tautp, float taup, int mcbarint, float gamma_ln, float dt, int nscm, int ntwx, int ntpr, int ntwr)
 {
 }
 void SMD::Run()
 {
-    Npt::Run();
+    Npt::writeInput();
+    Npt::charmmWater();
+    Npt::Thermostat();
+    if (ntb_ == 2)
+    {
+        Npt::barostat();
+    }
+    Npt::restraint();
+    Npt::writeEnd();
+    pull();
+    Npt::runMd();
 }
 SMD *SMD::setCut(float cut)
 {
@@ -89,4 +100,8 @@ SMD *SMD::setRestraint_wt(float restraint_wt)
 {
     return dynamic_cast<SMD*>(Npt::setRestraint_wt(restraint_wt));
 }
-
+void SMD::pull()
+{
+    fmt::ostream out = fmt::output_file(name_ + ".in", fmt::file::WRONLY | fmt::file::APPEND);
+    out.print("&end\n");
+}

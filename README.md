@@ -88,6 +88,10 @@ options:
   --ns NS, -n NS        time for MD(ns)
   --mmpbsa MMPBSA       if run mmpbsa
 ~~~
+Typically, the complex structure after molecular docking is used to perform MMPBSA calculations.Therefore, we have provided a short code to handle the pdb format of the complex. Therefore, when your complex structure is docked and the ligand is in the desired initial position, you can directly provide the pdb format file of the complex.The following is an example.**It should be noted that we will not actively assist you in handling the hydrogen atom of the ligand. We need you to ensure that the hydrogen of the ligand is correct.**
+~~~bash
+mmpbsa -p complex.pdb
+~~~
 ## How to extend code through inheritance classes
 Will be described in the near future
 

@@ -1,11 +1,11 @@
 //
 // Created by jack on 2022/9/19.
 //
+#include "fmt/format.h"
 #include <cstring>
 #include <filesystem>
-#include <vector>
-#include "fmt/format.h"
 #include <optional>
+#include <vector>
 std::vector<std::string> executeCMD(const std::string &strCmd)
 {
     char buf[1024] = {0};
@@ -13,7 +13,7 @@ std::vector<std::string> executeCMD(const std::string &strCmd)
 
     if ((pf = popen(strCmd.c_str(), "r")) == nullptr)
     {
-        throw std::runtime_error(fmt::format("{} run failed!\n",strCmd));
+        throw std::runtime_error(fmt::format("{} run failed!\n", strCmd));
     }
 
     std::string strResult;
@@ -21,9 +21,9 @@ std::vector<std::string> executeCMD(const std::string &strCmd)
     {
         strResult += buf;
     }
-    if(pclose(pf)!=0)
+    if (pclose(pf) != 0)
     {
-        throw std::runtime_error(fmt::format("{} run failed!\n",strCmd));
+        throw std::runtime_error(fmt::format("{} run failed!\n", strCmd));
     }
     std::vector<std::string> result;
     std::string temp;

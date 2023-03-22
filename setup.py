@@ -125,7 +125,7 @@ class CMakeBuild(build_ext):
 # logic and declaration, and simpler if you include description/version in a file.
 setup(
     name="AmberMDrun",
-    version="0.0.1",
+    version="0.0.2",
     author="ZhiWei Zhang",
     author_email="z9527567@gmail.com",
     description="A scripting tool for running Amber MD in an easy way",

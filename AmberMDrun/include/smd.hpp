@@ -34,6 +34,6 @@ public:
     SMD *setRestraintMask(std::string) override;
     SMD *setRestraint_wt(float) override;
 private:
-
+    void pull();
 };
 #endif//AMBERMDRUN_SMD_H
