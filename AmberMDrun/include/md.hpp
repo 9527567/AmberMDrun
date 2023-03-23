@@ -4,7 +4,9 @@
 
 #ifndef AMBERMD_MD_HPP
 #define AMBERMD_MD_HPP
+#include <thread>
 #include "base.hpp"
+#include "tqdm.hpp"
 class Md : public Base
 {
 public:
@@ -40,6 +42,7 @@ protected:
     void restraint() override;
     void writeEnd() override;
     void runMd() override;
+    void progress();
     virtual void barostat();
     virtual void Thermostat();
     int nstLim_;

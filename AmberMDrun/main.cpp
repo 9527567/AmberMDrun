@@ -4,6 +4,7 @@
 #include "min.hpp"
 #include "npt.hpp"
 #include "nvt.hpp"
+#include "tqdm.hpp"
 #include <memory>
 #include <string>
 auto flag(int &argc, char *argv[]) -> cmdline::parser
@@ -25,22 +26,22 @@ void prep(const std::string &rst7, SystemInfo s, float temp, const std::string &
     min1->setRestraint_wt(5.0)->setRestraintMask(heavymask)->Run();
     auto nvt1 = std::make_unique<Nvt>("step2", s, "step1.rst7", "step1.rst7");
     nvt1->setRestraintMask(heavymask)->setRestraint_wt(5.0)->setNstLim(15000)->setTautp(0.5)->Run();
-    auto min2 = std::make_unique<Min>("step3",s,"step2.rst7","step2.rst7");
+    auto min2 = std::make_unique<Min>("step3", s, "step2.rst7", "step2.rst7");
     min2->setRestraint_wt(2.0)->setRestraintMask(heavymask)->Run();
-    auto min3 = std::make_unique<Min>("step4",s,"step3.rst7","step3.rst7");
+    auto min3 = std::make_unique<Min>("step4", s, "step3.rst7", "step3.rst7");
     min3->setRestraintMask(backbonemask)->setRestraint_wt(0.1)->Run();
-    auto min4 = std::make_unique<Min>("step5",s,"step4.rst7","step4.rst7");
+    auto min4 = std::make_unique<Min>("step5", s, "step4.rst7", "step4.rst7");
     min4->Run();
-    auto npt1 = std::make_unique<Npt>("step6",s,"step5.rst7","step5.rst7");
+    auto npt1 = std::make_unique<Npt>("step6", s, "step5.rst7", "step5.rst7");
     npt1->setTemp(temp)->setRestraintMask(heavymask)->setRestraint_wt(1.0);
     npt1->Run();
-    auto npt2 = std::make_unique<Npt>("step7",s,"step6.rst7","step5.rst7");
+    auto npt2 = std::make_unique<Npt>("step7", s, "step6.rst7", "step5.rst7");
     npt2->setTemp(temp)->setRestraintMask(heavymask)->setRestraint_wt(0.5)->Run();
-    auto npt3 = std::make_unique<Npt>("step8",s,"step7.rst7","step5.rst7");
+    auto npt3 = std::make_unique<Npt>("step8", s, "step7.rst7", "step5.rst7");
     npt3->setTemp(temp)->setRestraintMask(backbonemask)->setRestraint_wt(0.5)->setIrest(true)->setNstLim(10000)->Run();
-    auto npt4 = std::make_unique<Npt>("step9",s,"step8.rst7","step5.rst7");
+    auto npt4 = std::make_unique<Npt>("step9", s, "step8.rst7", "step5.rst7");
     npt4->setTemp(temp)->setIrest(true)->setDt(0.002)->setNscm(1000)->Run();
-    auto md = std::make_unique<Npt>("Md",s,"step9.rst7","step5.rst7");
+    auto md = std::make_unique<Npt>("Md", s, "step9.rst7", "step5.rst7");
     md->setTemp(temp)->setIrest(true)->setDt(0.002)->setNscm(1000)->setNTwx(50000)->setNstLim(ns * 500000);
     md->Run();
 }

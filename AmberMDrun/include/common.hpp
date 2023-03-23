@@ -4,15 +4,15 @@
 
 #ifndef AMBERMD_COMMON_HPP
 #define AMBERMD_COMMON_HPP
-
 #include <string>
 #include <vector>
+#include "fswatch.hpp"
 template<typename T>
-bool isIn(T t,std::vector<T> vec)
+bool isIn(T t, std::vector<T> vec)
 {
-    for (const auto &i:vec)
+    for (const auto &i: vec)
     {
-        if (t==i) return true;
+        if (t == i) return true;
     }
     return false;
 }
@@ -22,9 +22,11 @@ inline void trim(std::string &s)
 {
     if (s.empty())
     {
-        return ;
+        return;
     }
-    s.erase(0,s.find_first_not_of(' '));
+    s.erase(0, s.find_first_not_of(' '));
     s.erase(s.find_last_not_of(' ') + 1);
 }
-#endif //AMBERMD_COMMON_HPP
+void watch(const std::string &path, const std::function<void(const fswatch::EventInfo &)> &action);
+
+#endif//AMBERMD_COMMON_HPP

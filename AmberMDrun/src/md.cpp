@@ -51,7 +51,12 @@ void Md::Run()
     }
     restraint();
     writeEnd();
-    runMd();
+    {
+        std::thread th1(&Md::progress,this);
+        th1.detach();
+        std::thread th2(&Md::runMd,this);
+        th2.join();
+    }
 }
 void Md::writeInput()
 {
@@ -277,4 +282,17 @@ Md *Md::setRestraint_wt(float restraint_wt)
 {
     restraint_wt_ = restraint_wt;
     return this;
+}
+void Md::progress()
+{
+    tqdm bar;
+    auto action = [&](const fswatch::EventInfo &action) -> void {
+        if (std::filesystem::relative(action.path) == this->name_ + ".mdinfo")
+        {
+            std::cout << action.path.string() << std::endl;
+            bar.progress(1,100);
+        }
+    };
+    watch(".", action);
+    bar.finish();
 }

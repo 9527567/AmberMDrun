@@ -1,7 +1,9 @@
 //
 // Created by jack on 2022/9/19.
 //
+#include "common.hpp"
 #include "fmt/format.h"
+
 #include <cstring>
 #include <filesystem>
 #include <optional>
@@ -37,4 +39,17 @@ std::vector<std::string> executeCMD(const std::string &strCmd)
         }
     }
     return result;
+}
+void watch(const std::string &path, const std::function<void(const fswatch::EventInfo &)> &action)
+{
+    auto watcher = fswatch(path);
+    watcher.on(fswatch::Event::FILE_CREATED, action);
+    watcher.on(fswatch::Event::FILE_MODIFIED, action);
+    try
+    {
+        watcher.start();
+    } catch (std::filesystem::filesystem_error &error)
+    {
+        std::cout << error.what() << std::endl;
+    }
 }

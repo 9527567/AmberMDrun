@@ -4,10 +4,10 @@
 
 #ifndef AMBERMD_BASE_HPP
 #define AMBERMD_BASE_HPP
-#include "SystemInfo.hpp"
-#include "common.hpp"
 #include <memory>
 #include <string>
+#include "SystemInfo.hpp"
+#include "common.hpp"
 class Base
 {
 public:

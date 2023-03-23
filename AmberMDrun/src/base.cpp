@@ -2,7 +2,6 @@
 // Created by jack on 2022/9/19.
 //
 #include "base.hpp"
-
 #include "fmt/core.h"
 #include "fmt/os.h"
 #include <utility>
@@ -100,6 +99,7 @@ void Base::runMd()
         run = systemInfo_.getRunMd();
     }
     std::string execCommamd = fmt::format("{} -O -i {}.in -p {} -c {} -ref {} -o {}.out -r {}.rst7 -x {}.nc -inf {}.mdinfo -AllowSmallBox", run, name_, systemInfo_.getParm7File(), rst7_, refc_, name_, name_, name_, name_);
+    fmt::print("{}", this->name_);
     std::vector<std::string> result = executeCMD(execCommamd);
     for (auto i: result)
     {
