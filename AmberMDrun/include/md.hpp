@@ -45,6 +45,7 @@ protected:
     void progress();
     virtual void barostat();
     virtual void Thermostat();
+    bool done_ = false;
     int nstLim_;
     bool iRest_;
 

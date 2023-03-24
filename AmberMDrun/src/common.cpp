@@ -50,6 +50,6 @@ void watch(const std::string &path, const std::function<void(const fswatch::Even
         watcher.start();
     } catch (std::filesystem::filesystem_error &error)
     {
-        std::cout << error.what() << std::endl;
+        // std::cout << error.what() << std::endl;
     }
 }

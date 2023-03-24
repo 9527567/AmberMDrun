@@ -42,6 +42,7 @@ Md::Md(const std::string &name, SystemInfo systemInfo, const std::string &rst7, 
 }
 void Md::Run()
 {
+    if (this->done_) this->done_ = false;
     writeInput();
     charmmWater();
     Thermostat();
@@ -52,9 +53,9 @@ void Md::Run()
     restraint();
     writeEnd();
     {
-        std::thread th1(&Md::progress,this);
-        th1.detach();
-        std::thread th2(&Md::runMd,this);
+        std::thread th1(&Md::progress, this);
+        th1.join();
+        std::thread th2(&Md::runMd, this);
         th2.join();
     }
 }
@@ -277,6 +278,7 @@ Md *Md::setTemp(float temp)
 void Md::runMd()
 {
     Base::runMd();
+    this->done_ = true;
 }
 Md *Md::setRestraint_wt(float restraint_wt)
 {
@@ -286,11 +288,16 @@ Md *Md::setRestraint_wt(float restraint_wt)
 void Md::progress()
 {
     tqdm bar;
+    int index = 0;
     auto action = [&](const fswatch::EventInfo &action) -> void {
-        if (std::filesystem::relative(action.path) == this->name_ + ".mdinfo")
+        if (std::filesystem::relative(action.path) == this->name_ + ".rst7")
         {
-            std::cout << action.path.string() << std::endl;
-            bar.progress(1,100);
+            bar.progress(index, this->nstLim_);
+            index += this->nTwr_;
+            if (index >= this->nstLim_ || this->done_)
+            {
+                return;
+            }
         }
     };
     watch(".", action);
