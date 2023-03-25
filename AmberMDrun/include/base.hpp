@@ -6,8 +6,12 @@
 #define AMBERMD_BASE_HPP
 #include <memory>
 #include <string>
+#include <semaphore>
+#include <thread>
 #include "SystemInfo.hpp"
 #include "common.hpp"
+#include "tqdm.hpp"
+#include "fswatch.hpp"
 class Base
 {
 public:
@@ -28,8 +32,11 @@ protected:
     virtual void charmmWater();
     virtual void restraint();
     virtual void runMd();
+    virtual void progress();
     virtual void writeEnd();
+    std::binary_semaphore run_{0}, pro_{0};
     std::string name_;
+    bool done_ = false;
     int iMin_;
     float cut_;
     bool iRest_;

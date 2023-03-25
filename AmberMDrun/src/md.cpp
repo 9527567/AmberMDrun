@@ -54,8 +54,8 @@ void Md::Run()
     writeEnd();
     {
         std::thread th1(&Md::progress, this);
-        th1.join();
         std::thread th2(&Md::runMd, this);
+        th1.join();
         th2.join();
     }
 }
@@ -278,7 +278,6 @@ Md *Md::setTemp(float temp)
 void Md::runMd()
 {
     Base::runMd();
-    this->done_ = true;
 }
 Md *Md::setRestraint_wt(float restraint_wt)
 {
@@ -287,19 +286,25 @@ Md *Md::setRestraint_wt(float restraint_wt)
 }
 void Md::progress()
 {
-    tqdm bar;
+    run_.acquire();
+    auto f = fswatch(".");
     int index = 0;
-    auto action = [&](const fswatch::EventInfo &action) -> void {
-        if (std::filesystem::relative(action.path) == this->name_ + ".rst7")
+    tqdm bar;
+    f.on(fswatch::Event::FILE_MODIFIED, [&](const fswatch::EventInfo &action) -> void {
+        if (std::filesystem::relative(action.path) == this->name_ + ".out")
         {
+            index += this->nTpr_;
             bar.progress(index, this->nstLim_);
-            index += this->nTwr_;
-            if (index >= this->nstLim_ || this->done_)
-            {
-                return;
-            }
         }
-    };
-    watch(".", action);
-    bar.finish();
+    });
+    f.on(fswatch::Event::STOP,[&](const fswatch::EventInfo &)->void
+         {
+             if (this->done_)
+             {
+                 f.stop();
+                 bar.finish();
+             }
+         });
+    f.start();
+    pro_.release();
 }

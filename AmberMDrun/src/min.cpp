@@ -121,3 +121,27 @@ Min *Min::setRestraint_wt(float restraint_wt)
     restraint_wt_ = restraint_wt;
     return this;
 }
+void Min::progress()
+{
+    run_.acquire();
+    auto f = fswatch(".");
+    int index = 0;
+    tqdm bar;
+    f.on(fswatch::Event::FILE_MODIFIED, [&](const fswatch::EventInfo &action) -> void {
+        if (std::filesystem::relative(action.path) == this->name_ + ".out")
+        {
+            index += this->nTpr_;
+            bar.progress(index, this->maxCyc_);
+        }
+    });
+    f.on(fswatch::Event::STOP,[&](const fswatch::EventInfo &)->void
+         {
+             if (this->done_)
+             {
+                 f.stop();
+                 bar.finish();
+             }
+         });
+    f.start();
+    pro_.release();
+}

@@ -28,6 +28,7 @@ protected:
     void restraint() override;
     void writeEnd() override;
     void runMd() override;
+    void progress() override;
     int nTmin_;
     int maxCyc_;
     int nCyc_;

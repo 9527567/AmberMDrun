@@ -23,9 +23,9 @@
 #define WATCH_FLAGS (IN_CREATE | IN_MODIFY | IN_DELETE | IN_OPEN | IN_CLOSE)
 
 // Keep going  while run == true, or, in other words, until user hits ctrl-c
-static bool run = true;
+//static bool run = true;
 
-static void sig_callback([[maybe_unused]] int sig) { run = false; }
+//static void sig_callback([[maybe_unused]] int sig) { run = false; }
 
 // Watch class keeps track of watch descriptors (wd), parent watch descriptors
 // (pd), and names (from event->name). The class provides some helpers for
@@ -105,7 +105,8 @@ public:
         DIR_OPENED,
         DIR_MODIFIED,
         DIR_CLOSED,
-        DIR_DELETED
+        DIR_DELETED,
+        STOP
     };
 
     struct EventInfo {
@@ -168,9 +169,9 @@ public:
         int total_file_events = 0;
         int total_dir_events = 0;
         [[maybe_unused]] Event current_event;
-
+        timeval tv(1,0);
         // Call sig_callback if user hits ctrl-c
-        signal(SIGINT, sig_callback);
+//        signal(SIGINT, sig_callback);
 
         // creating the INOTIFY instance
         // inotify_init1 not available with older kernels, consequently inotify
@@ -207,14 +208,15 @@ public:
             // select syntax is beyond the scope of this sample but, don't worry, the
             // fd+1 is correct: select needs the the highest fd (+1) as the first
             // parameter.
-            select(fd + 1, &watch_set, NULL, NULL, NULL);
+            run_callback(Event::STOP,"","");
+            select(fd + 1, &watch_set, nullptr, nullptr, &tv);
 
             // Read event(s) from non-blocking inotify fd (non-blocking specified in
             // inotify_init1 above).
             int length = read(fd, buffer, EVENT_BUF_LEN);
-            if (run && length < 0) {
-                throw std::runtime_error("failed to read event(s) from inotify fd");
-            }
+//            if (run && length < 0) {
+//                throw std::runtime_error("failed to read event(s) from inotify fd");
+//            }
 
             // Loop through event buffer
             for (int i = 0; i < length;) {
@@ -303,7 +305,7 @@ public:
 private:
     // Root directory of the file watcher
     std::vector<std::filesystem::path> paths;
-
+    bool run = true;
     // Callback functions based on file status
     std::map<Event, std::function<void(const EventInfo &)>> callbacks;
 
