@@ -287,24 +287,24 @@ Md *Md::setRestraint_wt(float restraint_wt)
 void Md::progress()
 {
     run_.acquire();
-    auto f = fswatch(".");
+    auto fs = fswatch(".");
     int index = 0;
     tqdm bar;
-    f.on(fswatch::Event::FILE_MODIFIED, [&](const fswatch::EventInfo &action) -> void {
+    bar.set_label(name_);
+    fs.on(fswatch::Event::FILE_MODIFIED, [&](const fswatch::EventInfo &action) -> void {
         if (std::filesystem::relative(action.path) == this->name_ + ".out")
         {
             index += this->nTpr_;
             bar.progress(index, this->nstLim_);
         }
     });
-    f.on(fswatch::Event::STOP,[&](const fswatch::EventInfo &)->void
-         {
-             if (this->done_)
-             {
-                 f.stop();
-                 bar.finish();
-             }
-         });
-    f.start();
+    fs.on(fswatch::Event::STOP, [&](const fswatch::EventInfo &) -> void {
+        if (this->done_)
+        {
+            fs.stop();
+            bar.finish();
+        }
+    });
+    fs.start();
     pro_.release();
 }

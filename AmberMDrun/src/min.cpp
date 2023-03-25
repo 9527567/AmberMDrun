@@ -127,6 +127,7 @@ void Min::progress()
     auto f = fswatch(".");
     int index = 0;
     tqdm bar;
+    bar.set_label(name_);
     f.on(fswatch::Event::FILE_MODIFIED, [&](const fswatch::EventInfo &action) -> void {
         if (std::filesystem::relative(action.path) == this->name_ + ".out")
         {

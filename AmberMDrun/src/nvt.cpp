@@ -149,12 +149,7 @@ void Nvt::Thermostat()
 }
 void Nvt::Run()
 {
-    writeInput();
-    charmmWater();
-    Thermostat();
-    restraint();
-    writeEnd();
-    runMd();
+    Md::Run();
 }
 Nvt *Nvt::setTautp(float tautp)
 {
