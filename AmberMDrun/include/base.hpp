@@ -8,9 +8,10 @@
 #include <string>
 #if __cplusplus >= 202002L
 #include <semaphore>
+#define binary_semaphore std::binary_semaphore
 #else
 #include "semaphore.hpp"
-#define std::binary_semaphore yamc::posix::binary_semaphore 
+#define binary_semaphore yamc::posix::binary_semaphore 
 #endif
 #include <thread>
 #include "SystemInfo.hpp"
@@ -40,7 +41,7 @@ protected:
     virtual void runMd();
     virtual void progress();
     virtual void writeEnd();
-    std::binary_semaphore run_{0}, pro_{0};
+    binary_semaphore run_{0}, pro_{0};
     std::string name_;
     bool done_ = false;
     int iMin_;
