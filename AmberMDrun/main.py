@@ -30,7 +30,7 @@ def main():
     s = pyamber.SystemInfo(parm7, rst7)
     ns = args.ns
     if args.addmask is not None:
-        if len(s.getBackBoneMask()) > 0 and len(s.getHeavyMask() > 0):
+        if len(s.getBackBoneMask()) > 0 and len(s.getHeavyMask()) > 0:
             heavymask = "\"" + s.getHeavyMask() + "|" + args.addmask + "\""
             backbonemask = "\"" + s.getBackBoneMask() + "|" + args.addmask + "\""
         else:

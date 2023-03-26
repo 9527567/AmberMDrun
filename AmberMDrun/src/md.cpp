@@ -294,7 +294,7 @@ void Md::progress()
     fs.on(fswatch::Event::FILE_MODIFIED, [&](const fswatch::EventInfo &action) -> void {
         if (std::filesystem::relative(action.path) == this->name_ + ".out")
         {
-            index += this->nTpr_;
+            index += 300;
             bar.progress(index, this->nstLim_);
         }
     });

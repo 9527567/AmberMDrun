@@ -169,7 +169,9 @@ public:
         int total_file_events = 0;
         int total_dir_events = 0;
         [[maybe_unused]] Event current_event;
-        timeval tv(1,0);
+        timeval tv;
+        tv.tv_sec = 1;
+        tv.tv_usec = 0;
         // Call sig_callback if user hits ctrl-c
 //        signal(SIGINT, sig_callback);
 

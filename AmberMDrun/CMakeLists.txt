@@ -10,6 +10,7 @@ ELSEIF (CMAKE_SYSTEM_NAME MATCHES "Darwin")
 ELSE ()
     MESSAGE(FATAL_ERROR "${CMAKE_SYSTEM_NAME} is not supported")
 ENDIF (CMAKE_SYSTEM_NAME MATCHES "Linux")
+find_package(Threads REQUIRED)
 include_directories(include)
 include_directories(extern)
 add_subdirectory(extern/pybind11)
@@ -24,6 +25,8 @@ pybind11_add_module(_pyamber
         pyamber.cpp
         )
 target_link_libraries(_pyamber PUBLIC ambermd)
+target_link_libraries(amberMd PRIVATE ${CMAKE_THREAD_LIBS_INIT})
+target_link_libraries(_pyamber PUBLIC ${CMAKE_THREAD_LIBS_INIT})
 install(
   TARGETS _pyamber ambermd
   LIBRARY DESTINATION ${CMAKE_BINARY_DIR}/AmberMDrun
