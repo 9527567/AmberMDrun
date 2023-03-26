@@ -8,10 +8,10 @@
 #include <string>
 #if __cplusplus >= 202002L
 #include <semaphore>
-#define binary_semaphore std::binary_semaphore
+using binary_semaphore = std::binary_semaphore;
 #else
 #include "semaphore.hpp"
-#define binary_semaphore yamc::posix::binary_semaphore 
+using binary_semaphore = yamc::posix::binary_semaphore;
 #endif
 #include <thread>
 #include "SystemInfo.hpp"
