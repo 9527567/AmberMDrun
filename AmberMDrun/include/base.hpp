@@ -6,13 +6,18 @@
 #define AMBERMD_BASE_HPP
 #include <memory>
 #include <string>
-// #include <semaphore>
+#if __cplusplus >= 202002L
+#include <semaphore>
+#else
+#include "semaphore.hpp"
+#define std::binary_semaphore yamc::posix::binary_semaphore 
+#endif
 #include <thread>
 #include "SystemInfo.hpp"
 #include "common.hpp"
 #include "tqdm.hpp"
 #include "fswatch.hpp"
-#include "semaphore.hpp"
+
 class Base
 {
 public:
@@ -35,8 +40,7 @@ protected:
     virtual void runMd();
     virtual void progress();
     virtual void writeEnd();
-    // std::binary_semaphore run_{0}, pro_{0};
-    yamc::posix::binary_semaphore run_{0}, pro_{0};
+    std::binary_semaphore run_{0}, pro_{0};
     std::string name_;
     bool done_ = false;
     int iMin_;
