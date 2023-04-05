@@ -287,24 +287,38 @@ Md *Md::setRestraint_wt(float restraint_wt)
 void Md::progress()
 {
     run_.acquire();
-    auto fs = fswatch(".");
     int index = 0;
     tqdm bar;
     bar.set_label(name_);
-    fs.on(fswatch::Event::FILE_MODIFIED, [&](const fswatch::EventInfo &action) -> void {
-        if (std::filesystem::relative(action.path) == this->name_ + ".out")
-        {
-            index += 300;
-            bar.progress(index, this->nstLim_);
-        }
-    });
-    fs.on(fswatch::Event::STOP, [&](const fswatch::EventInfo &) -> void {
-        if (this->done_)
-        {
-            fs.stop();
-            bar.finish();
-        }
-    });
-    fs.start();
+    fswatcher_t watcher = fswatcher_create(FSWATCHER_CREATE_DEFAULT, FSWATCHER_EVENT_ALL, ".", 0x0);
+
+    while (!this->done_)
+    {
+        fswatcher_event_handler handler = {[&](fswatcher_event_handler *handler, fswatcher_event_type evtype, const char *src, const char *dst) -> bool {
+            if (src == "./" + this->name_ + ".out")
+            {
+                (void) handler;
+                (void) dst;
+
+                switch (evtype)
+                {
+                    case FSWATCHER_EVENT_CREATE:
+                        index += 300;
+                        bar.progress(index, this->nstLim_);
+                        break;
+                    case FSWATCHER_EVENT_MODIFY:
+                        index += 300;
+                        bar.progress(index, this->nstLim_);
+                        break;
+                    default:
+                        printf("unhandled event!\n");
+                }
+            }
+            return true;
+        }};
+        fswatcher_poll(watcher, &handler, 0x0);
+    };
+    bar.finish();
+    fswatcher_destroy(watcher);
     pro_.release();
 }

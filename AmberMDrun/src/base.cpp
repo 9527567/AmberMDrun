@@ -121,22 +121,22 @@ void Base::runMd()
             "{} -O -i {}.in -p {} -c {} -ref {} -o {}.out -r {}.rst7 -x {}.nc -inf {}.mdinfo -AllowSmallBox", run,
             name_, systemInfo_.getParm7File(), rst7_, refc_, name_, name_, name_, name_);
 
-        std::vector<std::string> result = executeCMD(execCommamd);
-        for (auto i: result)
-        {
-            fmt::print("{}", i);
-        }
-//    std::vector<std::string> execCommand2 = {f("{}", run), f("{}", "-O"),
-//                                             f("{}", "-i"), f("{}.in", name_),
-//                                             f("{}", "-p"), f("{}", systemInfo_.getParm7File()),
-//                                             f("{}", "-c"), f("{}", rst7_),
-//                                             f("{}", "-ref"), f("{}", refc_),
-//                                             f("{}", "-o"), f("{}.out", name_),
-//                                             f("{}", "-r"), f("{}.rst7", name_),
-//                                             f("{}", "-x"), f("{}.nc", name_),
-//                                             f("{}", "-inf"), f("{}.mdinfo", name_),
-//                                             f("{}", "-AllowSmallBox")};
-//    executeCMD2(execCommand2);
+    std::vector<std::string> result = executeCMD(execCommamd);
+    for (auto i: result)
+    {
+        fmt::print("{}", i);
+    }
+    //    std::vector<std::string> execCommand2 = {f("{}", run), f("{}", "-O"),
+    //                                             f("{}", "-i"), f("{}.in", name_),
+    //                                             f("{}", "-p"), f("{}", systemInfo_.getParm7File()),
+    //                                             f("{}", "-c"), f("{}", rst7_),
+    //                                             f("{}", "-ref"), f("{}", refc_),
+    //                                             f("{}", "-o"), f("{}.out", name_),
+    //                                             f("{}", "-r"), f("{}.rst7", name_),
+    //                                             f("{}", "-x"), f("{}.nc", name_),
+    //                                             f("{}", "-inf"), f("{}.mdinfo", name_),
+    //                                             f("{}", "-AllowSmallBox")};
+    //    executeCMD2(execCommand2);
     this->done_ = true;
     pro_.acquire();
 }
@@ -149,23 +149,38 @@ Base *Base::setRestraint_wt(float restraint_wt)
 void Base::progress()
 {
     run_.acquire();
-    auto fs = fswatch(".");
+
     int index = 0;
     tqdm bar;
-    fs.on(fswatch::Event::FILE_MODIFIED, [&](const fswatch::EventInfo &action) -> void {
-        if (std::filesystem::relative(action.path) == this->name_ + ".out")
-        {
-            index += 10;
-            bar.progress(index, 100);
-        }
-    });
-    fs.on(fswatch::Event::STOP, [&](const fswatch::EventInfo &) -> void {
-        if (this->done_)
-        {
-            fs.stop();
-            bar.finish();
-        }
-    });
-    fs.start();
+    fswatcher_t watcher = fswatcher_create(FSWATCHER_CREATE_DEFAULT, FSWATCHER_EVENT_ALL, ".", 0x0);
+
+    while (!this->done_)
+    {
+        fswatcher_event_handler handler = {[&](fswatcher_event_handler *handler, fswatcher_event_type evtype, const char *src, const char *dst) -> bool {
+            if (src =="./" + this->name_ + ".out")
+            {
+                (void) handler;
+                (void) dst;
+
+                switch (evtype)
+                {
+                    case FSWATCHER_EVENT_CREATE:
+                        index += 10;
+                        bar.progress(index, 100);
+                        break;
+                    case FSWATCHER_EVENT_MODIFY:
+                        index += 10;
+                        bar.progress(index, 100);
+                        break;
+                    default:
+                        printf("unhandled event!\n");
+                }
+            }
+            return true;
+        }};
+        fswatcher_poll(watcher, &handler, 0x0);
+    };
+    bar.finish();
+    fswatcher_destroy(watcher);
     pro_.release();
 }
