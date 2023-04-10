@@ -21,7 +21,7 @@
 #ifndef FSWATCHER_H_INCLUDED
 #define FSWATCHER_H_INCLUDED
 
-#include <stddef.h> // for size_t
+#include <cstddef> // for size_t
 #include <functional>
 #ifdef __cplusplus
 extern "C" {

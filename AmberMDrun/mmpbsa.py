@@ -61,12 +61,12 @@ def split_pdb(pdb: str):
     return "pro.pdb", "mol.mol2"
 
 
-def run_tleap(protein: str, mol: str):
+def run_tleap(protein: str, mol: str,charge: int,multiplicity: int):
     cmdline = f'pdb4amber -i {protein} -o _{str(protein)} -y -d -p'
     runCMD(cmdline)
     protein_path = Path(protein).absolute()
     mol_path = Path(mol).absolute()
-    cmdline = f'acpype -i {str(mol_path)}'
+    cmdline = f'acpype -i {str(mol_path)} -c {charge} -m {multiplicity}'
     runCMD(cmdline, message="Perhaps you should check the charge of the ligand and the correctness of the hydrogen atom.")
     leapin = f"source leaprc.protein.ff14SB\n\
             source leaprc.DNA.OL15\n\
@@ -152,8 +152,10 @@ def arg_parse():
                         required=False, help='Temperature', default=303.15)
     parser.add_argument("--ns", '-n', type=int,
                         help="time for MD(ns)", default=100)
-    parser.add_argument("--mmpbsa", type=bool,
-                        default=True, help="if run mmpbsa")
+    parser.add_argument("--charge", type=int,
+                        default=0, help="charge of mol")
+    parser.add_argument("--multiplicity",type=int,
+                        default=1,help="multiplicity of mol")
     args = parser.parse_args()
     return args
 
@@ -165,7 +167,7 @@ def mmpbsa():
     temp = args.temp
     if mol is None:
         protein, mol = split_pdb(protein)
-    parm7, rst7 = run_tleap(protein, mol)
+    parm7, rst7 = run_tleap(protein, mol, args.charge, args.multiplicity)
     s = pyamber.SystemInfo(parm7, rst7)
     heavymask = "\"" + s.getHeavyMask() + "\""
     backbonemask = "\"" + s.getBackBoneMask() + "\""
@@ -174,8 +176,7 @@ def mmpbsa():
     md = pyamber.NPT("md", s, rst7, rst7, ntwx=50000,
                      irest=True, nscm=1000, nstlim=args.ns * 500000)
     md.Run()
-    if args.mmpbsa:
-        mmpbsa(parm7, rst7, "md.nc", s)
+    mmpbsa(parm7, rst7, "md.nc", s)
 
 
 if __name__ == '__main__':

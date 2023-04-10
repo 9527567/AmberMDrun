@@ -22,11 +22,11 @@
 
 #include <sys/stat.h>
 #include <sys/inotify.h>
-#include <stdlib.h> // malloc
+#include <cstdlib> // malloc
 #include <unistd.h> // read
-#include <stdio.h>  // printf
+#include <cstdio>  // printf
 #include <dirent.h>
-#include <string.h>
+#include <cstring>
 
 // write something about how we suppose that the kernels will keep on working as they do now:
 // In the current kernel inotify implementation move events are always emitted as contiguous pairs with IN_MOVED_FROM immediately followed by IN_MOVED_TO
@@ -75,7 +75,7 @@ static void fswatcher_free( fswatcher_allocator* allocator, void* ptr )
 static char* fswatcher_strdup( fswatcher_allocator* allocator, const char* str )
 {
 	size_t len = strlen( str ) + 1;
-	char* res = (char*)fswatcher_realloc( allocator, 0x0, 0, len );
+	char* res = (char*)fswatcher_realloc( allocator, nullptr, 0, len );
 	strcpy( res, str );
 	return res;
 }
@@ -85,7 +85,7 @@ static const char* fswatcher_find_wd_path( fswatcher_t w, int wd )
 	for( size_t i = 0; i < w->watches_cnt; ++ i )
 		if( wd == w->watches[i].wd )
 			return w->watches[i].path;
-	return 0x0;
+	return nullptr;
 }
 
 static void fswatcher_add( fswatcher_t w, char* path )
@@ -117,7 +117,7 @@ static void fswatcher_remove( fswatcher_t w, int wd )
 
 		fswatcher_free( w->allocator, (void*)w->watches[i].path );
 		w->watches[i].wd = 0;
-		w->watches[i].path = 0x0;
+		w->watches[i].path = nullptr;
 
 		size_t swap_index = w->watches_cnt - 1;
 		if( i != swap_index )
@@ -127,12 +127,12 @@ static void fswatcher_remove( fswatcher_t w, int wd )
 	}
 }
 
-static void fswatcher_recursive_add( fswatcher_t w, char* path_buffer, size_t path_len, size_t path_max )
+static void fswatcher_recursive_add(fswatcher_t w, char *path_buffer, size_t path_len)
 {
 	fswatcher_add( w, path_buffer );
 	DIR* dirp = opendir( path_buffer );
 	dirent* ent;
-	while( ( ent = readdir( dirp ) ) != 0x0 )
+	while( ( ent = readdir( dirp ) ) != nullptr )
 	{
 		if( ( ent->d_type != DT_DIR && ent->d_type != DT_LNK && ent->d_type != DT_UNKNOWN ) )
 			continue;
@@ -141,7 +141,7 @@ static void fswatcher_recursive_add( fswatcher_t w, char* path_buffer, size_t pa
 			continue;
 
 		size_t d_name_size = strlen( ent->d_name );
-		if( path_len + d_name_size + 2 >= path_max )
+		if( path_len + d_name_size + 2 >= 4096)
 			return; // TODO: handle!
 
 		strcpy( path_buffer + path_len, ent->d_name );
@@ -150,7 +150,7 @@ static void fswatcher_recursive_add( fswatcher_t w, char* path_buffer, size_t pa
 
 		if( ent->d_type == DT_LNK || ent->d_type == DT_UNKNOWN )
 		{
-			struct stat statbuf;
+			struct stat statbuf{};
 			if( stat( path_buffer, &statbuf ) == -1 )
 				continue;
 
@@ -158,7 +158,7 @@ static void fswatcher_recursive_add( fswatcher_t w, char* path_buffer, size_t pa
 				continue;
 		}
 
-		fswatcher_recursive_add( w, path_buffer, path_len + d_name_size + 1, path_max );
+        fswatcher_recursive_add(w, path_buffer, path_len + d_name_size + 1);
 	}
 	path_buffer[path_len] = '\0';
 
@@ -167,10 +167,10 @@ static void fswatcher_recursive_add( fswatcher_t w, char* path_buffer, size_t pa
 
 fswatcher_t fswatcher_create( fswatcher_create_flags flags, fswatcher_event_type types, const char* watch_dir, fswatcher_allocator* allocator )
 {
-	if( allocator == 0x0 )
+	if( allocator == nullptr )
 		allocator = &g_fswatcher_default_alloc;
 
-	fswatcher* w = (fswatcher*)fswatcher_realloc( allocator, 0x0, 0, sizeof( fswatcher ) );
+	auto* w = (fswatcher*)fswatcher_realloc( allocator, nullptr, 0, sizeof( fswatcher ) );
 	memset( w, 0x0, sizeof( fswatcher ) );
 	w->allocator = allocator;
 	w->watch_flags = 0;
@@ -189,11 +189,11 @@ fswatcher_t fswatcher_create( fswatcher_create_flags flags, fswatcher_event_type
 	if( w->notifierfd < -1 )
 	{
 		fswatcher_free( allocator, w );
-		return 0x0;
+		return nullptr;
 	}
 
 	w->watches_cap = 16; // 256;
-	w->watches = (fswatcher_item*)fswatcher_realloc( w->allocator, 0x0, 0, sizeof(fswatcher_item) * w->watches_cap );
+	w->watches = (fswatcher_item*)fswatcher_realloc( w->allocator, nullptr, 0, sizeof(fswatcher_item) * w->watches_cap );
 
 	char path_buffer[4096];
 	strncpy( path_buffer, watch_dir, sizeof( path_buffer ) );
@@ -207,7 +207,7 @@ fswatcher_t fswatcher_create( fswatcher_create_flags flags, fswatcher_event_type
 		++path_len;
 	}
 
-	fswatcher_recursive_add( w, path_buffer, path_len, sizeof( path_buffer ) );
+    fswatcher_recursive_add(w, path_buffer, path_len);
 	return w;
 }
 
@@ -225,7 +225,7 @@ static char* fswatcher_build_full_path( fswatcher_t watcher, fswatcher_allocator
 	const char* dirpath = fswatcher_find_wd_path( watcher, wd );
 	size_t dirlen = strlen( dirpath );
 	size_t length = dirlen + 1 + name_len;
-	char* res = (char*)fswatcher_realloc( allocator, 0x0, 0, length );
+	char* res = (char*)fswatcher_realloc( allocator, nullptr, 0, length );
 	if( res )
 	{
 		memcpy( res, dirpath, dirlen );
@@ -240,7 +240,7 @@ static char* fswatcher_build_full_path( fswatcher_t watcher, fswatcher_allocator
 static void fswatcher_make_callback_with_src_path( fswatcher_t watcher, fswatcher_event_handler* handler, fswatcher_event_type type, inotify_event* ev )
 {
 	char* src = fswatcher_build_full_path( watcher, watcher->allocator, ev->wd, ev->name, ev->len );
-	FS_MAKE_CALLBACK( type, src, 0x0 );
+	FS_MAKE_CALLBACK( type, src, nullptr );
 	fswatcher_free( watcher->allocator, src );
 }
 
@@ -253,10 +253,10 @@ static void fswatcher_make_callback_with_dst_path( fswatcher_t watcher, fswatche
 
 void fswatcher_poll( fswatcher_t watcher, fswatcher_event_handler* handler, fswatcher_allocator* allocator )
 {
-	if( allocator == 0x0 )
+	if( allocator == nullptr )
 		allocator = &g_fswatcher_default_alloc;
 
-	char*    move_src = 0x0;
+	char*    move_src = nullptr;
 	uint32_t move_cookie = 0;
 
 	while( true )
@@ -268,7 +268,7 @@ void fswatcher_poll( fswatcher_t watcher, fswatcher_event_handler* handler, fswa
 
 		for( char* bufp = read_buffer; bufp < read_buffer + read_bytes; )
 		{
-			inotify_event* ev = (inotify_event*)bufp;
+			auto* ev = (inotify_event*)bufp;
 			bool is_dir       = ( ev->mask & IN_ISDIR );
 			bool is_create    = ( ev->mask & IN_CREATE );
 			bool is_remove    = ( ev->mask & IN_DELETE );
@@ -354,7 +354,7 @@ void fswatcher_poll( fswatcher_t watcher, fswatcher_event_handler* handler, fswa
 	if( move_src )
 	{
 		// ... we have a "move to outside of watch" that was never closed ...
-		FS_MAKE_CALLBACK( FSWATCHER_EVENT_MOVE, move_src, 0x0 );
+		FS_MAKE_CALLBACK( FSWATCHER_EVENT_MOVE, move_src, nullptr );
 		fswatcher_free( allocator, move_src );
 	}
 }

@@ -290,7 +290,7 @@ void Md::progress()
     int index = 0;
     tqdm bar;
     bar.set_label(name_);
-    fswatcher_t watcher = fswatcher_create(FSWATCHER_CREATE_DEFAULT, FSWATCHER_EVENT_ALL, ".", 0x0);
+    fswatcher_t watcher = fswatcher_create(FSWATCHER_CREATE_DEFAULT, FSWATCHER_EVENT_ALL, ".", nullptr);
 
     while (!this->done_)
     {
@@ -316,7 +316,7 @@ void Md::progress()
             }
             return true;
         }};
-        fswatcher_poll(watcher, &handler, 0x0);
+        fswatcher_poll(watcher, &handler, nullptr);
     };
     bar.finish();
     fswatcher_destroy(watcher);
