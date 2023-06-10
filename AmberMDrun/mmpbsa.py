@@ -21,7 +21,7 @@ def runCMD(inCmd, *, raise_on_fail: bool = True, logger: logging.Logger = getLog
         logger.debug(f'stdout:\n{output}')
         logger.debug(f'stderr:\n{error}')
         if raise_on_fail:
-            if kwargs.get('message', None) != None:
+            if kwargs.get('message', None) is not None:
                 raise RuntimeError(kwargs['message'])
             else:
                 raise RuntimeError(f'{inCmd} run failed')
@@ -61,13 +61,14 @@ def split_pdb(pdb: str):
     return "pro.pdb", "mol.mol2"
 
 
-def run_tleap(protein: str, mol: str,charge: int,multiplicity: int):
+def run_tleap(protein: str, mol: str, charge: int, multiplicity: int):
     cmdline = f'pdb4amber -i {protein} -o _{str(protein)} -y -d -p'
     runCMD(cmdline)
     protein_path = Path(protein).absolute()
     mol_path = Path(mol).absolute()
     cmdline = f'acpype -i {str(mol_path)} -c {charge} -m {multiplicity}'
-    runCMD(cmdline, message="Perhaps you should check the charge of the ligand and the correctness of the hydrogen atom.")
+    runCMD(cmdline,
+           message="Perhaps you should check the charge of the ligand and the correctness of the hydrogen atom.")
     leapin = f"source leaprc.protein.ff14SB\n\
             source leaprc.DNA.OL15\n\
             source leaprc.RNA.OL3\n\
@@ -143,7 +144,7 @@ print_res="within 4"\n \
 
 
 def arg_parse():
-    parser = argparse.ArgumentParser(description='Demo of MMPBSA')
+    parser = argparse.ArgumentParser(description='Tools for automating the operation of MMPBSA')
     parser.add_argument('--protein', '-p', type=str,
                         required=True, help="pdb file for protein")
     parser.add_argument('--mol2', '-m', type=str,
@@ -154,8 +155,12 @@ def arg_parse():
                         help="time for MD(ns)", default=100)
     parser.add_argument("--charge", type=int,
                         default=0, help="charge of mol")
-    parser.add_argument("--multiplicity",type=int,
-                        default=1,help="multiplicity of mol")
+    parser.add_argument("--multiplicity", type=int,
+                        default=1, help="multiplicity of mol")
+    parser.add_argument("--MIN", type=str,
+                        default="pmemd.cuda_DPFP", help="Engine for MIN")
+    parser.add_argument("--MD", type=str,
+                        default="pmemd.cuda", help="Engine for MD")
     args = parser.parse_args()
     return args
 
@@ -168,7 +173,7 @@ def mmpbsa():
     if mol is None:
         protein, mol = split_pdb(protein)
     parm7, rst7 = run_tleap(protein, mol, args.charge, args.multiplicity)
-    s = pyamber.SystemInfo(parm7, rst7)
+    s = pyamber.SystemInfo(parm7, rst7, runMin=args.MIN, runMd=args.MD)
     heavymask = "\"" + s.getHeavyMask() + "\""
     backbonemask = "\"" + s.getBackBoneMask() + "\""
     rst7 = prep(rst7=rst7, s=s, temp=temp, heavymask=heavymask,

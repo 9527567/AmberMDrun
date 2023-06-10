@@ -19,35 +19,25 @@ SystemInfo::SystemInfo(const std::string &parm7File, const std::string &rst7File
         {
             long cpu_nums;
             cpu_nums = sysconf(_SC_NPROCESSORS_ONLN) / 2;
-            auto temp = std::string(amberHome);
-            if (std::filesystem::exists(temp + "/" + "bin/" + runMin))
-                runMin_ = temp + "/" + "bin/" + runMin;
-            if (std::filesystem::exists(temp + "/" + "bin/" + runMd))
-                runMd_ = temp + "/" + "bin/" + runMd;
-            else if (std::filesystem::exists(temp + "/" + "bin/" + "pmemd.MPI"))
+            auto runMinT {runMin};trim(runMinT);auto runMdT {runMd};trim(runMdT);
+            if (runMinT == "pmemd.MPI"| runMinT == "sander.MPI")
             {
-                runMin_ = "mpirun -np " + std::to_string(cpu_nums) + " " + temp + "/" + "bin/" + "pmemd.MPI";
-                runMd_ = "mpirun -np " + std::to_string(cpu_nums) + " " + temp + "/" + "bin/" + "pmemd.MPI";
-            } else if (std::filesystem::exists(temp + "/" + "bin/" + "sander.MPI"))
-            {
-                runMin_ = "mpirun -np " + std::to_string(cpu_nums) + " " + temp + "/" + "bin/" + "sander.MPI";
-                runMd_ = "mpirun -np " + std::to_string(cpu_nums) + " " + temp + "/" + "bin/" + "sander.MPI";
-            } else if (std::filesystem::exists(temp + "/" + "bin/" + "pmemd"))
-            {
-                runMin_ = temp + "/" + "bin/" + "pmemd";
-                runMd_ = temp + "/" + "bin/" + "pmemd";
-            } else if (std::filesystem::exists(temp + "/" + "bin/" + "sander"))
-            {
-                runMin_ = temp + "/" + "bin/" + "sander";
-                runMd_ = temp + "/" + "bin/" + "sander";
-            } else
-            {
-                throw std::runtime_error("需要动力学引擎，检查amber安装情况");
+                runMin_ = "mpirun -np " + std::to_string(cpu_nums) + " " + runMinT;
             }
-            if (std::filesystem::exists(temp + "/" + "bin/" + "cpptraj"))
+            else
             {
-                runCpptraj_ = temp + "/" + "bin/" + "cpptraj";
+                runMin_ = runMinT;
             }
+            if (runMdT == "pmemd.MPI"| runMdT == "sander.MPI")
+            {
+                runMd_ = "mpirun -np " + std::to_string(cpu_nums) + " " + runMdT;
+            }
+            else
+            {
+                runMd_ = runMdT;
+            }
+
+            runCpptraj_ = "cpptraj";
         }
     };
     getRunExec();

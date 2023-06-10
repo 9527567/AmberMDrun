@@ -19,7 +19,8 @@ quit"
     else:
         raise RuntimeError("Equil failed!")
 
-def prep(rst7, s, temp, heavymask, backbonemask, loop=10):
+
+def prep(rst7, s, temp, heavymask, backbonemask, loop=20):
     min1 = pyamber.Min("step1", systemInfo=s, ref=rst7,
                        refc=rst7, restraintmask=heavymask, restraint_wt=5.0)
     min1.Run()

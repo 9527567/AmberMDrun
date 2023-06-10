@@ -56,10 +56,9 @@ If you want to use AmberMDrun to calculate MMPB (GB) SA, then additional program
 - [gmx_MMPBSA](https://github.com/Valdes-Tresanco-MS/gmx_MMPBSA)
 ## How to use parm7 and rst7 for dynamic simulation
 ~~~bash
-amberMDrun -h
-usage: amberMDrun [-h] --parm7 PARM7 --rst7 RST7 [--temp TEMP] [--ns NS] [--addmask ADDMASK] [--gamd GAMD]
+usage: amberMDrun [-h] --parm7 PARM7 --rst7 RST7 [--temp TEMP] [--ns NS] [--addmask ADDMASK] [--gamd GAMD] [--MIN MIN] [--MD MD]
 
-Demo of AmberMD
+Tools for automated operation of AMBER MD
 
 options:
   -h, --help            show this help message and exit
@@ -70,14 +69,15 @@ options:
   --ns NS, -n NS        time for MD(ns)
   --addmask ADDMASK     add restarint mask
   --gamd GAMD           if run gamd
+  --MIN MIN             Engine for MIN
+  --MD MD               Engine for MD
 ~~~
 ## How to calculate MM-PB (GB) SA between small molecules and proteins of a single drug
 
 ~~~bash
-mmpbsa -h
-usage: mmpbsa [-h] --protein PROTEIN --mol2 MOL2 [--temp TEMP] [--ns NS] [--mmpbsa MMPBSA]
+usage: mmpbsa [-h] --protein PROTEIN [--mol2 MOL2] [--temp TEMP] [--ns NS] [--charge CHARGE] [--multiplicity MULTIPLICITY] [--MIN MIN] [--MD MD]
 
-Demo of MMPBSA
+Tools for automating the operation of MMPBSA
 
 options:
   -h, --help            show this help message and exit
@@ -86,7 +86,11 @@ options:
   --mol2 MOL2, -m MOL2  mol2 file for mol
   --temp TEMP, -t TEMP  Temperature
   --ns NS, -n NS        time for MD(ns)
-  --mmpbsa MMPBSA       if run mmpbsa
+  --charge CHARGE       charge of mol
+  --multiplicity MULTIPLICITY
+                        multiplicity of mol
+  --MIN MIN             Engine for MIN
+  --MD MD               Engine for MD
 ~~~
 Typically, the complex structure after molecular docking is used to perform MMPBSA calculations.Therefore, we have provided a short code to handle the pdb format of the complex. Therefore, when your complex structure is docked and the ligand is in the desired initial position, you can directly provide the pdb format file of the complex.The following is an example.**It should be noted that we will not actively assist you in handling the hydrogen atom of the ligand. We need you to ensure that the hydrogen of the ligand is correct.**
 ~~~bash
@@ -95,3 +99,19 @@ mmpbsa -p complex.pdb
 ## How to extend code through inheritance classes
 Will be described in the near future
 
+## How to cite
+bibtex:
+~~~tex
+@Article{biom13040635,
+AUTHOR = {Zhang, Zhi-Wei and Lu, Wen-Cai},
+TITLE = {AmberMDrun: A Scripting Tool for Running Amber MD in an Easy Way},
+JOURNAL = {Biomolecules},
+VOLUME = {13},
+YEAR = {2023},
+NUMBER = {4},
+ARTICLE-NUMBER = {635},
+URL = {https://www.mdpi.com/2218-273X/13/4/635},
+ISSN = {2218-273X},
+DOI = {10.3390/biom13040635}
+}
+~~~
