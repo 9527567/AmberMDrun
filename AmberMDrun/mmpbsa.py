@@ -66,7 +66,7 @@ def run_tleap(protein: str, mol: str, charge: int, multiplicity: int):
     runCMD(cmdline)
     protein_path = Path(protein).absolute()
     mol_path = Path(mol).absolute()
-    cmdline = f'acpype -i {str(mol_path)} -c {charge} -m {multiplicity}'
+    cmdline = f'acpype -i {str(mol_path)} -n {charge} -m {multiplicity}'
     runCMD(cmdline,
            message="Perhaps you should check the charge of the ligand and the correctness of the hydrogen atom.")
     leapin = f"source leaprc.protein.ff14SB\n\
