@@ -18,6 +18,7 @@ Then, you can choose several installation methods.
 ![download](https://anaconda.org/zjack/ambermdrun/badges/downloads.svg)
 ![MIT](https://anaconda.org/zjack/ambermdrun/badges/license.svg)
 ![platform](https://anaconda.org/zjack/ambermdrun/badges/platforms.svg)
+
 ~~~bash
 conda install ambermdrun -c zjack
 ~~~
@@ -26,6 +27,8 @@ conda install ambermdrun -c zjack
 2. PYPI
 PYPI安装需要一个支持c++17标准的c++编译器。
 GCC-8并不完全支持c++17标准中的文件系统，因此需要GCC-9或更高版本。因此，不同的系统有不同的处理方法，我们建议使用conda进行安装。
+
+![pypi](https://img.shields.io/pypi/dm/ambermdrun?style=flat-square)
 
 Ubuntu >= 20
 ~~~bash

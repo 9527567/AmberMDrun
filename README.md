@@ -28,6 +28,8 @@ conda install ambermdrun -c zjack
 PYPI installation requires a c++compiler that supports the c++17 standard.
 GCC-8 does not fully support the file system in the c++17 standard, so GCC-9 or higher is required. Therefore, different systems have different processing methods, and we recommend using conda for installation.
 
+![pypi](https://img.shields.io/pypi/dm/ambermdrun?style=flat-square)
+
 Ubuntu >= 20
 ~~~bash
 apt install g++ libpython3-dev
