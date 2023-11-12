@@ -1,4 +1,4 @@
-from . import pyamber
+ifrom . import pyamber
 import os
 import pandas as pd
 from pathlib import Path
@@ -9,7 +9,7 @@ def density():
     final_file = []
     for out_file in path.glob('final_*.out'):
         final_file.append(out_file)
-    input = (f"for FILE in {' '.join([item.name for item in out_file])} \n"
+    input = (f"for FILE in {' '.join([item.name for item in final_file])} \n"
              "readdata \$FILE name MD \n"
              "done \n"
              "evalplateau *[Density] name EQ out Eval.agr resultsout Eval.results\n"
@@ -69,3 +69,4 @@ def prep(rst7, s, temp, heavymask, backbonemask, loop=20):
         ref = f'final_{i}.rst7'
     raise RuntimeError(
         "More than 20 iterations of final density equil required. Bailing out.")
+

@@ -6,6 +6,7 @@ from . import pyamber
 import logging
 from logging import getLogger
 import subprocess
+from typing import List
 
 
 def runCMD(inCmd, *, raise_on_fail: bool = True, logger: logging.Logger = getLogger("mmpbsa"), **kwargs):
@@ -61,36 +62,43 @@ def split_pdb(pdb: str):
     return "pro.pdb", "mol.mol2"
 
 
-def run_tleap(protein: str, mol: str, charge: int, multiplicity: int):
+def run_tleap(protein: str, mol_list: List, charge: List, multiplicity: List, guess_charge: bool):
     cmdline = f'pdb4amber -i {protein} -o _{str(protein)} -y -d -p'
     runCMD(cmdline)
     protein_path = Path(protein).absolute()
-    mol_path = Path(mol).absolute()
-    cmdline = f'acpype -i {str(mol_path)} -n {charge} -m {multiplicity}'
-    runCMD(cmdline,
-           message="Perhaps you should check the charge of the ligand and the correctness of the hydrogen atom.")
-    leapin = f"source leaprc.protein.ff14SB\n\
-            source leaprc.DNA.OL15\n\
-            source leaprc.RNA.OL3\n\
-            source leaprc.water.tip3p\n\
-            source leaprc.gaff2\n\
-            pro = loadpdb _{protein}\n\
-            loadamberparams {mol_path.stem}.acpype/{mol_path.stem}_AC.frcmod\n\
-            mol = loadmol2 {mol_path.stem}.acpype/{mol_path.stem}_bcc_gaff2.mol2\n\
-            com = combine{{pro mol}}\n\
-            solvatebox com TIP3PBOX 10.0\n\
-            addions2 com Na+ 0\n\
-            addions2 com Cl- 0\n\
-            saveamberparm com {protein_path.stem}_{mol_path.stem}.parm7 {protein_path.stem}_{mol_path.stem}.rst7\n\
-            quit"
+    mol_list = [Path(mol) for mol in mol_list]
+
+    for mol, c, spin in zip(mol_list, charge, multiplicity):
+        if not guess_charge:
+            cmdline = f'acpype -i {str(Path(mol).absolute())} -n {c} -m {spin}'
+        else:
+            cmdline = f'acpype -i {str(Path(mol).absolute())}'
+        runCMD(cmdline,
+               message="Perhaps you should check the charge of the ligand and the correctness of the hydrogen atom.")
+    mol_frcmod = f"\n".join(
+        f'loadamberparams {mol_path.stem}.acpype/{mol_path.stem}_AC.frcmod\n' for mol_path in mol_list)
+    mol_load = f"\n".join(
+        f'{mol_path.stem} = loadmol2 {mol_path.stem}.acpype/{mol_path.stem}_bcc_gaff2.mol2\n' for mol_path in mol_list)
+    combine = f"\n".join(
+        f'com = combine{{pro {mol_path.stem}}}\n' for mol_path in mol_list)
+    leapin = (f"""source leaprc.protein.ff14SB
+source leaprc.DNA.OL15
+source leaprc.RNA.OL3
+source leaprc.water.tip3p
+source leaprc.gaff2
+pro = loadpdb _{protein}\n""") + mol_frcmod + mol_load + combine + (f"""solvatebox com TIP3PBOX 10.0
+addionsrand com Na+ 0
+addionsrand com Cl- 0
+saveamberparm com com.parm7 com.rst7
+quit""")
     with open("leap.in", "w") as f:
         for i in leapin:
             f.write(i)
     runCMD('tleap -f leap.in')
-    return f'{protein_path.stem}_{mol_path.stem}.parm7', f'{protein_path.stem}_{mol_path.stem}.rst7'
+    return f'com.parm7', f'com.rst7'
 
 
-def mmpbsa(parm7: str, rst7: str, netcdf: str, system: pyamber.SystemInfo):
+def run_mmpbsa(parm7: str, rst7: str, netcdf: str, system: pyamber.SystemInfo, mol_list: List):
     parm7 = Path(parm7).absolute()
     rst7 = Path(rst7).absolute()
 
@@ -138,25 +146,36 @@ print_res="within 4"\n \
     with open("mmpbsa.in", 'w') as f:
         for i in mmpbsa_in:
             f.write(i)
-    mmpbsa = f"mpirun -np {cpu_count() // 2} gmx_MMPBSA MPI -O -i mmpbsa.in -cs {str(parm7.with_suffix('.pdb'))} -ci index.ndx -cg 1 13 -ct {str(parm7.with_suffix('.xtc'))}  -cp \
-    {str(parm7.with_suffix('.top'))} -nogui"
-    runCMD(mmpbsa)
+    mol_number = 13
+    for mol in range(len(mol_list)):
+        mol_path = Path.cwd().joinpath(mol)
+        mol_path.mkdir(exist_ok=True)
+        os.chdir(str(mol_path))
+        mmpbsa = f"mpirun -np {cpu_count() // 2} gmx_MMPBSA MPI -O -i mmpbsa.in -cs {str(parm7.with_suffix('.pdb'))} -ci index.ndx -cg 1 {mol_number} -ct {str(parm7.with_suffix('.xtc'))}  -cp \
+        {str(parm7.with_suffix('.top'))} -nogui"
+        runCMD(mmpbsa)
+        os.chdir('..')
+        mol_number += 1
 
 
 def arg_parse():
-    parser = argparse.ArgumentParser(description='Tools for automating the operation of MMPBSA')
+    parser = argparse.ArgumentParser(
+        description='Tools for automating the operation of MMPBSA')
     parser.add_argument('--protein', '-p', type=str,
                         required=True, help="pdb file for protein")
-    parser.add_argument('--mol2', '-m', type=str,
+    parser.add_argument('--mol2', '-m', type=str, nargs='+',
                         required=False, help='mol2 file for mol')
     parser.add_argument('--temp', '-t', type=float,
                         required=False, help='Temperature', default=303.15)
     parser.add_argument("--ns", '-n', type=int,
                         help="time for MD(ns)", default=100)
-    parser.add_argument("--charge", type=int,
-                        default=0, help="charge of mol")
-    parser.add_argument("--multiplicity", type=int,
-                        default=1, help="multiplicity of mol")
+    parser.add_argument('-g', '--guess_charge',
+                        action='store_true', help='guess charge')
+    parser.add_argument('-c', "--charge", type=int, nargs='+',
+                        default=[0], help="charge of mol")
+
+    parser.add_argument("--multiplicity", type=int, nargs='+',
+                        default=[1], help="multiplicity of mol")
     parser.add_argument("--MIN", type=str,
                         default="pmemd.cuda_DPFP", help="Engine for MIN")
     parser.add_argument("--MD", type=str,
@@ -168,11 +187,18 @@ def arg_parse():
 def mmpbsa():
     args = arg_parse()
     protein = args.protein
-    mol = args.mol2
+    mol_list = args.mol2
     temp = args.temp
-    if mol is None:
+    if not args.guess_charge:
+        if len(mol_list) != len(args.charge) and len(mol_list) != len(args.multiplicity):
+            raise ValueError(
+                "If the charge is not guessed, it is necessary to specify the charge and spin multiplicity for each ligand.")
+
+    if mol_list is None:
         protein, mol = split_pdb(protein)
-    parm7, rst7 = run_tleap(protein, mol, args.charge, args.multiplicity)
+        mol_list = [mol]
+    parm7, rst7 = run_tleap(protein, mol_list, args.charge,
+                            args.multiplicity, args.guess_charge)
     s = pyamber.SystemInfo(parm7, rst7, runMin=args.MIN, runMd=args.MD)
     heavymask = "\"" + s.getHeavyMask() + "\""
     backbonemask = "\"" + s.getBackBoneMask() + "\""
@@ -181,8 +207,9 @@ def mmpbsa():
     md = pyamber.NPT("md", s, rst7, rst7, ntwx=50000,
                      irest=True, nscm=1000, nstlim=args.ns * 500000)
     md.Run()
-    mmpbsa(parm7, rst7, "md.nc", s)
+    run_mmpbsa(parm7, rst7, "md.nc", s, mol_list)
 
 
 if __name__ == '__main__':
     mmpbsa()
+
