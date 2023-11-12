@@ -67,20 +67,22 @@ def run_tleap(protein: str, mol_list: List, charge: List, multiplicity: List, gu
     runCMD(cmdline)
     protein_path = Path(protein).absolute()
     mol_list = [Path(mol) for mol in mol_list]
-
-    for mol, c, spin in zip(mol_list, charge, multiplicity):
-        if not guess_charge:
-            cmdline = f'acpype -i {str(Path(mol).absolute())} -n {c} -m {spin}'
-        else:
+    if guess_charge:
+        for mol in mol_list:
             cmdline = f'acpype -i {str(Path(mol).absolute())}'
-        runCMD(cmdline,
-               message="Perhaps you should check the charge of the ligand and the correctness of the hydrogen atom.")
-    mol_frcmod = f"\n".join(
+            runCMD(cmdline,
+                   message="Perhaps you should check the charge of the ligand and the correctness of the hydrogen atom.")
+    else:
+        for mol, c, spin in zip(mol_list, charge, multiplicity):
+            cmdline = f'acpype -i {str(Path(mol).absolute())} -n {c} -m {spin}'
+            runCMD(cmdline,
+                   message="Perhaps you should check the charge of the ligand and the correctness of the hydrogen atom.")
+
+    mol_frcmod = f"".join(
         f'loadamberparams {mol_path.stem}.acpype/{mol_path.stem}_AC.frcmod\n' for mol_path in mol_list)
-    mol_load = f"\n".join(
+    mol_load = f"".join(
         f'{mol_path.stem} = loadmol2 {mol_path.stem}.acpype/{mol_path.stem}_bcc_gaff2.mol2\n' for mol_path in mol_list)
-    combine = f"\n".join(
-        f'com = combine{{pro {mol_path.stem}}}\n' for mol_path in mol_list)
+    combine = f'com = combine{{pro {" ".join(mol_path.stem for mol_path in mol_list)}}}\n'
     leapin = (f"""source leaprc.protein.ff14SB
 source leaprc.DNA.OL15
 source leaprc.RNA.OL3
@@ -148,10 +150,10 @@ print_res="within 4"\n \
             f.write(i)
     mol_number = 13
     for mol in range(len(mol_list)):
-        mol_path = Path.cwd().joinpath(mol)
+        mol_path = Path.cwd().joinpath(f'lig{mol}')
         mol_path.mkdir(exist_ok=True)
         os.chdir(str(mol_path))
-        mmpbsa = f"mpirun -np {cpu_count() // 2} gmx_MMPBSA MPI -O -i mmpbsa.in -cs {str(parm7.with_suffix('.pdb'))} -ci index.ndx -cg 1 {mol_number} -ct {str(parm7.with_suffix('.xtc'))}  -cp \
+        mmpbsa = f"mpirun -np {cpu_count() // 2} gmx_MMPBSA MPI -O -i ../mmpbsa.in -cs {str(parm7.with_suffix('.pdb'))} -ci ../index.ndx -cg 1 {mol_number} -ct {str(parm7.with_suffix('.xtc'))}  -cp \
         {str(parm7.with_suffix('.top'))} -nogui"
         runCMD(mmpbsa)
         os.chdir('..')
@@ -200,16 +202,16 @@ def mmpbsa():
     parm7, rst7 = run_tleap(protein, mol_list, args.charge,
                             args.multiplicity, args.guess_charge)
     s = pyamber.SystemInfo(parm7, rst7, runMin=args.MIN, runMd=args.MD)
-    heavymask = "\"" + s.getHeavyMask() + "\""
-    backbonemask = "\"" + s.getBackBoneMask() + "\""
-    rst7 = prep(rst7=rst7, s=s, temp=temp, heavymask=heavymask,
-                backbonemask=backbonemask, loop=20)
-    md = pyamber.NPT("md", s, rst7, rst7, ntwx=50000,
-                     irest=True, nscm=1000, nstlim=args.ns * 500000)
-    md.Run()
+    # heavymask = "\"" + s.getHeavyMask() + "\""
+    # backbonemask = "\"" + s.getBackBoneMask() + "\""
+    # rst7 = prep(rst7=rst7, s=s, temp=temp, heavymask=heavymask,
+    #             backbonemask=backbonemask, loop=20)
+    # md = pyamber.NPT("md", s, rst7, rst7, ntwx=50000,
+    #                  irest=True, nscm=1000, nstlim=args.ns * 500000)
+    # md.Run()
+    rst7 = 'final_0.rst7'
     run_mmpbsa(parm7, rst7, "md.nc", s, mol_list)
 
 
 if __name__ == '__main__':
     mmpbsa()
-

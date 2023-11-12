@@ -1,4 +1,4 @@
-ifrom . import pyamber
+from . import pyamber
 import os
 import pandas as pd
 from pathlib import Path
