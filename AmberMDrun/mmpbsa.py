@@ -202,13 +202,13 @@ def mmpbsa():
     parm7, rst7 = run_tleap(protein, mol_list, args.charge,
                             args.multiplicity, args.guess_charge)
     s = pyamber.SystemInfo(parm7, rst7, runMin=args.MIN, runMd=args.MD)
-    # heavymask = "\"" + s.getHeavyMask() + "\""
-    # backbonemask = "\"" + s.getBackBoneMask() + "\""
-    # rst7 = prep(rst7=rst7, s=s, temp=temp, heavymask=heavymask,
-    #             backbonemask=backbonemask, loop=20)
-    # md = pyamber.NPT("md", s, rst7, rst7, ntwx=50000,
-    #                  irest=True, nscm=1000, nstlim=args.ns * 500000)
-    # md.Run()
+    heavymask = "\"" + s.getHeavyMask() + "\""
+    backbonemask = "\"" + s.getBackBoneMask() + "\""
+    rst7 = prep(rst7=rst7, s=s, temp=temp, heavymask=heavymask,
+                backbonemask=backbonemask, loop=20)
+    md = pyamber.NPT("md", s, rst7, rst7, ntwx=50000,
+                     irest=True, nscm=1000, nstlim=args.ns * 500000)
+    md.Run()
     rst7 = 'final_0.rst7'
     run_mmpbsa(parm7, rst7, "md.nc", s, mol_list)
 
