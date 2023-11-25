@@ -1,5 +1,7 @@
 # AmberMDrun 
 易于使用、易于扩展、高性能的Amber模拟软件包。
+## 版本更新
+v0.0.5 添加了多配体的支持。
 ## 安装
 此软件仅支持**Linux**，因为某些Linux系统功能被调用。**Mac OS X**和**Windows**不受支持。
 ### 必要的依赖
@@ -76,7 +78,7 @@ options:
 ~~~
 ## 如何计算单个小分子和蛋白质之间的MM-PB（GB）SA
 ~~~bash
-usage: mmpbsa [-h] --protein PROTEIN [--mol2 MOL2] [--temp TEMP] [--ns NS] [--charge CHARGE] [--multiplicity MULTIPLICITY] [--MIN MIN] [--MD MD]
+usage: mmpbsa [-h] --protein PROTEIN [--mol2 MOL2 [MOL2 ...]] [--temp TEMP] [--ns NS] [-g] [-c CHARGE [CHARGE ...]] [--multiplicity MULTIPLICITY [MULTIPLICITY ...]] [--MIN MIN] [--MD MD]
 
 Tools for automating the operation of MMPBSA
 
@@ -84,11 +86,14 @@ options:
   -h, --help            show this help message and exit
   --protein PROTEIN, -p PROTEIN
                         pdb file for protein
-  --mol2 MOL2, -m MOL2  mol2 file for mol
+  --mol2 MOL2 [MOL2 ...], -m MOL2 [MOL2 ...]
+                        mol2 file for mol
   --temp TEMP, -t TEMP  Temperature
   --ns NS, -n NS        time for MD(ns)
-  --charge CHARGE       charge of mol
-  --multiplicity MULTIPLICITY
+  -g, --guess_charge    guess charge
+  -c CHARGE [CHARGE ...], --charge CHARGE [CHARGE ...]
+                        charge of mol
+  --multiplicity MULTIPLICITY [MULTIPLICITY ...]
                         multiplicity of mol
   --MIN MIN             Engine for MIN
   --MD MD               Engine for MD
@@ -96,6 +101,12 @@ options:
 通常，分子对接后的复合物结构用于执行MMPBSA计算。因此，我们提供了一个简短的代码来处理复合物的pdb格式。因此，当您的络合物结构对接并且配体处于所需的初始位置时，您可以直接提供络合物的pdb格式文件。以下是一个示例。**需要注意的是，我们不会主动协助您处理配体的氢原子。我们需要你确保配体的氢是正确的**。
 ~~~bash
 mmpbsa -p complex.pdb
+~~~
+
+## V0.0.5 添加了多配体的支持
+只需要在-m 后跟多个配体的文件即可，添加了一个选项`-g`用于猜测小分子的静电荷，或者手动指定静电荷，例如：
+~~~bash
+mmpbsa -p pro.pdb -m lig1.mol2 lig2.mol2 -g -n 100
 ~~~
 ## 如何通过继承扩展代码
 我们将在不久的将来进行描述。
@@ -114,5 +125,22 @@ ARTICLE-NUMBER = {635},
 URL = {https://www.mdpi.com/2218-273X/13/4/635},
 ISSN = {2218-273X},
 DOI = {10.3390/biom13040635}
+}
+~~~
+## 如果您感兴趣的话，也可以引用这篇文章
+bibtex:
+~~~tex
+@article{CUI2023134812,
+title = {A TastePeptides-Meta system including an umami/bitter classification model Umami_YYDS, a TastePeptidesDB database and an open-source package Auto_Taste_ML},
+journal = {Food Chemistry},
+volume = {405},
+pages = {134812},
+year = {2023},
+issn = {0308-8146},
+doi = {https://doi.org/10.1016/j.foodchem.2022.134812},
+url = {https://www.sciencedirect.com/science/article/pii/S0308814622027741},
+author = {Zhiyong Cui and Zhiwei Zhang and Tianxing Zhou and Xueke Zhou and Yin Zhang and Hengli Meng and Wenli Wang and Yuan Liu},
+keywords = {Peptides, Umami prediction, TastePeptidesDB, Machine learning},
+abstract = {Taste peptides with umami/bitterness play a role in food attributes. However, the taste mechanisms of peptides are not fully understood, and the identification of these peptides is time-consuming. Here, we created a taste peptide database by collecting the reported taste peptide information. Eight key molecular descriptors from di/tri-peptides were selected and obtained by modeling screening. A gradient boosting decision tree model named Umami_YYDS (89.6\% accuracy) was established by data enhancement, comparison algorithm and model optimization. Our model showed a great prediction performance compared to other models, and its outstanding ability was verified by sensory experiments. To provide a convenient approach, we deployed a prediction website based on Umami_YYDS and uploaded the Auto_Taste_ML machine learning package. In summary, we established the system TastePeptides-Meta, containing a taste peptide database TastePeptidesDB an umami/bitter taste prediction model Umami_YYDS and an open-source machine learning package Auto_Taste_ML, which were helpful for rapid screening of umami peptides.}
 }
 ~~~
