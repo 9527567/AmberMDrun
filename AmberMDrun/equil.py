@@ -1,17 +1,26 @@
 from . import pyamber
 import os
 import pandas as pd
+from pathlib import Path
+
+
 def density():
-    input = f"for FILE in final_?.out,final_??.out \n\
-readdata \$FILE name MD \n\
-done \n\
-evalplateau *[Density] name EQ out Eval.agr resultsout Eval.results\n\
-go\n\
-quit"
+    path = Path.cwd()
+    final_file = []
+    for out_file in path.glob('final_*.out'):
+        final_file.append(out_file)
+    input = (f"for FILE in {' '.join([item.name for item in final_file])} \n"
+             "readdata \$FILE name MD \n"
+             "done \n"
+             "evalplateau *[Density] name EQ out Eval.agr resultsout Eval.results\n"
+             "go\n"
+             "quit"
+             )
+
     with open("cpptraj.in", "w") as f:
         f.write(input)
     os.system(f'cpptraj -i cpptraj.in')
-    result = pd.read_csv("Eval.results",sep="\s+")
+    result = pd.read_csv("Eval.results", sep="\s+")
     if result["EQ[result]"][0] == "yes":
         return 0
     elif result["EQ[result]"][0] == "no":
@@ -52,10 +61,12 @@ def prep(rst7, s, temp, heavymask, backbonemask, loop=20):
     ref = "step9.rst7"
     for i in range(loop):
         final = pyamber.NPT(f"final_{i}", systemInfo=s, ref=ref, temp=temp,
-                         refc="step5.rst7", irest=True, dt=0.002, nscm=1000, nstlim=500000, ntwx=5000)
+                            refc="step5.rst7", irest=True, dt=0.002, nscm=1000, nstlim=500000, ntwx=5000)
         final.Run()
         result = density()
         if result == 0:
-            return f'final_{i}.rst7'    
+            return f'final_{i}.rst7'
         ref = f'final_{i}.rst7'
-    raise RuntimeError("More than 20 iterations of final density equil required. Bailing out.")
+    raise RuntimeError(
+        "More than 20 iterations of final density equil required. Bailing out.")
+
