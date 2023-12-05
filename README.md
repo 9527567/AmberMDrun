@@ -79,7 +79,8 @@ options:
 ## How to calculate MM-PB (GB) SA between small molecules and proteins of a single drug
 
 ~~~bash
-usage: mmpbsa [-h] --protein PROTEIN [--mol2 MOL2 [MOL2 ...]] [--temp TEMP] [--ns NS] [-g] [-c CHARGE [CHARGE ...]] [--multiplicity MULTIPLICITY [MULTIPLICITY ...]] [--MIN MIN] [--MD MD]
+usage: mmpbsa [-h] --protein PROTEIN [--mol2 MOL2 [MOL2 ...]] [--temp TEMP] [--ns NS] [-g] [-uc] [-c CHARGE [CHARGE ...]] [--multiplicity MULTIPLICITY [MULTIPLICITY ...]]
+              [--MIN MIN] [--MD MD]
 
 Tools for automating the operation of MMPBSA
 
@@ -92,6 +93,7 @@ options:
   --temp TEMP, -t TEMP  Temperature
   --ns NS, -n NS        time for MD(ns)
   -g, --guess_charge    guess charge
+  -uc, --user_charge    user charge
   -c CHARGE [CHARGE ...], --charge CHARGE [CHARGE ...]
                         charge of mol
   --multiplicity MULTIPLICITY [MULTIPLICITY ...]

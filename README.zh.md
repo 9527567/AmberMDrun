@@ -78,7 +78,8 @@ options:
 ~~~
 ## 如何计算单个小分子和蛋白质之间的MM-PB（GB）SA
 ~~~bash
-usage: mmpbsa [-h] --protein PROTEIN [--mol2 MOL2 [MOL2 ...]] [--temp TEMP] [--ns NS] [-g] [-c CHARGE [CHARGE ...]] [--multiplicity MULTIPLICITY [MULTIPLICITY ...]] [--MIN MIN] [--MD MD]
+usage: mmpbsa [-h] --protein PROTEIN [--mol2 MOL2 [MOL2 ...]] [--temp TEMP] [--ns NS] [-g] [-uc] [-c CHARGE [CHARGE ...]] [--multiplicity MULTIPLICITY [MULTIPLICITY ...]]
+              [--MIN MIN] [--MD MD]
 
 Tools for automating the operation of MMPBSA
 
@@ -91,6 +92,7 @@ options:
   --temp TEMP, -t TEMP  Temperature
   --ns NS, -n NS        time for MD(ns)
   -g, --guess_charge    guess charge
+  -uc, --user_charge    user charge
   -c CHARGE [CHARGE ...], --charge CHARGE [CHARGE ...]
                         charge of mol
   --multiplicity MULTIPLICITY [MULTIPLICITY ...]
@@ -107,6 +109,11 @@ mmpbsa -p complex.pdb
 只需要在-m 后跟多个配体的文件即可，添加了一个选项`-g`用于猜测小分子的静电荷，或者手动指定静电荷，例如：
 ~~~bash
 mmpbsa -p pro.pdb -m lig1.mol2 lig2.mol2 -g -n 100
+~~~
+## V0.0.6 添加自定义电荷选项
+添加了一个选项`-uc`用于使用自定义小分子的静电荷，只能用mol2文件，例如：
+~~~bash
+mmpbsa -p pro.pdb -m lig1.mol2 lig2.mol2 -uc -n 100
 ~~~
 ## 如何通过继承扩展代码
 我们将在不久的将来进行描述。

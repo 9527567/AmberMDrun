@@ -62,7 +62,7 @@ def split_pdb(pdb: str):
     return "pro.pdb", "mol.mol2"
 
 
-def run_tleap(protein: str, mol_list: List, charge: List, multiplicity: List, guess_charge: bool):
+def run_tleap(protein: str, mol_list: List, user_charge: bool, charge: List, multiplicity: List, guess_charge: bool):
     cmdline = f'pdb4amber -i {protein} -o _{str(protein)} -y -d -p'
     runCMD(cmdline)
     protein_path = Path(protein).absolute()
@@ -72,6 +72,13 @@ def run_tleap(protein: str, mol_list: List, charge: List, multiplicity: List, gu
             cmdline = f'acpype -i {str(Path(mol).absolute())}'
             runCMD(cmdline,
                    message="Perhaps you should check the charge of the ligand and the correctness of the hydrogen atom.")
+    elif user_charge:
+        for mol in mol_list:
+            if Path(mol).suffix != '.mol2':
+                raise RuntimeError('must mol2 for user charge!')
+            cmdline = f'acpype -i {str(Path(mol).absolute())} -c user'
+            runCMD(cmdline,
+                   message="Perhaps you should check the charge of the ligand and the correctness of the hydrogen atom.")        
     else:
         for mol, c, spin in zip(mol_list, charge, multiplicity):
             cmdline = f'acpype -i {str(Path(mol).absolute())} -n {c} -m {spin}'
@@ -80,7 +87,11 @@ def run_tleap(protein: str, mol_list: List, charge: List, multiplicity: List, gu
 
     mol_frcmod = f"".join(
         f'loadamberparams {mol_path.stem}.acpype/{mol_path.stem}_AC.frcmod\n' for mol_path in mol_list)
-    mol_load = f"".join(
+    if user_charge:
+        mol_load = f"".join(
+        f'{mol_path.stem} = loadmol2 {mol_path.stem}.acpype/{mol_path.stem}_user_gaff2.mol2\n' for mol_path in mol_list)    
+    else:
+        mol_load = f"".join(
         f'{mol_path.stem} = loadmol2 {mol_path.stem}.acpype/{mol_path.stem}_bcc_gaff2.mol2\n' for mol_path in mol_list)
     combine = f'com = combine{{pro {" ".join(mol_path.stem for mol_path in mol_list)}}}\n'
     leapin = (f"""source leaprc.protein.ff14SB
@@ -173,9 +184,10 @@ def arg_parse():
                         help="time for MD(ns)", default=100)
     parser.add_argument('-g', '--guess_charge',
                         action='store_true', help='guess charge')
+    parser.add_argument('-uc', '--user_charge',
+                        action='store_true', help='user charge')
     parser.add_argument('-c', "--charge", type=int, nargs='+',
                         default=[0], help="charge of mol")
-
     parser.add_argument("--multiplicity", type=int, nargs='+',
                         default=[1], help="multiplicity of mol")
     parser.add_argument("--MIN", type=str,
@@ -191,7 +203,7 @@ def mmpbsa():
     protein = args.protein
     mol_list = args.mol2
     temp = args.temp
-    if not args.guess_charge:
+    if not args.guess_charge and not args.user_charge:
         if len(mol_list) != len(args.charge) and len(mol_list) != len(args.multiplicity):
             raise ValueError(
                 "If the charge is not guessed, it is necessary to specify the charge and spin multiplicity for each ligand.")
@@ -199,14 +211,14 @@ def mmpbsa():
     if mol_list is None:
         protein, mol = split_pdb(protein)
         mol_list = [mol]
-    parm7, rst7 = run_tleap(protein, mol_list, args.charge,
+    parm7, rst7 = run_tleap(protein, mol_list, args.charge, args.user_charge,
                             args.multiplicity, args.guess_charge)
     s = pyamber.SystemInfo(parm7, rst7, runMin=args.MIN, runMd=args.MD)
     heavymask = "\"" + s.getHeavyMask() + "\""
     backbonemask = "\"" + s.getBackBoneMask() + "\""
     rst7 = prep(rst7=rst7, s=s, temp=temp, heavymask=heavymask,
                 backbonemask=backbonemask, loop=20)
-    md = pyamber.NPT("md", s, rst7, rst7, ntwx=50000,
+    md = pyamber.NPT("md", s, rst7, rst7, ntwx=50000,temp=temp,
                      irest=True, nscm=1000, nstlim=args.ns * 500000)
     md.Run()
     rst7 = 'final_0.rst7'
