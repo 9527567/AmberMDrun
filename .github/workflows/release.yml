@@ -19,7 +19,9 @@ jobs:
           python-version: '3.12'
 
       - name: Build source distribution
-        run: python setup.py sdist
+        run: |
+          pip install setuptools wheel
+          python setup.py sdist
 
       - name: Build wheels (cp38-cp313, manylinux_2_28, x86_64)
         uses: pypa/cibuildwheel@v2.21
