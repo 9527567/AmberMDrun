@@ -23,7 +23,7 @@ jobs:
           python -m pip install --upgrade build twine
           python -m build --sdist
 
-      - name: Build wheels (cp39-cp314, manylinux_2_28, x86_64)
+      - name: Build wheels (cp39-cp314, manylinux2014/glibc 2.17, x86_64)
         uses: pypa/cibuildwheel@v4.1.0
         env:
           CIBW_ARCHS: x86_64
