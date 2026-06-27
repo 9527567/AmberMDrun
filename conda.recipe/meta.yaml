@@ -1,35 +1,36 @@
-{% set data = load_setup_py_data() %}
+{% set version = load_file_regex(
+    load_file='../AmberMDrun/version.py',
+    regex_pattern="__version__\\s*=\\s*['\\\"]([^'\\\"]+)['\\\"]"
+).group(1) %}
 
 package:
   name: ambermdrun
-  version: {{ data['version'] }}
+  version: {{ version }}
 
 source:
   path: ..
 
 build:
   number: 0
-  script: {{ PYTHON }} -m pip install --no-deps --ignore-installed .
+  script: {{ PYTHON }} -m pip install . --no-deps --no-build-isolation -vv
 
 requirements:
   build:
     - "{{ compiler('cxx') }}"
+  host:
     - cmake
     - ninja
     - python
-    - setuptools
-  host:
-    - python
     - pip !=22.1.0
+    - setuptools
+    - wheel
   run:
     - python
     - pandas >=1.0.0
 
-outputs:
-  - name: ambermdrun
-    files:
-      - AmberMDrun/
-      - AmberMDrun-*
+test:
+  imports:
+    - AmberMDrun
 
 about:
   summary: A scripting tool for running Amber MD in an easy way

@@ -52,12 +52,12 @@ jobs:
           path: dist/
 
       - uses: pypa/gh-action-pypi-publish@v1.12.2
-        with:
-          verify-metadata: false
 
   conda:
-    name: Build conda package
+    name: Build and publish conda package
     runs-on: ubuntu-latest
+    env:
+      ANACONDA_TOKEN: ${{ secrets.ANACONDA_TOKEN }}
     defaults:
       run:
         shell: bash -l {0}
@@ -73,11 +73,17 @@ jobs:
 
       - name: Build conda package
         run: |
-          conda install -c conda-forge conda-build
+          conda install -c conda-forge conda-build anaconda-client
           conda-build -c conda-forge conda.recipe
           PKG=$(conda-build -c conda-forge conda.recipe --output)
           mkdir -p dist
           cp "$PKG" dist/
+
+      - name: Check Anaconda token
+        run: test -n "$ANACONDA_TOKEN" || (echo "ANACONDA_TOKEN secret is required to upload to Anaconda." && exit 1)
+
+      - name: Upload conda package to Anaconda
+        run: anaconda --token "$ANACONDA_TOKEN" upload --user zjack --label main --force dist/*
 
       - uses: actions/upload-artifact@v4
         with:

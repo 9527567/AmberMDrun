@@ -1,3 +1,18 @@
- include CMakeLists.txt
- include Doxyfile
- graft AmberMDrun
+include CMakeLists.txt
+include Doxyfile
+graft AmberMDrun
+
+global-exclude *.py[cod] __pycache__/*
+exclude AmberMDrun/extern/pybind11/.git
+exclude AmberMDrun/extern/pybind11/.appveyor.yml
+exclude AmberMDrun/extern/pybind11/.clang-format
+exclude AmberMDrun/extern/pybind11/.clang-tidy
+exclude AmberMDrun/extern/pybind11/.cmake-format.yaml
+exclude AmberMDrun/extern/pybind11/.codespell-ignore-lines
+exclude AmberMDrun/extern/pybind11/.gitattributes
+exclude AmberMDrun/extern/pybind11/.gitignore
+exclude AmberMDrun/extern/pybind11/.pre-commit-config.yaml
+exclude AmberMDrun/extern/pybind11/.readthedocs.yml
+prune AmberMDrun/extern/pybind11/.github
+prune AmberMDrun/extern/pybind11/docs
+prune AmberMDrun/extern/pybind11/tests
