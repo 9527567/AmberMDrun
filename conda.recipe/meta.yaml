@@ -1,4 +1,4 @@
-{% set version = environ.get('AMBERMDRUN_VERSION', '0.0.9') %}
+{% set version = environ.get('AMBERMDRUN_VERSION', '0.1.0') %}
 
 package:
   name: ambermdrun
