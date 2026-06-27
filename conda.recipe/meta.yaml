@@ -1,7 +1,4 @@
-{% set version = load_file_regex(
-    load_file='../AmberMDrun/version.py',
-    regex_pattern="__version__\\s*=\\s*['\\\"]([^'\\\"]+)['\\\"]"
-).group(1) %}
+{% set version = environ.get('AMBERMDRUN_VERSION', '0.0.8') %}
 
 package:
   name: ambermdrun
@@ -22,7 +19,7 @@ requirements:
     - ninja
     - python
     - pip !=22.1.0
-    - setuptools
+    - setuptools <77
     - wheel
   run:
     - python
