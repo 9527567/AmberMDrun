@@ -1,10 +1,11 @@
-//
-// Created by jack on 2022/12/7.
-//
-
 #ifndef NPT_HPP
 #define NPT_HPP
 #include "md.hpp"
+
+/// @brief NPT ensemble MD step (constant pressure, constant temperature).
+///
+/// Forces ntb=2 (constant pressure) and adds barostat output to Amber input.
+/// Used for density equilibration and production MD.
 class Npt : public Md
 {
 public:

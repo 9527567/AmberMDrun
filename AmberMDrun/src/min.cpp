@@ -20,7 +20,7 @@ Min::Min(const std::string &name, SystemInfo systemInfo, const std::string &rst7
     maxCyc_ = maxCyc;
     nCyc_ = nCyc;
     nTwx_ = nTwx;
-    nTpr_ = nTwr;
+    nTpr_ = nTpr;
     nTwr_ = nTwr;
     iMin_ = 1;
 }
@@ -31,7 +31,7 @@ void Min::operator()(std::string name, int nTmin, int maxCyc, int nCyc, int nTwx
     maxCyc_ = maxCyc;
     nCyc_ = nCyc;
     nTwx_ = nTwx;
-    nTpr_ = nTwr;
+    nTpr_ = nTpr;
     iMin_ = 1;
 }
 void Min::writeInput()
@@ -154,8 +154,8 @@ void Min::progress()
             return true;
         }};
         fswatcher_poll(watcher, &handler, nullptr);
+        std::this_thread::sleep_for(std::chrono::milliseconds(100));
     };
     bar.finish();
     fswatcher_destroy(watcher);
-    pro_.release();
 }

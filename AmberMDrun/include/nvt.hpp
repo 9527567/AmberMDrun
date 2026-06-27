@@ -1,10 +1,10 @@
-//
-// Created by jack on 2022/12/7.
-//
-
 #ifndef NVT_HPP
 #define NVT_HPP
 #include "md.hpp"
+
+/// @brief NVT ensemble MD step (constant volume, constant temperature).
+///
+/// Forces ntb=1 (constant volume) regardless of Md::ntb value.
 class Nvt : public Md
 {
 public:

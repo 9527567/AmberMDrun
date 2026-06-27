@@ -1,7 +1,3 @@
-//
-// Created by jack on 2022/9/19.
-//
-
 #ifndef AMBERMD_SYSTEMINFO_HPP
 #define AMBERMD_SYSTEMINFO_HPP
 
@@ -10,295 +6,109 @@
 #include <string>
 #include <unordered_set>
 #include <vector>
+
+/// @brief Lookup tables of Amber-compatible residue names per biomolecule type.
 class ResName
 {
 public:
     static inline const std::vector<std::string> Protein{
-            "ACE",
-            "ALA",
-            "ARG",
-            "ASH",
-            "AS4",
-            "ASN",
-            "ASP",
-            "CALA",
-            "CARG",
-            "CASN",
-            "CASP",
-            "CCYS",
-            "CCYX",
-            "CGLN",
-            "CGLU",
-            "CGLY",
-            "CHID",
-            "CHIE",
-            "CHIP",
-            "CHIS",
-            "CHYP",
-            "CILE",
-            "CLEU",
-            "CLYS",
-            "CMET",
-            "CPHE",
-            "CPRO",
-            "CSER",
-            "CTHR",
-            "CTRP",
-            "CTYR",
-            "CVAL",
-            "CYM",
-            "CYS",
-            "CYX",
-            "GLH",
-            "GL4",
-            "GLN",
-            "GLU",
-            "GLY",
-            "HID",
-            "HIE",
-            "HIP",
-            "HIS",
-            "HYP",
-            "ILE",
-            "LEU",
-            "LYN",
-            "LYS",
-            "MET",
-            "NALA",
-            "NARG",
-            "NASN",
-            "NASP",
-            "NCYS",
-            "NCYX",
-            "NGLN",
-            "NGLU",
-            "NGLY",
-            "NHE",
-            "NHID",
-            "NHIE",
-            "NHIP",
-            "NHIS",
-            "NILE",
-            "NLEU",
-            "NLYS",
-            "NME",
-            "NMET",
-            "NPHE",
-            "NPRO",
-            "NSER",
-            "NTHR",
-            "NTRP",
-            "NTYR",
-            "NVAL",
-            "PHE",
-            "PRO",
-            "SER",
-            "THR",
-            "TRP",
-            "TYR",
-            "VAL"};
+            "ACE", "ALA", "ARG", "ASH", "AS4", "ASN", "ASP", "CALA", "CARG", "CASN",
+            "CASP", "CCYS", "CCYX", "CGLN", "CGLU", "CGLY", "CHID", "CHIE", "CHIP",
+            "CHIS", "CHYP", "CILE", "CLEU", "CLYS", "CMET", "CPHE", "CPRO", "CSER",
+            "CTHR", "CTRP", "CTYR", "CVAL", "CYM", "CYS", "CYX", "GLH", "GL4", "GLN",
+            "GLU", "GLY", "HID", "HIE", "HIP", "HIS", "HYP", "ILE", "LEU", "LYN", "LYS",
+            "MET", "NALA", "NARG", "NASN", "NASP", "NCYS", "NCYX", "NGLN", "NGLU",
+            "NGLY", "NHE", "NHID", "NHIE", "NHIP", "NHIS", "NILE", "NLEU", "NLYS",
+            "NME", "NMET", "NPHE", "NPRO", "NSER", "NTHR", "NTRP", "NTYR", "NVAL",
+            "PHE", "PRO", "SER", "THR", "TRP", "TYR", "VAL"};
     static inline const std::vector<std::string> DNA{
-            "DA",
-            "DA3",
-            "DA5",
-            "DAN",
-            "DC",
-            "DC3",
-            "DC5",
-            "DCN",
-            "DG",
-            "DG3",
-            "DG5",
-            "DGN",
-            "DT",
-            "DT3",
-            "DT5",
-            "DTN"};
+            "DA", "DA3", "DA5", "DAN", "DC", "DC3", "DC5", "DCN",
+            "DG", "DG3", "DG5", "DGN", "DT", "DT3", "DT5", "DTN"};
     static inline const std::vector<std::string> RNA{
-            "A",
-            "A3",
-            "A5",
-            "AMP",
-            "AN",
-            "C",
-            "C3",
-            "C5",
-            "CMP",
-            "CN",
-            "G",
-            "G3",
-            "G5",
-            "GMP",
-            "GN",
-            "OHE",
-            "U",
-            "U3",
-            "U5",
-            "UMP",
-            "UN"};
+            "A", "A3", "A5", "AMP", "AN", "C", "C3", "C5", "CMP", "CN",
+            "G", "G3", "G5", "GMP", "GN", "OHE", "U", "U3", "U5", "UMP", "UN"};
     static inline const std::vector<std::string> Lipid{
-            "POPE",
-            "DOPC",
-            "AR",
-            "CHL",
-            "DHA",
-            "LAL",
-            "MY",
-            "OL",
-            "PA",
-            "PC",
-            "PE",
-            "PGR",
-            "PH-",
-            "PS",
-            "ST"};
+            "POPE", "DOPC", "AR", "CHL", "DHA", "LAL", "MY", "OL",
+            "PA", "PC", "PE", "PGR", "PH-", "PS", "ST"};
     static inline const std::vector<std::string> Carbo{
-            "0GB",
-            "4GB",
-            "0YA",
-            "4YA",
-            "0fA",
-            "0YB",
-            "2MA",
-            "4YB",
-            "NLN",
-            "UYB",
-            "VMB",
-            "0SA",
-            "6LB",
-            "ROH"};
-    static inline const std::vector<std::string> CharmmWater{
-            "TIP3"};
-    static inline const std::vector<std::string> Water{
-            "WAT",
-            "SOL"};
+            "0GB", "4GB", "0YA", "4YA", "0fA", "0YB", "2MA",
+            "4YB", "NLN", "UYB", "VMB", "0SA", "6LB", "ROH"};
+    static inline const std::vector<std::string> CharmmWater{"TIP3"};
+    static inline const std::vector<std::string> Water{"WAT", "SOL"};
 };
 
-
+/// @brief Parses Amber prmtop via cpptraj to identify residue types and build atom masks.
+///
+/// Automatically detects protein, DNA, RNA, lipid, carbohydrate, and water residues,
+/// then generates heavy-atom and backbone atom masks suitable for Amber restraints
+/// (ntr=1). Also determines MD engine (pmemd.cuda vs sander) and MPI parallelism.
 class SystemInfo
 {
 public:
     SystemInfo() = default;
+    /// @param parm7File Amber topology file (.prmtop or .parm7)
+    /// @param rst7File  Amber coordinate file (.rst7 or .inpcrd)
+    /// @param runMin    Engine for minimization (default: pmemd.cuda_DPFP)
+    /// @param runMd     Engine for MD (default: pmemd.cuda)
     explicit SystemInfo(const std::string &parm7File, const std::string &rst7File, const std::string &runMin = "pmemd.cuda_DPFP", const std::string &runMd = "pmemd.cuda");
-    [[nodiscard]] int getNprotein() const
-    {
-        return nProtein_;
-    }
-    [[nodiscard]] int getnDna() const
-    {
-        return nDna_;
-    }
-    [[nodiscard]] int getnRna() const
-    {
-        return nRna_;
-    }
-    [[nodiscard]] int getnLipid() const
-    {
-        return nLipid_;
-    }
-    [[nodiscard]] int getnUnKnown_() const
-    {
-        return nunKnown_;
-    }
-    [[nodiscard]] int getnCharmmWater_() const
-    {
-        return nCharmmWater_;
-    }
-    [[nodiscard]] int getnWater() const
-    {
-        return nWater_;
-    }
-    [[nodiscard]] int getnCarbo() const
-    {
-        return nCarbo_;
-    }
-    [[nodiscard]] bool getHasCharmmWater() const
-    {
-        return hasCharmmWater_;
-    }
-    [[nodiscard]] bool getHasOrthoBox() const
-    {
-        return hasOrthoBox_;
-    }
-    [[nodiscard]] std::string getRunMin() const
-    {
-        return runMin_;
-    }
-    [[nodiscard]] std::string getRunMd() const
-    {
-        return runMd_;
-    }
-    [[nodiscard]] std::string getParm7File() const
-    {
-        return parm7File_;
-    };
-    [[nodiscard]] std::string getRst7File() const
-    {
-        return rst7File_;
-    };
+    [[nodiscard]] int getNprotein() const { return nProtein_; }
+    [[nodiscard]] int getnDna() const { return nDna_; }
+    [[nodiscard]] int getnRna() const { return nRna_; }
+    [[nodiscard]] int getnLipid() const { return nLipid_; }
+    [[nodiscard]] int getnUnKnown_() const { return nunKnown_; }
+    [[nodiscard]] int getnCharmmWater_() const { return nCharmmWater_; }
+    [[nodiscard]] int getnWater() const { return nWater_; }
+    [[nodiscard]] int getnCarbo() const { return nCarbo_; }
+    [[nodiscard]] bool getHasCharmmWater() const { return hasCharmmWater_; }
+    [[nodiscard]] bool getHasOrthoBox() const { return hasOrthoBox_; }
+    [[nodiscard]] std::string getRunMin() const { return runMin_; }
+    [[nodiscard]] std::string getRunMd() const { return runMd_; }
+    [[nodiscard]] std::string getParm7File() const { return parm7File_; };
+    [[nodiscard]] std::string getRst7File() const { return rst7File_; };
+
+    /// @brief Generate heavy-atom mask (all non-hydrogen atoms) for restraint.
+    /// @return Amber-compatible atom mask string (e.g. ":1-100&!@H=")
     [[nodiscard]] std::string getHeavyMask() const
     {
         std::string result = {};
         int sum = 0;
         if (nProtein_ > 0)
         {
-            result += fmt::format(":{}-{}&!@H=",
-                                  Protein_.first, Protein_.second);
+            result += fmt::format(":{}-{}&!@H=", Protein_.first, Protein_.second);
             sum += nProtein_;
         }
         if (nDna_ > 0)
         {
-            if (sum == 0)
-            {
-                result += fmt::format(":{}-{}&!@H=",
-                                      DNA_.first, DNA_.second);
-            } else
-            {
-                result += fmt::format("|:{}-{}&!@H=",
-                                      DNA_.first, DNA_.second);
-            }
+            result += sum == 0
+                ? fmt::format(":{}-{}&!@H=", DNA_.first, DNA_.second)
+                : fmt::format("|:{}-{}&!@H=", DNA_.first, DNA_.second);
             sum += nDna_;
         }
         if (nRna_ > 0)
         {
-            if (sum > 0)
-            {
-                result += fmt::format("|:{}-{}&!@H=",
-                                      RNA_.first, RNA_.second);
-            } else
-            {
-                result += fmt::format(":{}-{}&!@H=",
-                                      RNA_.first, RNA_.second);
-            }
+            result += sum > 0
+                ? fmt::format("|:{}-{}&!@H=", RNA_.first, RNA_.second)
+                : fmt::format(":{}-{}&!@H=", RNA_.first, RNA_.second);
             sum += nRna_;
         }
         if (nLipid_ > 0)
         {
-            if (sum > 0)
-            {
-                result += fmt::format("|:{}-{}&!@H=",
-                                      Lipid_.first, Lipid_.second);
-            } else
-            {
-                result += fmt::format(":{}-{}&!@H=",
-                                      Lipid_.first, Lipid_.second);
-            }
+            result += sum > 0
+                ? fmt::format("|:{}-{}&!@H=", Lipid_.first, Lipid_.second)
+                : fmt::format(":{}-{}&!@H=", Lipid_.first, Lipid_.second);
             sum += nLipid_;
         }
         if (nCarbo_ > 0)
         {
-            if (sum > 0)
-            {
-                result += fmt::format("|:{}-{}&!@H=",
-                                      Carbo_.first, Carbo_.second);
-            } else
-            {
-                result += fmt::format(":{}-{}&!@H=",
-                                      Carbo_.first, Carbo_.second);
-            }
+            result += sum > 0
+                ? fmt::format("|:{}-{}&!@H=", Carbo_.first, Carbo_.second)
+                : fmt::format(":{}-{}&!@H=", Carbo_.first, Carbo_.second);
         }
         return result;
     }
+
+    /// @brief Generate backbone atom mask (protein: N/CA/HA/C/O, DNA/RNA: backbone atoms).
+    /// @return Amber-compatible atom mask string
     [[nodiscard]] std::string getBackBoneMask() const;
 
 private:

@@ -41,6 +41,27 @@ pybind11_add_module(_pyamber
 target_link_libraries(_pyamber PUBLIC ambermd)
 target_link_libraries(amberMd PRIVATE ${CMAKE_THREAD_LIBS_INIT})
 target_link_libraries(_pyamber PUBLIC ${CMAKE_THREAD_LIBS_INIT})
+# --- Doxygen documentation ---
+find_package(Doxygen QUIET)
+if(DOXYGEN_FOUND)
+    set(DOXYGEN_INPUT "${CMAKE_CURRENT_SOURCE_DIR}/include ${CMAKE_CURRENT_SOURCE_DIR}/src ${CMAKE_CURRENT_SOURCE_DIR}/../README.md")
+    set(DOXYGEN_OUTPUT "${CMAKE_CURRENT_BINARY_DIR}")
+    configure_file(${CMAKE_CURRENT_SOURCE_DIR}/../Doxyfile Doxyfile @ONLY)
+    add_custom_target(docs
+        COMMAND ${DOXYGEN_EXECUTABLE} Doxyfile
+        WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
+        COMMENT "Generating API documentation with Doxygen"
+        VERBATIM
+    )
+    install(DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/html/
+        DESTINATION ${CMAKE_INSTALL_PREFIX}/share/doc/AmberMDrun
+    )
+else()
+    add_custom_target(docs
+        COMMAND ${CMAKE_COMMAND} -E echo "Doxygen not found — skipping documentation"
+    )
+endif()
+
 install(
   TARGETS _pyamber ambermd
   LIBRARY DESTINATION ${CMAKE_BINARY_DIR}/AmberMDrun

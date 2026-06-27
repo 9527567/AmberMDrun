@@ -43,6 +43,8 @@ Md::Md(const std::string &name, SystemInfo systemInfo, const std::string &rst7, 
 void Md::Run()
 {
     if (this->done_) this->done_ = false;
+    Base::runningInstance_ = this;
+    auto *prev = std::signal(SIGINT, Base::sigintHandler);
     writeInput();
     charmmWater();
     Thermostat();
@@ -53,11 +55,21 @@ void Md::Run()
     restraint();
     writeEnd();
     {
-        std::thread th1(&Md::progress, this);
-        std::thread th2(&Md::runMd, this);
+        std::exception_ptr ep;
+        std::thread th1([this, &ep] {
+            try { progress(); }
+            catch (...) { ep = std::current_exception(); done_ = true; }
+        });
+        std::thread th2([this, &ep] {
+            try { runMd(); }
+            catch (...) { ep = std::current_exception(); done_ = true; }
+        });
         th1.join();
         th2.join();
+        if (ep) std::rethrow_exception(ep);
     }
+    std::signal(SIGINT, prev);
+    Base::runningInstance_ = nullptr;
 }
 void Md::writeInput()
 {
@@ -317,8 +329,8 @@ void Md::progress()
             return true;
         }};
         fswatcher_poll(watcher, &handler, nullptr);
+        std::this_thread::sleep_for(std::chrono::milliseconds(100));
     };
     bar.finish();
     fswatcher_destroy(watcher);
-    pro_.release();
 }

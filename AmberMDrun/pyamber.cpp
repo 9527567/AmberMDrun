@@ -29,8 +29,8 @@ PYBIND11_MODULE(_pyamber, m)
             .def("getnCarbo", &SystemInfo::getnCarbo)
             .def("getHasCharmmWater", &SystemInfo::getHasCharmmWater)
             .def("getHasOrthoBox", &SystemInfo::getHasOrthoBox)
-            .def("getRunMin", &SystemInfo::getRunMd)
-            .def("getRunMd", &SystemInfo::getRunMin)
+            .def("getRunMin", &SystemInfo::getRunMin)
+            .def("getRunMd", &SystemInfo::getRunMd)
             .def("getHeavyMask", &SystemInfo::getHeavyMask)
             .def("getBackBoneMask", &SystemInfo::getBackBoneMask);
 

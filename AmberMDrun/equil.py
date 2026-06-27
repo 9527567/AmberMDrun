@@ -1,5 +1,5 @@
 from . import pyamber
-import os
+import subprocess
 import pandas as pd
 from pathlib import Path
 
@@ -10,7 +10,7 @@ def density():
     for out_file in path.glob('final_*.out'):
         final_file.append(out_file)
     input = (f"for FILE in {' '.join([item.name for item in final_file])} \n"
-             "readdata \$FILE name MD \n"
+             "readdata $FILE name MD \n"
              "done \n"
              "evalplateau *[Density] name EQ out Eval.agr resultsout Eval.results\n"
              "go\n"
@@ -19,8 +19,8 @@ def density():
 
     with open("cpptraj.in", "w") as f:
         f.write(input)
-    os.system(f'cpptraj -i cpptraj.in')
-    result = pd.read_csv("Eval.results", sep="\s+")
+    subprocess.run(["cpptraj", "-i", "cpptraj.in"], check=True)
+    result = pd.read_csv("Eval.results", sep=r"\s+")
     if result["EQ[result]"][0] == "yes":
         return 0
     elif result["EQ[result]"][0] == "no":

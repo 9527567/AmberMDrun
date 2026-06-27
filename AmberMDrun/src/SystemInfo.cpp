@@ -20,7 +20,7 @@ SystemInfo::SystemInfo(const std::string &parm7File, const std::string &rst7File
             long cpu_nums;
             cpu_nums = sysconf(_SC_NPROCESSORS_ONLN) / 2;
             auto runMinT {runMin};trim(runMinT);auto runMdT {runMd};trim(runMdT);
-            if (runMinT == "pmemd.MPI"| runMinT == "sander.MPI")
+            if (runMinT == "pmemd.MPI" || runMinT == "sander.MPI")
             {
                 runMin_ = "mpirun -np " + std::to_string(cpu_nums) + " " + runMinT;
             }
@@ -28,7 +28,7 @@ SystemInfo::SystemInfo(const std::string &parm7File, const std::string &rst7File
             {
                 runMin_ = runMinT;
             }
-            if (runMdT == "pmemd.MPI"| runMdT == "sander.MPI")
+            if (runMdT == "pmemd.MPI" || runMdT == "sander.MPI")
             {
                 runMd_ = "mpirun -np " + std::to_string(cpu_nums) + " " + runMdT;
             }

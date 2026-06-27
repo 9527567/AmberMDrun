@@ -1,6 +1,6 @@
 package:
   name: ambermdrun
-  version: 0.0.6
+  version: 0.0.7
 
 source:
   path: ..
@@ -14,7 +14,7 @@ requirements:
     - "{{ compiler('cxx') }}"
     - cmake
     - ninja
-    - python 
+    - python
     - setuptools
   host:
     - python
@@ -23,8 +23,27 @@ requirements:
     - python
     - pandas >=1.0.0
 
+outputs:
+  - name: ambermdrun
+    files:
+      - AmberMDrun/
+      - AmberMDrun-*
+
+  - name: ambermdrun-docs
+    requirements:
+      build:
+        - doxygen
+      host:
+        - python
+    script:
+      - doxygen Doxyfile
+      - mkdir -p $PREFIX/share/doc/ambermdrun
+      - cp -r html/* $PREFIX/share/doc/ambermdrun/
+
 about:
   summary: A scripting tool for running Amber MD in an easy way
   license: MIT
+  license_family: MIT
+  license_file: LICENSE
   home: https://github.com/9527567/AmberMDrun
   dev_url: https://github.com/9527567/AmberMDrun

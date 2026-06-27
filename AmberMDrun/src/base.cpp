@@ -5,7 +5,24 @@
 #include "fmt/core.h"
 #include "fmt/os.h"
 #include <utility>
+#include <sys/wait.h>
+#include <unistd.h>
+#include <fcntl.h>
+
+Base *Base::runningInstance_ = nullptr;
 #define f fmt::format
+void Base::sigintHandler(int)
+{
+    if (runningInstance_) {
+        if (runningInstance_->childPid_ > 0)
+            kill(-runningInstance_->childPid_, SIGKILL);
+        runningInstance_->done_ = true;
+    }
+    const char msg[] = "\n";
+    write(STDOUT_FILENO, msg, sizeof(msg) - 1);
+    _exit(130);
+}
+
 Base::Base(const std::string &name, SystemInfo systemInfo, const std::string &rst7, const std::string &refc, bool irest,
            const std::string &restranintmask, float restraint_wt, float cut)
 {
@@ -27,17 +44,29 @@ void Base::writeInput()
 
 void Base::Run()
 {
-    if (this->done_ == true) this->done_ = false;
+    if (this->done_) this->done_ = false;
+    runningInstance_ = this;
+    auto *prev = std::signal(SIGINT, sigintHandler);
     writeInput();
     charmmWater();
     restraint();
     writeEnd();
     {
-        std::thread th1(&Base::progress, this);
-        std::thread th2(&Base::runMd, this);
+        std::exception_ptr ep;
+        std::thread th1([this, &ep] {
+            try { progress(); }
+            catch (...) { ep = std::current_exception(); done_ = true; }
+        });
+        std::thread th2([this, &ep] {
+            try { runMd(); }
+            catch (...) { ep = std::current_exception(); done_ = true; }
+        });
         th1.join();
         th2.join();
+        if (ep) std::rethrow_exception(ep);
     }
+    std::signal(SIGINT, prev);
+    runningInstance_ = nullptr;
 }
 
 void Base::charmmWater()
@@ -111,34 +140,80 @@ void Base::runMd()
     run_.release();
     std::string run = "sander";
     if (iMin_ == 1)
-    {
         run = systemInfo_.getRunMin();
-    } else
-    {
+    else
         run = systemInfo_.getRunMd();
-    }
-    std::string execCommamd = fmt::format(
+
+    std::string execCommand = fmt::format(
             "{} -O -i {}.in -p {} -c {} -ref {} -o {}.out -r {}.rst7 -x {}.nc -inf {}.mdinfo -AllowSmallBox", run,
             name_, systemInfo_.getParm7File(), rst7_, refc_, name_, name_, name_, name_);
 
-    std::vector<std::string> result = executeCMD(execCommamd);
-    for (auto i: result)
+    int stdout_fds[2];
+    if (pipe(stdout_fds) == -1)
+        throw std::runtime_error("pipe() failed");
+
+    childPid_ = fork();
+    if (childPid_ == -1)
     {
-        fmt::print("{}", i);
+        close(stdout_fds[0]);
+        close(stdout_fds[1]);
+        throw std::runtime_error("fork() failed");
     }
-    //    std::vector<std::string> execCommand2 = {f("{}", run), f("{}", "-O"),
-    //                                             f("{}", "-i"), f("{}.in", name_),
-    //                                             f("{}", "-p"), f("{}", systemInfo_.getParm7File()),
-    //                                             f("{}", "-c"), f("{}", rst7_),
-    //                                             f("{}", "-ref"), f("{}", refc_),
-    //                                             f("{}", "-o"), f("{}.out", name_),
-    //                                             f("{}", "-r"), f("{}.rst7", name_),
-    //                                             f("{}", "-x"), f("{}.nc", name_),
-    //                                             f("{}", "-inf"), f("{}.mdinfo", name_),
-    //                                             f("{}", "-AllowSmallBox")};
-    //    executeCMD2(execCommand2);
+
+    if (childPid_ == 0)
+    {
+        close(stdout_fds[0]);
+        dup2(stdout_fds[1], 1);
+        dup2(stdout_fds[1], 2);
+        close(stdout_fds[1]);
+        setpgid(0, 0);
+        execl("/bin/sh", "sh", "-c", execCommand.c_str(), nullptr);
+        _exit(127);
+    }
+
+    close(stdout_fds[1]);
+
+    int flags = fcntl(stdout_fds[0], F_GETFL, 0);
+    fcntl(stdout_fds[0], F_SETFL, flags | O_NONBLOCK);
+
+    std::string out;
+    char buffer[4096];
+    ssize_t r;
+    while (!this->done_) {
+        r = read(stdout_fds[0], buffer, sizeof(buffer));
+        if (r > 0) {
+            out.append(buffer, r);
+        } else if (r == 0) {
+            break;
+        } else if (errno == EAGAIN || errno == EWOULDBLOCK) {
+            std::this_thread::sleep_for(std::chrono::milliseconds(50));
+        } else if (errno == EINTR) {
+            continue;
+        } else {
+            break;
+        }
+    }
+    close(stdout_fds[0]);
+
+    int status;
+    pid_t ret;
+    if (this->done_ && childPid_ > 0) {
+        kill(-childPid_, SIGKILL);
+    }
+    do {
+        ret = waitpid(childPid_, &status, 0);
+    } while (ret == -1 && errno == EINTR);
+
+    childPid_ = -1;
+
+    if (ret > 0 && WIFSIGNALED(status))
+        throw std::runtime_error(fmt::format("{} was terminated by signal {} (Ctrl+C)", execCommand, WTERMSIG(status)));
+    if (ret > 0 && WIFEXITED(status) && WEXITSTATUS(status) != 0)
+        throw std::runtime_error(fmt::format("{} run failed!\n", execCommand));
+
+    fmt::print("{}", out);
+
     this->done_ = true;
-    pro_.acquire();
 }
 
 Base *Base::setRestraint_wt(float restraint_wt)
@@ -179,8 +254,8 @@ void Base::progress()
             return true;
         }};
         fswatcher_poll(watcher, &handler, nullptr);
+        std::this_thread::sleep_for(std::chrono::milliseconds(100));
     };
     bar.finish();
     fswatcher_destroy(watcher);
-    pro_.release();
 }

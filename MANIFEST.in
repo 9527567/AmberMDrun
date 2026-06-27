@@ -1,2 +1,3 @@
  include CMakeLists.txt
+ include Doxyfile
  graft AmberMDrun
