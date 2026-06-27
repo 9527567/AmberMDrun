@@ -23,9 +23,10 @@ jobs:
           pip install build
           python -m build --sdist
 
-      - name: Build wheels (cp38-cp313, manylinux_2_28)
+      - name: Build wheels (cp38-cp313, manylinux_2_28, x86_64)
         uses: pypa/cibuildwheel@v2.21
         env:
+          CIBW_ARCHS: x86_64
           CIBW_OUTPUT_DIR: dist/
 
       - uses: actions/upload-artifact@v4
