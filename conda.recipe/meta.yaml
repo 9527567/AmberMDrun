@@ -31,14 +31,6 @@ outputs:
       - AmberMDrun/
       - AmberMDrun-*
 
-  - name: ambermdrun-docs
-    requirements:
-      build:
-        - doxygen
-      host:
-        - python
-    script: doxygen Doxyfile && mkdir -p $PREFIX/share/doc/ambermdrun && cp -r html/* $PREFIX/share/doc/ambermdrun/
-
 about:
   summary: A scripting tool for running Amber MD in an easy way
   license: MIT
