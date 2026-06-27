@@ -1,6 +1,8 @@
+{% set data = load_setup_py_data() %}
+
 package:
   name: ambermdrun
-  version: 0.0.7
+  version: {{ data['version'] }}
 
 source:
   path: ..

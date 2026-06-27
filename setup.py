@@ -6,6 +6,14 @@ from pathlib import Path
 from setuptools import Command, Extension, setup
 from setuptools.command.build_ext import build_ext
 
+import re
+
+def get_version():
+    with open("AmberMDrun/version.py") as f:
+        return re.search(r'__version__\s*=\s*[\'"]([^\'"]+)[\'"]', f.read()).group(1)
+
+__version__ = get_version()
+
 PLAT_TO_CMAKE = {
     "Linux": "x86",
     "Linux-amd64": "x64",
@@ -101,18 +109,27 @@ class BuildDocs(Command):
             print(f"Documentation generated in {docs_html}")
 
 
+with open("README.md", encoding="utf-8") as f:
+    long_description = f.read()
+
 setup(
     name="AmberMDrun",
-    version="0.0.7",
+    version=__version__,
     author="ZhiWei Zhang",
     author_email="z9527567@gmail.com",
     description="A scripting tool for running Amber MD in an easy way",
+    long_description=long_description,
+    long_description_content_type="text/markdown",
+    license="MIT",
     packages=["AmberMDrun"],
     install_requires=['pandas'],
-    long_description="",
     ext_modules=[CMakeExtension("AmberMDrun")],
     cmdclass={"build_ext": CMakeBuild, "build_docs": BuildDocs},
     entry_points={'console_scripts': ['amberMDrun = AmberMDrun:main', "mmpbsa = AmberMDrun:mmpbsa"]},
     zip_safe=False,
-    python_requires=">=3.6",
+    python_requires=">=3.8",
+    project_urls={
+        "Source": "https://github.com/9527567/AmberMDrun",
+        "Bug Tracker": "https://github.com/9527567/AmberMDrun/issues",
+    },
 )

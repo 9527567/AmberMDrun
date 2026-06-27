@@ -1,0 +1,100 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - 'v*'
+
+jobs:
+  build:
+    name: Build sdist & wheels
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          submodules: true
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Build source distribution
+        run: |
+          pip install build
+          python -m build --sdist
+
+      - name: Build wheels (cp38-cp313, manylinux_2_28)
+        uses: pypa/cibuildwheel@v2.21
+        env:
+          CIBW_OUTPUT_DIR: dist/
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: dist
+          path: dist/
+
+  pypi:
+    name: Publish to PyPI
+    needs: build
+    runs-on: ubuntu-latest
+    permissions:
+      id-token: write
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          name: dist
+          path: dist/
+
+      - uses: pypa/gh-action-pypi-publish@v1.9.0
+
+  conda:
+    name: Build conda package
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        shell: bash -l {0}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          submodules: true
+
+      - uses: conda-incubator/setup-miniconda@v3
+        with:
+          auto-update-conda: true
+          python-version: "3.12"
+
+      - name: Build conda package
+        run: |
+          conda install conda-build
+          conda build conda.recipe
+          PKG=$(conda build conda.recipe --output)
+          mkdir -p dist
+          cp "$PKG" dist/
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: conda-package
+          path: dist/
+
+  release:
+    name: Create GitHub Release
+    needs: [build, conda]
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          name: dist
+          path: dist/
+
+      - uses: actions/download-artifact@v4
+        with:
+          name: conda-package
+          path: dist/
+
+      - uses: ncipollo/release-action@v1
+        with:
+          artifacts: "dist/*"
+          generateReleaseNotes: true
+          name: AmberMDrun ${{ github.ref_name }}
