@@ -60,8 +60,6 @@ jobs:
   conda:
     name: Build and publish conda package
     runs-on: ubuntu-latest
-    env:
-      ANACONDA_TOKEN: ${{ secrets.ANACONDA_TOKEN }}
     defaults:
       run:
         shell: bash -l {0}
@@ -85,7 +83,21 @@ jobs:
           cp "$PKG" dist/
 
       - name: Check Anaconda token
-        run: test -n "$ANACONDA_TOKEN" || (echo "ANACONDA_TOKEN secret is required to upload to Anaconda." && exit 1)
+        env:
+          ANACONDA_SECRET_TOKEN: ${{ secrets.ANACONDA_TOKEN }}
+          ANACONDA_VARIABLE_TOKEN: ${{ vars.ANACONDA_TOKEN }}
+        run: |
+          if [ -n "$ANACONDA_SECRET_TOKEN" ]; then
+            echo "Using ANACONDA_TOKEN from GitHub Actions secret."
+            echo "ANACONDA_TOKEN=$ANACONDA_SECRET_TOKEN" >> "$GITHUB_ENV"
+          elif [ -n "$ANACONDA_VARIABLE_TOKEN" ]; then
+            echo "Using ANACONDA_TOKEN from GitHub Actions variable."
+            echo "ANACONDA_TOKEN=$ANACONDA_VARIABLE_TOKEN" >> "$GITHUB_ENV"
+          else
+            echo "ANACONDA_TOKEN was not available to this workflow run."
+            echo "Check that it is an Actions repository secret, not a Codespaces/Dependabot secret or an environment secret without a matching job environment."
+            exit 1
+          fi
 
       - name: Upload conda package to Anaconda
         run: anaconda --token "$ANACONDA_TOKEN" upload --user zjack --label main --force dist/*
