@@ -66,9 +66,9 @@ jobs:
 
       - name: Build conda package
         run: |
-          conda install conda-build
-          conda build conda.recipe
-          PKG=$(conda build conda.recipe --output)
+          conda install -c conda-forge conda-build
+          conda-build conda.recipe
+          PKG=$(conda-build conda.recipe --output)
           mkdir -p dist
           cp "$PKG" dist/
 
