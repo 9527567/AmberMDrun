@@ -120,7 +120,6 @@ setup(
     description="A scripting tool for running Amber MD in an easy way",
     long_description=long_description,
     long_description_content_type="text/markdown",
-    license="MIT",
     packages=["AmberMDrun"],
     install_requires=['pandas'],
     ext_modules=[CMakeExtension("AmberMDrun")],

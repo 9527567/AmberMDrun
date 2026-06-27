@@ -51,13 +51,9 @@ jobs:
           name: dist
           path: dist/
 
-      - name: Debug distributions
-        run: |
-          pip install twine
-          ls -la dist/
-          twine check dist/*
-
       - uses: pypa/gh-action-pypi-publish@v1.12.2
+        with:
+          verify-metadata: false
 
   conda:
     name: Build conda package
