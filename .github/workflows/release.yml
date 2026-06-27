@@ -27,7 +27,12 @@ jobs:
         uses: pypa/cibuildwheel@v2.21
         env:
           CIBW_ARCHS: x86_64
-          CIBW_OUTPUT_DIR: dist/
+          CIBW_OUTPUT_DIR: wheelhouse/
+
+      - name: Merge distributions
+        run: |
+          mkdir -p dist
+          cp wheelhouse/* dist/
 
       - uses: actions/upload-artifact@v4
         with:
