@@ -126,7 +126,7 @@ setup(
     cmdclass={"build_ext": CMakeBuild, "build_docs": BuildDocs},
     entry_points={'console_scripts': ['amberMDrun = AmberMDrun:main', "mmpbsa = AmberMDrun:mmpbsa"]},
     zip_safe=False,
-    python_requires=">=3.8",
+    python_requires=">=3.8,<3.15",
     project_urls={
         "Source": "https://github.com/9527567/AmberMDrun",
         "Bug Tracker": "https://github.com/9527567/AmberMDrun/issues",

@@ -1,4 +1,4 @@
-{% set version = environ.get('AMBERMDRUN_VERSION', '0.0.8') %}
+{% set version = environ.get('AMBERMDRUN_VERSION', '0.0.9') %}
 
 package:
   name: ambermdrun
@@ -22,7 +22,7 @@ requirements:
     - setuptools <77
     - wheel
   run:
-    - python
+    - python >=3.8,<3.15
     - pandas >=1.0.0
 
 test:

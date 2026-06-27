@@ -23,8 +23,8 @@ jobs:
           python -m pip install --upgrade build twine
           python -m build --sdist
 
-      - name: Build wheels (cp38-cp313, manylinux_2_28, x86_64)
-        uses: pypa/cibuildwheel@v2.21
+      - name: Build wheels (cp38-cp314, manylinux_2_28, x86_64)
+        uses: pypa/cibuildwheel@v4.1.0
         env:
           CIBW_ARCHS: x86_64
           CIBW_OUTPUT_DIR: wheelhouse/
@@ -78,10 +78,9 @@ jobs:
         run: |
           conda install -c conda-forge conda-build anaconda-client
           export AMBERMDRUN_VERSION=$(python -c "import re; print(re.search(r'__version__\\s*=\\s*\"([^\"]+)\"', open('AmberMDrun/version.py').read()).group(1))")
-          conda-build -c conda-forge conda.recipe
-          PKG=$(conda-build -c conda-forge conda.recipe --output)
+          conda-build -c conda-forge conda.recipe --output-folder conda-bld
           mkdir -p dist
-          cp "$PKG" dist/
+          find conda-bld -type f \( -name '*.conda' -o -name '*.tar.bz2' \) -exec cp {} dist/ \;
 
       - name: Check Anaconda token
         env:
