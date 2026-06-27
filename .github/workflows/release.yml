@@ -60,6 +60,7 @@ jobs:
   conda:
     name: Build and publish conda package
     runs-on: ubuntu-latest
+    environment: ANACONDA_TOKEN
     defaults:
       run:
         shell: bash -l {0}
